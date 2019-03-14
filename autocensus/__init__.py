@@ -144,6 +144,7 @@ class Query:
         """Given results from the Census API, assemble a dataframe."""
         # TODO: Break this function out into multiple other functions
         # TODO: Handle rows with, e.g., value == 'tract'
+        # TODO: Finalize with nicer column names
         # Split results into data and variables
         data = results[:-len(self.years)]
         variables = dict(results[-len(self.years):])
@@ -280,6 +281,8 @@ class Query:
     def publish_to_socrata(self, dataframe, domain, auth=None, open_in_browser=True):
         """Publish an ACS dataframe to Socrata."""
         # TODO: Add logging
+        # TODO: Use nice column names, add column metadata
+        # TODO: Expand dataset metadata: title, description, source link
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
         client = Socrata(Authorization(domain, *auth))
