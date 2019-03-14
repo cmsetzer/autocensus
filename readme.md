@@ -9,6 +9,14 @@ This package is under active development and breaking changes to its API are exp
 
 [Census API]: https://www.census.gov/developers
 
+### Installation
+
+Install from this repository as follows:
+
+```sh
+pip install git+git://github.com/socrata/autocensus@master
+```
+
 ### Example
 
 ```python
