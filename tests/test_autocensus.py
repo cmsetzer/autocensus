@@ -5,6 +5,17 @@ import pytest
 from autocensus import Query
 
 
+def test_join_geography_with_year_prior_to_2013():
+    with pytest.raises(RuntimeError):
+        Query(
+            estimate=5,
+            years=range(2012, 2014),
+            variables=['B01002_001E'],
+            for_geo='state:*',
+            join_geography=True
+        )
+
+
 def test_chunk_variables():
     expected = [(0, 1, 2), (3, 4, 5), (6, 7)]
     result = list(Query.chunk_variables(range(8), max_size=3))

@@ -54,6 +54,10 @@ class Query:
         self.max_connections = max_connections
         self.timeout = timeout
 
+        # Can't programmatically grab shapefiles for years prior to 2013; not available
+        if join_geography is True and min(years) < 2013:
+            raise RuntimeError('Sorry, cannot join geography for years prior to 2013')
+
         # If API key is not explicitly supplied, look it up under environment variable
         if census_api_key is None:
             self.census_api_key = os.getenv('CENSUS_API_KEY')
@@ -184,22 +188,33 @@ class Query:
 
         return dataframe
 
+    def build_census_geospatial_url(self, year):
+        """Build a Census shapefile URL based on the supplied parameters."""
+        for_geo_type, _ = self.for_geo.split(':')
+        in_geo = dict(pair.split(':') for pair in self.in_geo)
+        state_fips = in_geo.get('state', '')
+        prefix = 'shp/' if year > 2013 else ''
+        geo_code_mappings = {
+            'state': 'us_state',
+            'zip code tabulation area': 'us_zcta510',
+            'county': 'us_county',
+            'tract': f'{state_fips}_tract',
+            'place': f'{state_fips}_place'
+        }
+        geo_code = geo_code_mappings[for_geo_type]
+        url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
+        return url
+
     def join_geospatial_data(self, dataframe):
         """Given ACS data, join rows to geospatial points/boundaries."""
-        # TODO: Handle different geography types, including those that don't refer to state param
-        # TODO: Create mappings for different geography types/years (and handle pre-2014 URLs)
         # TODO: Use aiohttp to grab all needed shapefiles at once
         # TODO: Handle internal points correctly (deal with convex hull)
-        geography_type = self.for_geo.split(':')[0]
-        state = [ig for ig in self.in_geo if ig.split(':')[0] == 'state'][0].split(':')[1]
-
         # Loop through years and download temporary shapefile for each
         geo_dataframes = []
         for year in self.years:
             with NamedTemporaryFile(suffix='.zip') as temporary_file:
                 # Download shapefile
-                url = f'https://www2.census.gov/geo/tiger/GENZ{year}/shp/' \
-                    f'cb_{year}_{state}_{geography_type}_500k.zip'
+                url = self.build_census_geospatial_url(year)
                 with urlopen(url) as remote_file:
                     temporary_file.write(remote_file.read())
 

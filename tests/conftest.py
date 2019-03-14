@@ -23,7 +23,7 @@ async def mocked():
 def instance(request):
     query = Query(
         estimate=5,
-        years=range(2011, 2018),
+        years=range(2013, 2018),
         variables=['B01002_001E', 'B03001_001E'],
         for_geo='tract:*',
         in_geo=['state:08', 'county:005'],
