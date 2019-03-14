@@ -25,7 +25,7 @@ from autocensus import Query
 # Configure query
 query = Query(
     estimate=5,
-    years=range(2014, 2018),
+    years=range(2013, 2018),
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005']
@@ -45,6 +45,21 @@ Output:
 | Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2017 | B01002_001E | 45.7  | Estimate - Median age - Total | -0.4           | -0.2       | POINT (…) | MULTIPOLYGON (…) |
 | Census Tract 49.51, Arapahoe County, Colorado | 1400000US08005004951 | 2014 | B01002_001E | 26.4  | Estimate - Median age - Total |                |            | POINT (…) | MULTIPOLYGON (…) |
 | …                                             | …                    | …    | …           | …     | …                             | …              | …          | …         | …                |
+
+### Joining geospatial data
+
+At present, autocensus supports joining geospatial data for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For earlier years, you'll need to set the keyword arg `join_geography` to `False` when initializing your query:
+
+```python
+query = Query(
+    estimate=5,
+    years=range(2011, 2018),
+    variables=['B01002_001E', 'B03001_001E'],
+    for_geo='tract:*',
+    in_geo=['state:08', 'county:005'],
+    join_geography=False
+)
+```
 
 ### Publishing to Socrata
 
