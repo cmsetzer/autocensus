@@ -6,7 +6,6 @@ import logging
 from operator import methodcaller
 import os
 from tempfile import NamedTemporaryFile
-from urllib.request import urlopen
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 import geopandas as gpd
@@ -206,24 +205,41 @@ class Query:
         url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
         return url
 
+    async def fetch_geospatial_data(self, session, year):
+        """Fetch a Census shapefile for the supplied parameters.
+
+        To work around geopandas/Fiona's limitations in opening zipped
+        shapefiles, this downloads each shapefile to a temporary file on
+        on disk, reads it into a geopandas dataframe, then deletes the
+        temporary file.
+        """
+        url = self.build_census_geospatial_url(year)
+        with NamedTemporaryFile(suffix='.zip') as temporary_file:
+            logger.debug(f'Calling {url}')
+            async with session.get(url) as response:
+                logger.debug(f'{response.url} response: {response.status}')
+                temporary_file.write(await response.read())
+            subset = gpd.read_file(f'zip://{temporary_file.name}')
+            subset['year'] = year
+            return subset
+
+    async def gather_geospatial_results(self):
+        """Gather calls for shapefiles so they can be run at once."""
+        fetch_calls = []
+        async with ClientSession(
+            timeout=ClientTimeout(self.timeout),
+            connector=TCPConnector(limit=self.max_connections)
+        ) as session:
+            for year in self.years:
+                fetch_calls.append(self.fetch_geospatial_data(session, year))
+            tasks = map(asyncio.create_task, fetch_calls)
+            return await asyncio.gather(*tasks)
+
     def join_geospatial_data(self, dataframe):
         """Given ACS data, join rows to geospatial points/boundaries."""
-        # TODO: Use aiohttp to grab all needed shapefiles at once
         # TODO: Handle internal points correctly (deal with convex hull)
-        # Loop through years and download temporary shapefile for each
-        geo_dataframes = []
-        for year in self.years:
-            with NamedTemporaryFile(suffix='.zip') as temporary_file:
-                # Download shapefile
-                url = self.build_census_geospatial_url(year)
-                with urlopen(url) as remote_file:
-                    temporary_file.write(remote_file.read())
-
-                # Read, transform, and merge shapefile
-                subset = gpd.read_file(f'zip://{temporary_file.name}')
-                subset['year'] = year
-                geo_dataframes.append(subset)
-        geo_dataframe = pd.concat(geo_dataframes, ignore_index=True)
+        results = asyncio.run(self.gather_geospatial_results())
+        geo_dataframe = pd.concat(results, ignore_index=True)
 
         def coerce_shape_to_multipolygon(shape):
             if not isinstance(shape, MultiPolygon):
