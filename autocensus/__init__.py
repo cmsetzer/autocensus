@@ -237,7 +237,6 @@ class Query:
 
     def join_geospatial_data(self, dataframe):
         """Given ACS data, join rows to geospatial points/boundaries."""
-        # TODO: Handle internal points correctly (deal with convex hull)
         results = asyncio.run(self.gather_geospatial_results())
         geo_dataframe = pd.concat(results, ignore_index=True)
 
@@ -248,15 +247,20 @@ class Query:
                 return shape
         to_wkt = methodcaller('to_wkt')
 
-        # Convert geographic features to multipolygons and serialize to well-known text (WKT)
+        # Get centroids and serialize to WKT
         geo_dataframe['centroid'] = geo_dataframe.centroid.map(to_wkt)
+        # Get representative points (guaranteed to be internal to polygons) and serialize to WKT
+        geo_dataframe['representative_point'] = geo_dataframe['geometry'] \
+            .representative_point() \
+            .map(to_wkt)
+        # Coerce geometry to series of MultiPolygons and serialize to WKT
         geo_dataframe['geometry'] = geo_dataframe['geometry'] \
             .map(coerce_shape_to_multipolygon) \
             .map(to_wkt)
 
         # Merge dataframes and return
         merged = dataframe.merge(
-            geo_dataframe[['AFFGEOID', 'year', 'centroid', 'geometry']],
+            geo_dataframe[['AFFGEOID', 'year', 'centroid', 'representative_point', 'geometry']],
             how='left',
             left_on=['GEO_ID', 'year'],
             right_on=['AFFGEOID', 'year']
