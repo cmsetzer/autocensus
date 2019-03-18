@@ -11,6 +11,9 @@ from aiohttp import ClientSession, ClientTimeout, TCPConnector
 import geopandas as gpd
 import pandas as pd
 from shapely.geometry import MultiPolygon
+from tenacity import retry, stop_after_attempt, wait_random
+
+from .errors import CensusAPIUnknownError, InvalidQueryError, MissingCredentialsError
 
 # Import socrata-py if possible (optional; only needed for publishing dataset to Socrata)
 try:
@@ -22,11 +25,6 @@ except ImportError:
 # Configure logger
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
-
-
-class CensusAPIUnknownError(BaseException):
-    """Exception representing an unknown error from the Census API."""
-    pass
 
 
 class Query:
@@ -55,7 +53,7 @@ class Query:
 
         # Can't programmatically grab shapefiles for years prior to 2013; not available
         if join_geography is True and min(years) < 2013:
-            raise RuntimeError('Sorry, cannot join geography for years prior to 2013')
+            raise InvalidQueryError('Sorry, cannot join geography for years prior to 2013')
 
         # If API key is not explicitly supplied, look it up under environment variable
         if census_api_key is None:
@@ -91,6 +89,7 @@ class Query:
         url = f'https://api.census.gov/data/{year}/acs/acs{self.estimate}{table_route}'
         return url
 
+    @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
     async def fetch_acs_data(self, session, year, chunk):
         """Fetch a Census API result set for the supplied parameters."""
         # TODO: Use year, data tuples instead of inserting year column?
@@ -103,6 +102,8 @@ class Query:
         ]
         logger.debug(f'Calling {url}')
         async with session.get(url, params=params) as response:
+            if response.status == 500:
+                raise CensusAPIUnknownError(f'Request to Census API failed: {response.url}')
             logger.debug(f'{response.url} response: {response.status}')
             response_json = await response.json(content_type=None)
             # Append year column
@@ -296,7 +297,7 @@ class Query:
             else:
                 return credentials
         else:
-            raise RuntimeError('No Socrata credentials found in local environment')
+            raise MissingCredentialsError('No Socrata credentials found in local environment')
 
     def publish_to_socrata(self, dataframe, domain, auth=None, open_in_browser=True):
         """Publish an ACS dataframe to Socrata."""

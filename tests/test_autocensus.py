@@ -3,10 +3,11 @@
 import pytest
 
 from autocensus import Query
+from autocensus.errors import InvalidQueryError
 
 
 def test_join_geography_with_year_prior_to_2013():
-    with pytest.raises(RuntimeError):
+    with pytest.raises(InvalidQueryError):
         Query(
             estimate=5,
             years=range(2012, 2014),

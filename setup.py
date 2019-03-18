@@ -32,7 +32,7 @@ setup(
     keywords='census acs api open data socrata',
     packages=find_packages(exclude=['tests']),
     python_requires='~=3.7',
-    install_requires=['aiohttp', 'geopandas', 'pandas~=0.24.1', 'shapely'],
+    install_requires=['aiohttp', 'geopandas', 'pandas~=0.24.1', 'shapely', 'tenacity'],
     tests_require=['pytest', 'aioresponses'],
     extras_require={'Socrata': ['socrata-py']}
 )
