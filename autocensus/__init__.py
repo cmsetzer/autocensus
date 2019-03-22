@@ -160,7 +160,8 @@ class Query:
         for columns, *records in data:
             id_vars = ['NAME', 'GEO_ID', *geography_types, 'year']
             subset = pd.DataFrame \
-                .from_records(records, columns=columns) \
+                .from_records(records, columns=columns)
+            subset = subset.loc[:, ~subset.columns.duplicated()] \
                 .melt(id_vars=id_vars) \
                 .drop(columns=geography_types)
             dataframes.append(subset)
