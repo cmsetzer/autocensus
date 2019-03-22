@@ -146,7 +146,6 @@ class Query:
         """Given results from the Census API, assemble a dataframe."""
         # TODO: Break this function out into multiple other functions
         # TODO: Handle rows with, e.g., value == 'tract'
-        # TODO: Finalize with nicer column names
         # Split results into data and variables
         data = results[:-len(self.years)]
         variables = dict(results[-len(self.years):])
@@ -176,9 +175,9 @@ class Query:
                 return variables[row['year']][row['variable']]
             except KeyError:
                 return pd.np.NaN
-        dataframe['label'] = dataframe.apply(look_up_variable_label, axis=1)
-        dataframe = dataframe.loc[dataframe['label'].notnull()]
-        dataframe['label'] = dataframe['label'].str.replace('!!', ' - ')
+        dataframe['variable_label'] = dataframe.apply(look_up_variable_label, axis=1)
+        dataframe = dataframe.loc[dataframe['variable_label'].notnull()]
+        dataframe['variable_label'] = dataframe['variable_label'].str.replace('!!', ' - ')
 
         # Compute percent change and difference
         dataframe['value'] = dataframe['value'].astype(float)
@@ -188,6 +187,24 @@ class Query:
         dataframe['difference'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
             .diff()
+
+        # Create year date column
+        dataframe['date'] = pd.to_datetime(dataframe['year'].map('{}-12-31'.format), format='%Y')
+
+        # Finalize column names and order
+        columns_order = [
+            'name',
+            'geo_id',
+            'year',
+            'date',
+            'variable',
+            'variable_label',
+            'value',
+            'percent_change',
+            'difference'
+        ]
+        dataframe = dataframe.rename(columns={'NAME': 'name', 'GEO_ID': 'geo_id'})
+        dataframe = dataframe[columns_order]
 
         return dataframe
 
@@ -265,7 +282,7 @@ class Query:
         merged = dataframe.merge(
             geo_dataframe[['AFFGEOID', 'year', 'centroid', 'representative_point', 'geometry']],
             how='left',
-            left_on=['GEO_ID', 'year'],
+            left_on=['geo_id', 'year'],
             right_on=['AFFGEOID', 'year']
         ).drop(columns='AFFGEOID')
         return merged

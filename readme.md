@@ -25,7 +25,7 @@ from autocensus import Query
 # Configure query
 query = Query(
     estimate=5,
-    years=range(2013, 2018),
+    years=range(2014, 2018),
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005']
@@ -37,13 +37,13 @@ dataframe = query.run()
 
 Output:
 
-| NAME                                          | GEO_ID               | year | variable    | value | label                         | percent_change | difference | centroid  | representative_point | geometry         |
-|-----------------------------------------------|----------------------|------|-------------|-------|-------------------------------|----------------|------------|-----------|----------------------|------------------|
-| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2014 | B01002_001E | 45.7  | Estimate - Median age - Total |                |            | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
-| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2015 | B01002_001E | 45.2  | Estimate - Median age - Total | -1.1           | -0.5       | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
-| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2016 | B01002_001E | 45.9  | Estimate - Median age - Total | 1.6            | 0.7        | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
-| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2017 | B01002_001E | 45.7  | Estimate - Median age - Total | -0.4           | -0.2       | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
-| Census Tract 49.51, Arapahoe County, Colorado | 1400000US08005004951 | 2014 | B01002_001E | 26.4  | Estimate - Median age - Total |                |            | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
+| name                                          | geo_id               | year | date       | variable    | variable_label                | value | percent_change | difference | centroid  | representative_point | geometry         |
+|-----------------------------------------------|----------------------|------|------------|-------------|-------------------------------|-------|----------------|------------|-----------|----------------------|------------------|
+| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2014 | 2014-12-31 | B01002_001E | Estimate - Median age - Total | 45.7  |                |            | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
+| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2015 | 2015-12-31 | B01002_001E | Estimate - Median age - Total | 45.2  | -1.1           | -0.5       | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
+| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2016 | 2016-12-31 | B01002_001E | Estimate - Median age - Total | 45.9  | 1.6            | 0.7        | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
+| Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2017 | 2017-12-31 | B01002_001E | Estimate - Median age - Total | 45.7  | -0.4           | -0.2       | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
+| Census Tract 49.51, Arapahoe County, Colorado | 1400000US08005004951 | 2014 | 2018-12-31 | B01002_001E | Estimate - Median age - Total | 26.4  |                |            | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
 
 ### Joining geospatial data
 
