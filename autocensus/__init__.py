@@ -299,11 +299,12 @@ class Query:
         else:
             raise MissingCredentialsError('No Socrata credentials found in local environment')
 
-    def publish_to_socrata(self, dataframe, domain, auth=None, open_in_browser=True):
-        """Publish an ACS dataframe to Socrata."""
+    def to_socrata(self, domain, auth=None, open_in_browser=True):
+        """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Add logging
         # TODO: Use nice column names, add column metadata
         # TODO: Expand dataset metadata: title, description, source link
+        dataframe = self.run()
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
         client = Socrata(Authorization(domain, *auth))

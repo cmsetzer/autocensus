@@ -65,8 +65,19 @@ query = Query(
 If [socrata-py] is installed, you can publish to Socrata like so:
 
 ```python
-# Publish dataframe to Socrata domain
-query.publish_to_socrata(dataframe, 'some-domain.data.socrata.com')
+from autocensus import Query
+
+# Configure query
+query = Query(
+    estimate=5,
+    years=range(2013, 2018),
+    variables=['B01002_001E', 'B03001_001E'],
+    for_geo='tract:*',
+    in_geo=['state:08', 'county:005']
+)
+
+# Run query and publish results to Socrata domain
+query.to_socrata('some-domain.data.socrata.com')
 ```
 
 [socrata-py]: https://github.com/socrata/socrata-py
