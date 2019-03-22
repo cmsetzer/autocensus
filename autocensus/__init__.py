@@ -190,7 +190,8 @@ class Query:
             .diff()
 
         # Create year date column
-        dataframe['date'] = pd.to_datetime(dataframe['year'].map('{}-12-31'.format), format='%Y')
+        datetime_strings = dataframe['year'].map('{}-12-31'.format)
+        dataframe['date'] = pd.to_datetime(datetime_strings, format='%Y-%m-%d')
 
         # Finalize column names and order
         columns_order = [
