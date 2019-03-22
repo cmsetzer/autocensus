@@ -1,7 +1,7 @@
 """Package for collecting ACS and geospatial data from the Census API."""
 
 import asyncio
-import itertools
+from itertools import islice, product
 import logging
 from operator import methodcaller
 import os
@@ -52,6 +52,8 @@ class Query:
         self.timeout = timeout
 
         # Can't programmatically grab shapefiles for years prior to 2013; not available
+        # TODO: Offer option (or default) to obtain TIGER/Line shapefiles for earlier (or all)
+        # years; simplify geometry using geopandas as desired
         if join_geography is True and min(years) < 2013:
             raise InvalidQueryError('Sorry, cannot join geography for years prior to 2013')
 
@@ -71,7 +73,7 @@ class Query:
         """
         iterator = iter(variables)
         while True:
-            chunk = tuple(itertools.islice(iterator, max_size))
+            chunk = tuple(islice(iterator, max_size))
             if chunk:
                 yield chunk
             else:
@@ -128,7 +130,7 @@ class Query:
         """Gather calls to the Census API so they can be run at once."""
         fetch_calls = []
         chunks = self.chunk_variables(self.variables)
-        chunks_by_year = itertools.product(chunks, self.years)
+        chunks_by_year = product(chunks, self.years)
         async with ClientSession(
             timeout=ClientTimeout(self.timeout),
             connector=TCPConnector(limit=self.max_connections)
@@ -178,7 +180,7 @@ class Query:
         dataframe = dataframe.loc[dataframe['label'].notnull()]
         dataframe['label'] = dataframe['label'].str.replace('!!', ' - ')
 
-        # Compute percent change
+        # Compute percent change and difference
         dataframe['value'] = dataframe['value'].astype(float)
         dataframe['percent_change'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
