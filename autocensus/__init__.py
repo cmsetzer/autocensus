@@ -13,7 +13,12 @@ import pandas as pd
 from shapely.geometry import MultiPolygon
 from tenacity import retry, stop_after_attempt, wait_random
 
-from .errors import CensusAPIUnknownError, InvalidQueryError, MissingCredentialsError
+from .errors import (
+    CensusAPIUnknownError,
+    InvalidQueryError,
+    MissingCredentialsError,
+    MissingDependencyError
+)
 
 # Import socrata-py if possible (optional; only needed for publishing dataset to Socrata)
 try:
@@ -328,7 +333,11 @@ class Query:
         dataframe = self.run()
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
-        client = Socrata(Authorization(domain, *auth))
+        try:
+            client = Socrata(Authorization(domain, *auth))
+        except NameError:
+            message = 'socrata-py must be installed in order to publish to Socrata'
+            raise MissingDependencyError(message)
         dataset_name = f'ACS {self.estimate}-Year Estimates'
         revision, output = client.create(name=dataset_name).df(dataframe)
         ok, output = output.run()

@@ -14,3 +14,8 @@ class InvalidQueryError(ValueError):
 class MissingCredentialsError(RuntimeError):
     """Exception indicating that Socrata credentials are unavailable."""
     pass
+
+
+class MissingDependencyError(ImportError):
+    """Exception indicating that a needed dependency is unavailable."""
+    pass
