@@ -3,7 +3,6 @@
 import asyncio
 from itertools import islice, product
 import logging
-from operator import methodcaller
 import os
 from tempfile import NamedTemporaryFile
 
@@ -272,22 +271,19 @@ class Query:
                 return MultiPolygon([shape])
             else:
                 return shape
-        to_wkt = methodcaller('to_wkt')
 
         # Get centroids and serialize to WKT
-        geo_dataframe['centroid'] = geo_dataframe.centroid.map(to_wkt)
-        # Get representative points (guaranteed to be internal to polygons) and serialize to WKT
-        geo_dataframe['representative_point'] = geo_dataframe['geometry'] \
-            .representative_point() \
-            .map(to_wkt)
+        geo_dataframe['centroid'] = geo_dataframe.centroid
+        # Get internal points (guaranteed to be internal to shape) and serialize to WKT
+        geo_dataframe['internal_point'] = geo_dataframe['geometry'] \
+            .representative_point()
         # Coerce geometry to series of MultiPolygons and serialize to WKT
         geo_dataframe['geometry'] = geo_dataframe['geometry'] \
-            .map(coerce_shape_to_multipolygon) \
-            .map(to_wkt)
+            .map(coerce_shape_to_multipolygon)
 
         # Merge dataframes and return
         merged = dataframe.merge(
-            geo_dataframe[['AFFGEOID', 'year', 'centroid', 'representative_point', 'geometry']],
+            geo_dataframe[['AFFGEOID', 'year', 'centroid', 'internal_point', 'geometry']],
             how='left',
             left_on=['geo_id', 'year'],
             right_on=['AFFGEOID', 'year']

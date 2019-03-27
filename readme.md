@@ -37,7 +37,7 @@ dataframe = query.run()
 
 Output:
 
-| name                                          | geo_id               | year | date       | variable    | variable_label                | value | percent_change | difference | centroid  | representative_point | geometry         |
+| name                                          | geo_id               | year | date       | variable    | variable_label                | value | percent_change | difference | centroid  | internal_point       | geometry         |
 |-----------------------------------------------|----------------------|------|------------|-------------|-------------------------------|-------|----------------|------------|-----------|----------------------|------------------|
 | Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2014 | 2014-12-31 | B01002_001E | Estimate - Median age - Total | 45.7  |                |            | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
 | Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2015 | 2015-12-31 | B01002_001E | Estimate - Median age - Total | 45.2  | -1.1           | -0.5       | POINT (…) | POINT (…)            | MULTIPOLYGON (…) |
