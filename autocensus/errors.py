@@ -12,7 +12,7 @@ class InvalidQueryError(ValueError):
 
 
 class MissingCredentialsError(RuntimeError):
-    """Exception indicating that Socrata credentials are unavailable."""
+    """Exception indicating that API credentials are unavailable."""
     pass
 
 

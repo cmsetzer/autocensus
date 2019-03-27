@@ -63,7 +63,10 @@ class Query:
 
         # If API key is not explicitly supplied, look it up under environment variable
         if census_api_key is None:
-            self.census_api_key = os.getenv('CENSUS_API_KEY')
+            try:
+                self.census_api_key = os.environ['CENSUS_API_KEY']
+            except KeyError:
+                raise MissingCredentialsError('No Census API key found in local environment')
         else:
             self.census_api_key = census_api_key
 
