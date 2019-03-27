@@ -123,16 +123,21 @@ class Query:
             return response_json
 
     async def fetch_acs_variable_labels(self, session, year):
-        """Fetch labels for the supplied ACS variables."""
-        # TODO: Refactor this so we fetch per variable/year rather than entire variables.json
-        url = '/'.join((self.build_census_api_url(year), 'variables.json'))
+        """Fetch labels for the supplied ACS variables.
+
+        Pulls down a JSON array of rows representing variable labels
+        for a given query and year, then collects the results in a
+        dataframe for easy joining to data.
+        """
+        url = '/'.join((self.build_census_api_url(year), 'variables'))
         logger.debug(f'Calling {url}')
         async with session.get(url) as response:
             logger.debug(f'{response.url} response: {response.status}')
             response_json = await response.json(content_type=None)
-            variables = response_json['variables'].items()
-            labels = {key: value['label'] for key, value in variables}
-            return year, labels
+            columns, *rows = response_json
+            labels = pd.DataFrame(rows, columns=columns).drop(columns=['concept'])
+            labels['year'] = year
+            return labels
 
     async def gather_results(self):
         """Gather calls to the Census API so they can be run at once."""
@@ -156,11 +161,11 @@ class Query:
         # TODO: Handle rows with, e.g., value == 'tract'
         # Split results into data and variables
         data = results[:-len(self.years)]
-        variables = dict(results[-len(self.years):])
+        labels = pd.concat(results[-len(self.years):]).rename(columns={'name': 'variable'})
 
         # Get list of geography types
-        for_geo_type = self.for_geo[:self.for_geo.index(':')]
-        in_geo_types = (value[:value.index(':')] for value in self.in_geo)
+        for_geo_type = self.for_geo.split(':')[0]
+        in_geo_types = (value.split(':')[0] for value in self.in_geo)
         geography_types = [for_geo_type, *in_geo_types]
 
         # Melt and concatenate dataframes
@@ -177,17 +182,11 @@ class Query:
             .sort_values(by=['variable', 'NAME', 'year']) \
             .reset_index(drop=True)
 
-        # Apply variable labels
-        # TODO: Could download variable labels as records and just do a join here instead
+        # Join variable labels and clean them up
         # TODO: Handle annotations as well
-        def look_up_variable_label(row):
-            try:
-                return variables[row['year']][row['variable']]
-            except KeyError:
-                return pd.np.NaN
-        dataframe['variable_label'] = dataframe.apply(look_up_variable_label, axis=1)
-        dataframe = dataframe.loc[dataframe['variable_label'].notnull()]
-        dataframe['variable_label'] = dataframe['variable_label'].str.replace('!!', ' - ')
+        dataframe = dataframe.merge(right=labels, how='left', on=['variable', 'year'])
+        dataframe = dataframe.loc[dataframe['label'].notnull()]
+        dataframe['label'] = dataframe['label'].str.replace('!!', ' - ')
 
         # Compute percent change and difference
         dataframe['value'] = dataframe['value'].astype(float)
@@ -203,19 +202,19 @@ class Query:
         dataframe['date'] = pd.to_datetime(datetime_strings, format='%Y-%m-%d')
 
         # Finalize column names and order
-        columns_order = [
-            'name',
-            'geo_id',
-            'year',
-            'date',
-            'variable',
-            'variable_label',
-            'value',
-            'percent_change',
-            'difference'
-        ]
-        dataframe.columns = dataframe.columns.str.lower()
-        dataframe = dataframe[columns_order]
+        columns = {
+            'NAME': 'name',
+            'GEO_ID': 'geo_id',
+            'year': 'year',
+            'date': 'date',
+            'variable': 'variable_code',
+            'label': 'variable_label',
+            'value': 'value',
+            'percent_change': 'percent_change',
+            'difference': 'difference'
+        }
+        dataframe = dataframe.rename(columns=columns)
+        dataframe = dataframe[columns.values()]
 
         return dataframe
 

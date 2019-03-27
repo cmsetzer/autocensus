@@ -44,11 +44,8 @@ def acs_data():
 
 @pytest.fixture
 def variables():
-    variables = {
-        'variables': {
-            'B01002_001E': {
-                'label': 'Estimate!!Median age!!Total'
-            }
-        }
-    }
-    return variables
+    payload = [
+        ['name', 'label', 'concept'],
+        ['B01002_001E', 'Estimate!!Median age!!Total', 'MEDIAN AGE BY SEX']
+    ]
+    return payload

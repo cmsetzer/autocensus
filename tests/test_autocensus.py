@@ -1,5 +1,6 @@
 """Automated tests for autocensus."""
 
+import pandas as pd
 import pytest
 
 from autocensus import Query
@@ -47,7 +48,11 @@ async def test_fetch_acs_data(session, mocked, instance, acs_data):
 
 @pytest.mark.asyncio
 async def test_fetch_acs_variable_labels(session, mocked, instance, variables):
-    url = 'https://api.census.gov/data/2013/acs/acs5/variables.json'
+    url = 'https://api.census.gov/data/2013/acs/acs5/variables'
     mocked.get(url, payload=variables)
     result = await instance.fetch_acs_variable_labels(session, 2013)
-    assert result == (2013, {'B01002_001E': 'Estimate!!Median age!!Total'})
+    expected = pd.DataFrame(
+        [[*variables[1][:2], 2013]],
+        columns=variables[0][:2] + ['year']
+    )
+    assert result.equals(expected)
