@@ -56,6 +56,7 @@ class Query:
         self.timeout = timeout
 
         # Can't programmatically grab shapefiles for years prior to 2013; not available
+        # TODO: Use 'points', 'geometry', 'all', None instead of True/False for join_geography
         # TODO: Offer option (or default) to obtain TIGER/Line shapefiles for earlier (or all)
         # years; simplify geometry using geopandas as desired
         if join_geography is True and min(years) < 2013:
@@ -178,6 +179,7 @@ class Query:
 
         # Apply variable labels
         # TODO: Could download variable labels as records and just do a join here instead
+        # TODO: Handle annotations as well
         def look_up_variable_label(row):
             try:
                 return variables[row['year']][row['variable']]
@@ -212,7 +214,7 @@ class Query:
             'percent_change',
             'difference'
         ]
-        dataframe = dataframe.rename(columns={'NAME': 'name', 'GEO_ID': 'geo_id'})
+        dataframe.columns = dataframe.columns.str.lower()
         dataframe = dataframe[columns_order]
 
         return dataframe
@@ -324,7 +326,7 @@ class Query:
         else:
             raise MissingCredentialsError('No Socrata credentials found in local environment')
 
-    def to_socrata(self, domain, auth=None, open_in_browser=True):
+    def to_socrata(self, domain, auth=None, open_in_browser=False):
         """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Add logging
         # TODO: Use nice column names, add column metadata
