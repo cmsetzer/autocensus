@@ -187,7 +187,9 @@ class Query:
         # TODO: Handle annotations as well
         dataframe = dataframe.merge(right=labels, how='left', on=['variable', 'year'])
         dataframe = dataframe.loc[dataframe['label'].notnull()]
-        dataframe['label'] = dataframe['label'].str.replace('!!', ' - ')
+        dataframe['label'] = dataframe['label'] \
+            .str.replace('^Estimate!!', '') \
+            .str.replace('!!', ' - ')
 
         # Compute percent change and difference
         dataframe['value'] = dataframe['value'].astype(float)
