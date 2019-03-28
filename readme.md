@@ -60,6 +60,26 @@ query = Query(
 )
 ```
 
+### Topics
+
+autocensus is packaged with some pre-built lists of pertinent ACS variables around topics like race, education, and housing. These live within the `autocensus.topics` module:
+
+```python
+import autocensus
+from autocensus import Query
+
+query = Query(
+    estimate=5,
+    years=range(2013, 2018),
+    # Housing variables: B25064_001E, B25035_001E, B25077_001E
+    variables=autocensus.topics.housing,
+    for_geo='tract:*',
+    in_geo=['state:08', 'county:005']
+)
+```
+
+Topics currently included are `population_total`, `population_by_race`, `education`, `income`, and `housing`.
+
 ### Publishing to Socrata
 
 If [socrata-py] is installed, you can publish to Socrata like so:

@@ -18,6 +18,7 @@ from .errors import (
     MissingCredentialsError,
     MissingDependencyError
 )
+from . import topics
 
 # Import socrata-py if possible (optional; only needed for publishing dataset to Socrata)
 try:
