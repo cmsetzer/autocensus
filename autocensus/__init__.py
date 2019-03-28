@@ -192,7 +192,7 @@ class Query:
         dataframe['value'] = dataframe['value'].astype(float)
         dataframe['percent_change'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
-            .pct_change() * 100
+            .pct_change()
         dataframe['difference'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
             .diff()
@@ -325,7 +325,22 @@ class Query:
         else:
             raise MissingCredentialsError('No Socrata credentials found in local environment')
 
-    def to_socrata(self, domain, auth=None, open_in_browser=False):
+    def prepare_output_schema(self, output):
+        """Add column formatting for improved data display on Socrata."""
+        ok, output = output \
+            .change_column_metadata('year', 'format').to({'noCommas': True}) \
+            .change_column_metadata('date', 'format').to({'view': 'date_y'}) \
+            .change_column_metadata('value', 'format').to({'precision': 1}) \
+            .change_column_metadata('percent_change', 'format').to({
+                'precision': 1,
+                'precisionStyle': 'percentage',
+                'percentScale': 1
+            }) \
+            .change_column_metadata('difference', 'format').to({'precision': 1}) \
+            .run()
+        return ok, output
+
+    def to_socrata(self, domain, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Add logging
         # TODO: Use nice column names, add column metadata
@@ -338,9 +353,10 @@ class Query:
         except NameError:
             message = 'socrata-py must be installed in order to publish to Socrata'
             raise MissingDependencyError(message)
-        dataset_name = f'ACS {self.estimate}-Year Estimates'
+        years_range = '{}–{}'.format(min(self.years), max(self.years))
+        dataset_name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
         revision, output = client.create(name=dataset_name).df(dataframe)
-        ok, output = output.run()
+        ok, output = self.prepare_output_schema(output)
         ok, job = revision.apply(output_schema=output)
         if open_in_browser is True:
             revision.open_in_browser()
