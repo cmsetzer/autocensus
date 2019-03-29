@@ -15,6 +15,9 @@ local_path = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(local_path, 'readme.md')) as f:
     long_description = f.read()
 
+# Dependencies for test environment
+test_dependencies = ['aioresponses', 'pytest']
+
 setup(
     name='autocensus',
     version='0.1.0',
@@ -33,6 +36,6 @@ setup(
     packages=find_packages(exclude=['tests']),
     python_requires='~=3.7',
     install_requires=['aiohttp', 'geopandas', 'pandas~=0.24.1', 'shapely', 'tenacity'],
-    tests_require=['pytest', 'aioresponses'],
-    extras_require={'Socrata': ['socrata-py']}
+    tests_require=test_dependencies,
+    extras_require={'socrata': ['socrata-py'], 'test': test_dependencies}
 )
