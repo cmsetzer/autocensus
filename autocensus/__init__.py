@@ -289,12 +289,13 @@ class Query:
             .map(coerce_shape_to_multipolygon)
 
         # Merge dataframes and return
+        affgeoid_field = ({'AFFGEOID', 'AFFGEOID10'} & set(geo_dataframe.columns)).pop()
         merged = dataframe.merge(
-            geo_dataframe[['AFFGEOID', 'year', 'centroid', 'internal_point', 'geometry']],
+            geo_dataframe[[affgeoid_field, 'year', 'centroid', 'internal_point', 'geometry']],
             how='left',
             left_on=['geo_id', 'year'],
-            right_on=['AFFGEOID', 'year']
-        ).drop(columns='AFFGEOID')
+            right_on=[affgeoid_field, 'year']
+        ).drop(columns=affgeoid_field)
         return merged
 
     def run(self):
