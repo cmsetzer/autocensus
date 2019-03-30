@@ -279,12 +279,12 @@ class Query:
             else:
                 return shape
 
-        # Get centroids and serialize to WKT
+        # Get centroids
         geo_dataframe['centroid'] = geo_dataframe.centroid
-        # Get internal points (guaranteed to be internal to shape) and serialize to WKT
+        # Get internal points (guaranteed to be internal to shape)
         geo_dataframe['internal_point'] = geo_dataframe['geometry'] \
             .representative_point()
-        # Coerce geometry to series of MultiPolygons and serialize to WKT
+        # Coerce geometry to a series of MultiPolygons
         geo_dataframe['geometry'] = geo_dataframe['geometry'] \
             .map(coerce_shape_to_multipolygon)
 
