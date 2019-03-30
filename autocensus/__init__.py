@@ -11,6 +11,7 @@ import geopandas as gpd
 import pandas as pd
 from shapely.geometry import MultiPolygon
 from tenacity import retry, stop_after_attempt, wait_random
+from titlecase import titlecase
 
 from .errors import (
     CensusAPIUnknownError,
@@ -136,7 +137,7 @@ class Query:
             logger.debug(f'{response.url} response: {response.status}')
             response_json = await response.json(content_type=None)
             columns, *rows = response_json
-            labels = pd.DataFrame(rows, columns=columns).drop(columns=['concept'])
+            labels = pd.DataFrame(rows, columns=columns)
             labels['year'] = year
             return labels
 
@@ -183,13 +184,14 @@ class Query:
             .sort_values(by=['variable', 'NAME', 'year']) \
             .reset_index(drop=True)
 
-        # Join variable labels and clean them up
+        # Join variable labels/concepts and clean them up
         # TODO: Handle annotations as well
         dataframe = dataframe.merge(right=labels, how='left', on=['variable', 'year'])
         dataframe = dataframe.loc[dataframe['label'].notnull()]
         dataframe['label'] = dataframe['label'] \
             .str.replace('^Estimate!!', '') \
             .str.replace('!!', ' - ')
+        dataframe['concept'] = dataframe['concept'].map(titlecase)
 
         # Compute percent change and difference
         dataframe['value'] = dataframe['value'].astype(float)
@@ -212,6 +214,7 @@ class Query:
             'date': 'date',
             'variable': 'variable_code',
             'label': 'variable_label',
+            'concept': 'variable_concept',
             'value': 'value',
             'percent_change': 'percent_change',
             'difference': 'difference'

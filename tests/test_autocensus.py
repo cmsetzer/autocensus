@@ -52,7 +52,7 @@ async def test_fetch_acs_variable_labels(session, mocked, instance, variables):
     mocked.get(url, payload=variables)
     result = await instance.fetch_acs_variable_labels(session, 2013)
     expected = pd.DataFrame(
-        [[*variables[1][:2], 2013]],
-        columns=[*variables[0][:2], 'year']
+        [[*variables[1], 2013]],
+        columns=[*variables[0], 'year']
     )
     assert result.equals(expected)
