@@ -357,7 +357,10 @@ class Query:
         except NameError:
             message = 'socrata-py must be installed in order to publish to Socrata'
             raise MissingDependencyError(message)
-        years_range = '{}–{}'.format(min(self.years), max(self.years))
+        if len(self.years) > 1:
+            years_range = '{}–{}'.format(min(self.years), max(self.years))
+        else:
+            years_range = self.years[0]
         dataset_name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
         revision, output = client.create(name=dataset_name).df(dataframe)
         ok, output = self.prepare_output_schema(output)
