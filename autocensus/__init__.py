@@ -3,6 +3,7 @@
 import asyncio
 from itertools import islice, product
 import logging
+from operator import methodcaller
 import os
 from tempfile import NamedTemporaryFile
 
@@ -353,6 +354,11 @@ class Query:
         # TODO: Use nice column names, add column metadata
         # TODO: Expand dataset metadata: title, description, source link
         dataframe = self.run()
+        to_wkt = methodcaller('to_wkt')
+        try:
+            dataframe['geometry'] = dataframe['geometry'].map(to_wkt)
+        except KeyError:
+            pass
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
         try:
