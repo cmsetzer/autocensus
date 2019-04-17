@@ -1,5 +1,4 @@
-autocensus
-----------
+# autocensus
 
 Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe.
 
@@ -9,7 +8,7 @@ This package is under active development and breaking changes to its API are exp
 
 [Census API]: https://www.census.gov/developers
 
-### Installation
+## Installation
 
 Install from this repository as follows:
 
@@ -17,7 +16,9 @@ Install from this repository as follows:
 pip install git+git://github.com/socrata/autocensus@master
 ```
 
-### Example
+To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or the environment variable `CENSUS_API_KEY`.
+
+## Example
 
 ```python
 from autocensus import Query
@@ -28,7 +29,9 @@ query = Query(
     years=range(2014, 2018),
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
-    in_geo=['state:08', 'county:005']
+    in_geo=['state:08', 'county:005'],
+    # The following line is unnecessary if you've set the environment variable CENSUS_API_KEY
+    census_api_key='d06df8713686672023952f10a85493de1ba24307'
 )
 
 # Run query and collect output in dataframe
@@ -45,7 +48,9 @@ Output:
 | Census Tract 151, Arapahoe County, Colorado   | 1400000US08005015100 | 2017 | 2017-12-31 | B01002_001E   | Median age - Total | Median Age by Sex | 45.7  | -0.4           | -0.2       | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
 | Census Tract 49.51, Arapahoe County, Colorado | 1400000US08005004951 | 2014 | 2018-12-31 | B01002_001E   | Median age - Total | Median Age by Sex | 26.4  |                |            | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
 
-### Joining geospatial data
+[Census API key]: https://api.census.gov/data/key_signup.html
+
+## Joining geospatial data
 
 At present, autocensus supports joining geospatial data for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For earlier years, you'll need to set the keyword arg `join_geography` to `False` when initializing your query:
 
@@ -60,7 +65,7 @@ query = Query(
 )
 ```
 
-### Topics
+## Topics
 
 autocensus is packaged with some pre-built lists of pertinent ACS variables around topics like race, education, and housing. These live within the `autocensus.topics` module:
 
@@ -80,7 +85,7 @@ query = Query(
 
 Topics currently included are `population_total`, `population_by_race`, `education`, `income`, and `housing`.
 
-### Publishing to Socrata
+## Publishing to Socrata
 
 If [socrata-py] is installed, you can publish to Socrata like so:
 
@@ -102,7 +107,7 @@ query.to_socrata('some-domain.data.socrata.com')
 
 [socrata-py]: https://github.com/socrata/socrata-py
 
-### Tests
+## Tests
 
 Use [pytest] to run the test suite:
 
