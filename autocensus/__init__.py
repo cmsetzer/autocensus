@@ -348,7 +348,7 @@ class Query:
             .run()
         return ok, output
 
-    def to_socrata(self, domain, auth=None, open_in_browser=True):
+    def to_socrata(self, domain, *, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Add logging
         # TODO: Use nice column names, add column metadata

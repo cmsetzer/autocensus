@@ -1,7 +1,7 @@
 """Pre-built lists of variables for easy querying."""
 
-population_total = ['B01003_001E']
-population_by_race = [
+population = ['B01003_001E']
+race = [
     'B03002_001E',
     'B03002_003E',
     'B03002_004E',

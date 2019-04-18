@@ -10,7 +10,7 @@ This package is under active development and breaking changes to its API are exp
 
 ## Installation
 
-Install from this repository as follows:
+autocensus requires Python 3.7 or higher. Install from this repository as follows:
 
 ```sh
 pip install git+git://github.com/socrata/autocensus@master
@@ -83,7 +83,7 @@ query = Query(
 )
 ```
 
-Topics currently included are `population_total`, `population_by_race`, `education`, `income`, and `housing`.
+Topics currently included are `population`, `race`, `education`, `income`, and `housing`.
 
 ## Publishing to Socrata
 
@@ -103,6 +103,20 @@ query = Query(
 
 # Run query and publish results to Socrata domain
 query.to_socrata('some-domain.data.socrata.com')
+```
+
+By default, autocensus will look up your Socrata credentials under the following pairs of common environment variables:
+
+* `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
+* `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
+* `MY_SOCRATA_USERNAME`, `MY_SOCRATA_PASSWORD`
+* `SODA_USERNAME`, `SODA_PASSWORD`
+
+As an alternative, you may supply credentials explicitly by way of the `auth` keyword argument:
+
+```python
+auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
+query.to_socrata('some-domain.data.socrata.com', auth=auth)
 ```
 
 [socrata-py]: https://github.com/socrata/socrata-py
