@@ -38,21 +38,21 @@ class Query:
     def __init__(
         self,
         estimate,              # 1; 3; 5
-        years,                 # range(2011, 2017)
-        variables,             # ['B01003_001E']
+        years,                 # range(2013, 2017); 2013
+        variables,             # ['B01003_001E', 'B01002_001E']; 'B01003_001E'
         for_geo,               # 'tract:*'
-        in_geo=None,           # ['state:08', 'county:005']
+        in_geo=tuple(),        # ['state:08', 'county:005']; 'state:08'
         table='detail',        # 'detail'; 'profile'; 'subject'; 'cprofile'
         join_geography=True,   # True; False
         max_connections=50,    # Concurrent connections
-        timeout=30,            # Seconds
+        timeout=120,           # Seconds
         census_api_key=None    # Census API key
     ):
-        self.years = years
+        self.years = [years] if isinstance(years, int) else years
         self.estimate = estimate
-        self.variables = variables
+        self.variables = [variables] if isinstance(variables, str) else variables
         self.for_geo = for_geo
-        self.in_geo = [] if in_geo is None else in_geo
+        self.in_geo = [in_geo] if isinstance(in_geo, str) else in_geo
         self.table = table
         self.join_geography = join_geography
         self.max_connections = max_connections
@@ -306,7 +306,7 @@ class Query:
         """Collect ACS data for the given parameters in a dataframe."""
         results = asyncio.run(self.gather_results())
         dataframe = self.assemble_dataframe(results)
-        if self.join_geography is True:
+        if self.join_geography in [True, 'all', 'points', 'geometry']:
             dataframe = self.join_geospatial_data(dataframe)
         return dataframe
 
@@ -354,25 +354,37 @@ class Query:
         # TODO: Use nice column names, add column metadata
         # TODO: Expand dataset metadata: title, description, source link
         dataframe = self.run()
+
+        # Serialize points and polygons to WKT (avoids issue with three-dimensional geometry)
         to_wkt = methodcaller('to_wkt')
         try:
             dataframe['geometry'] = dataframe['geometry'].map(to_wkt)
         except KeyError:
             pass
+
+        # Look for Socrata credentials in environment
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
+
+        # Initialize client
         try:
             client = Socrata(Authorization(domain, *auth))
         except NameError:
             message = 'socrata-py must be installed in order to publish to Socrata'
             raise MissingDependencyError(message)
+
+        # Format dataset name
         if len(self.years) > 1:
             years_range = '{}–{}'.format(min(self.years), max(self.years))
         else:
             years_range = self.years[0]
         dataset_name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
+
+        # Publish dataset on Socrata
+        logger.debug('Creating draft dataset on Socrata')
         revision, output = client.create(name=dataset_name).df(dataframe)
         ok, output = self.prepare_output_schema(output)
+        logger.debug('Publishing dataset on Socrata')
         ok, job = revision.apply(output_schema=output)
         if open_in_browser is True:
             revision.open_in_browser()
