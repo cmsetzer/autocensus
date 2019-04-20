@@ -3,7 +3,6 @@
 import asyncio
 from itertools import islice, product
 import logging
-from operator import methodcaller
 import os
 from tempfile import NamedTemporaryFile
 
@@ -336,7 +335,7 @@ class Query:
     def prepare_output_schema(self, output):
         """Add column formatting for improved data display on Socrata."""
         ok, output = output \
-            .change_column_metadata('year', 'format').to({'noCommas': True}) \
+            .change_column_metadata('year', 'format').to({'noCommas': True, 'align': 'left'}) \
             .change_column_metadata('date', 'format').to({'view': 'date_y'}) \
             .change_column_metadata('value', 'format').to({'precision': 1}) \
             .change_column_metadata('percent_change', 'format').to({
@@ -350,15 +349,19 @@ class Query:
 
     def to_socrata(self, domain, *, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
-        # TODO: Add logging
         # TODO: Use nice column names, add column metadata
         # TODO: Expand dataset metadata: title, description, source link
         dataframe = self.run()
 
         # Serialize points and polygons to WKT (avoids issue with three-dimensional geometry)
-        to_wkt = methodcaller('to_wkt')
+        def serialize_to_well_known_text(value):
+            try:
+                return value.to_wkt()
+            except AttributeError:
+                return value
+
         try:
-            dataframe['geometry'] = dataframe['geometry'].map(to_wkt)
+            dataframe['geometry'] = dataframe['geometry'].map(serialize_to_well_known_text)
         except KeyError:
             pass
 
@@ -386,5 +389,12 @@ class Query:
         ok, output = self.prepare_output_schema(output)
         logger.debug('Publishing dataset on Socrata')
         ok, job = revision.apply(output_schema=output)
+        if ok is True:
+            logger.debug(f'Dataset published to {revision.ui_url()}')
+        else:
+            logger.error(f'Failed to publish dataset')
+
+        # Return URL
         if open_in_browser is True:
             revision.open_in_browser()
+        return revision.ui_url()
