@@ -261,6 +261,8 @@ class Query:
             async with session.get(url) as response:
                 logger.debug(f'{response.url} response: {response.status}')
                 temporary_file.write(await response.read())
+            # Temporarily set environment variable to avoid showing needless vsizip recode warnings
+            os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
             subset = gpd.read_file(f'zip://{temporary_file.name}')
             subset['year'] = year
             return subset
