@@ -1,0 +1,7 @@
+value,annotation
+-999999999,Data for this geographic area cannot be displayed because the number of sample cases is too small.
+-888888888,The estimate is not applicable or not available.
+-666666666,"Either no sample observations or too few sample observations were available to compute an estimate, or a ratio of medians cannot be calculated because one or both of the median estimates falls in the lowest interval or upper interval of an open-ended distribution."
+-555555555,The estimate is controlled. A statistical test for sampling variability is not appropriate.
+-333333333,The median falls in the lowest interval or upper interval of an open-ended distribution. A statistical test is not appropriate.
+-222222222,Either no sample observations or too few sample observations were available to compute a standard error and thus the margin of error. A statistical test is not appropriate.

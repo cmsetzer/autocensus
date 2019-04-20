@@ -4,6 +4,7 @@ import asyncio
 from itertools import islice, product
 import logging
 import os
+from pkg_resources import resource_stream
 from tempfile import NamedTemporaryFile
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
@@ -19,7 +20,7 @@ from .errors import (
     MissingCredentialsError,
     MissingDependencyError
 )
-from . import topics
+from . import topics  # noqa: F401
 
 # Import socrata-py if possible (optional; only needed for publishing dataset to Socrata)
 try:
@@ -160,7 +161,6 @@ class Query:
     def assemble_dataframe(self, results):
         """Given results from the Census API, assemble a dataframe."""
         # TODO: Break this function out into multiple other functions
-        # TODO: Handle rows with, e.g., value == 'tract'
         # Split results into data and variables
         data = results[:-len(self.years)]
         labels = pd.concat(results[-len(self.years):]).rename(columns={'name': 'variable'})
@@ -185,16 +185,21 @@ class Query:
             .reset_index(drop=True)
 
         # Join variable labels/concepts and clean them up
-        # TODO: Handle annotations as well
         dataframe = dataframe.merge(right=labels, how='left', on=['variable', 'year'])
-        dataframe = dataframe.loc[dataframe['label'].notnull()]
+        dataframe = dataframe.loc[dataframe['label'].notnull()]  # Drop rows without labels
         dataframe['label'] = dataframe['label'] \
             .str.replace('^Estimate!!', '') \
             .str.replace('!!', ' - ')
         dataframe['concept'] = dataframe['concept'].map(titlecase)
 
-        # Compute percent change and difference
+        # Join annotations
         dataframe['value'] = dataframe['value'].astype(float)
+        annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
+        annotations = pd.read_csv(annotations_csv, dtype={'value': float})
+        dataframe = dataframe.merge(annotations, how='left', left_on='value', right_on='value')
+        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
+
+        # Compute percent change and difference
         dataframe['percent_change'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
             .pct_change()
@@ -215,6 +220,7 @@ class Query:
             'variable': 'variable_code',
             'label': 'variable_label',
             'concept': 'variable_concept',
+            'annotation': 'annotation',
             'value': 'value',
             'percent_change': 'percent_change',
             'difference': 'difference'
@@ -353,13 +359,12 @@ class Query:
         # TODO: Expand dataset metadata: title, description, source link
         dataframe = self.run()
 
-        # Serialize points and polygons to WKT (avoids issue with three-dimensional geometry)
+        # Serialize polygons to WKT (avoids issue with three-dimensional geometry)
         def serialize_to_well_known_text(value):
             try:
                 return value.to_wkt()
             except AttributeError:
                 return value
-
         try:
             dataframe['geometry'] = dataframe['geometry'].map(serialize_to_well_known_text)
         except KeyError:

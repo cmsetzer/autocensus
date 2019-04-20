@@ -44,5 +44,6 @@ setup(
         'titlecase'
     ],
     tests_require=test_dependencies,
-    extras_require={'socrata': ['socrata-py'], 'test': test_dependencies}
+    extras_require={'socrata': ['socrata-py'], 'test': test_dependencies},
+    include_package_data=True
 )
