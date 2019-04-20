@@ -50,6 +50,28 @@ Output:
 
 [Census API key]: https://api.census.gov/data/key_signup.html
 
+## Other tables
+
+By default, autocensus queries the detailed tables of the ACS. If your variables are located in other tables, use the `table` keyword argument:
+
+```python
+query = Query(
+    estimate=5,
+    years=[2016, 2017],
+    variables=['DP03_0025E'],
+    for_geo='tract:*',
+    in_geo=['state:17', 'county:031'],
+    table='profile'
+)
+```
+
+autocensus will map the following table codes to their associated Census API endpoints:
+
+* Detailed tables: `detail`
+* Data profiles: `profile`
+* Subject tables: `subject`
+* Comparison profiles: `cprofile`
+
 ## Joining geospatial data
 
 At present, autocensus supports joining geospatial data for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For earlier years, you'll need to set the keyword arg `join_geography` to `False` when initializing your query:
