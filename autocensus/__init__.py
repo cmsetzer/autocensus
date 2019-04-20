@@ -115,7 +115,7 @@ class Query:
         ]
         logger.debug(f'Calling {url}')
         async with session.get(url, params=params) as response:
-            if response.status == 500:
+            if response.status != 200:
                 raise CensusAPIUnknownError(f'Request to Census API failed: {response.url}')
             logger.debug(f'{response.url} response: {response.status}')
             response_json = await response.json(content_type=None)
