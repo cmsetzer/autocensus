@@ -61,9 +61,6 @@ class Query:
         self.timeout = timeout
 
         # Can't programmatically grab shapefiles for years prior to 2013; not available
-        # TODO: Use 'points', 'geometry', 'all', None instead of True/False for join_geography
-        # TODO: Offer option (or default) to obtain TIGER/Line shapefiles for earlier (or all)
-        # years; simplify geometry using geopandas as desired
         if join_geography is True and min(years) < 2013:
             raise InvalidQueryError('Sorry, cannot join geography for years prior to 2013')
 
@@ -94,6 +91,7 @@ class Query:
 
     def build_census_api_url(self, year):
         """Build a Census API URL based on the supplied parameters."""
+        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
         table_route_mappings = {
             'detail': '',
             'profile': '/profile',
@@ -107,7 +105,6 @@ class Query:
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
     async def fetch_acs_data(self, session, year, chunk):
         """Fetch a Census API result set for the supplied parameters."""
-        # TODO: Use year, data tuples instead of inserting year column?
         url = self.build_census_api_url(year)
         params = [
             ('get', ','.join(['NAME', 'GEO_ID', *chunk])),  # get=NAME,B01003_001E
@@ -162,7 +159,7 @@ class Query:
 
     def assemble_dataframe(self, results):
         """Given results from the Census API, assemble a dataframe."""
-        # TODO: Break this function out into multiple other functions
+        # TODO: Refactor into multiple smaller functions
         # Split results into data and variables
         data = results[:-len(self.years)]
         labels = pd.concat(results[-len(self.years):]).rename(columns={'name': 'variable'})
@@ -182,6 +179,7 @@ class Query:
                 .melt(id_vars=id_vars) \
                 .drop(columns=geography_types)
             dataframes.append(subset)
+        # Must sort here for proper calculation of percent change and difference below
         dataframe = pd.concat(dataframes) \
             .sort_values(by=['variable', 'NAME', 'year']) \
             .reset_index(drop=True)
@@ -254,7 +252,7 @@ class Query:
 
         To work around geopandas/Fiona's limitations in opening zipped
         shapefiles, this downloads each shapefile to a temporary file on
-        on disk, reads it into a geopandas dataframe, then deletes the
+        disk, reads it into a geopandas dataframe, then deletes the
         temporary file.
         """
         url = self.build_census_geospatial_url(year)
@@ -315,7 +313,7 @@ class Query:
         """Collect ACS data for the given parameters in a dataframe."""
         results = asyncio.run(self.gather_results())
         dataframe = self.assemble_dataframe(results)
-        if self.join_geography in [True, 'all', 'points', 'geometry']:
+        if self.join_geography is True:
             dataframe = self.join_geospatial_data(dataframe)
         return dataframe
 
