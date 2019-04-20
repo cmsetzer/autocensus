@@ -1,1 +1,2 @@
 include autocensus/resources/annotations.csv
+include autocensus/resources/columns.csv

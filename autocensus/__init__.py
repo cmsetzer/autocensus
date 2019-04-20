@@ -1,7 +1,9 @@
 """Package for collecting ACS and geospatial data from the Census API."""
 
 import asyncio
+from functools import reduce
 from itertools import islice, product
+import json
 import logging
 import os
 from pkg_resources import resource_stream
@@ -341,24 +343,30 @@ class Query:
             raise MissingCredentialsError('No Socrata credentials found in local environment')
 
     def prepare_output_schema(self, output):
-        """Add column formatting for improved data display on Socrata."""
-        ok, output = output \
-            .change_column_metadata('year', 'format').to({'noCommas': True, 'align': 'left'}) \
-            .change_column_metadata('date', 'format').to({'view': 'date_y'}) \
-            .change_column_metadata('value', 'format').to({'precision': 1}) \
-            .change_column_metadata('percent_change', 'format').to({
-                'precision': 1,
-                'precisionStyle': 'percentage',
-                'percentScale': 1
-            }) \
-            .change_column_metadata('difference', 'format').to({'precision': 1}) \
-            .run()
-        return ok, output
+        """Add column metadata for improved data display on Socrata."""
+        columns = pd.read_csv(resource_stream(__name__, 'resources/columns.csv'))
+
+        # Filter out fields that aren't part of our output schema (e.g., geospatial fields)
+        field_names = [column['field_name'] for column in output.attributes['output_columns']]
+        columns = columns[columns['field_name'].isin(field_names)]
+
+        # Reduce output schema with all metadata changes and return
+        def change_column_metadata(prev, record):
+            value = json.loads(record['value']) if record['field'] == 'format' else record['value']
+            return prev.change_column_metadata(record['field_name'], record['field']).to(value)
+        output = reduce(change_column_metadata, columns.to_dict(orient='records'), output)
+        return output.run()
 
     def to_socrata(self, domain, *, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
-        # TODO: Use nice column names, add column metadata
         # TODO: Expand dataset metadata: title, description, source link
+        # TODO: Refactor into multiple smaller functions
+        try:
+            Socrata
+        except NameError:
+            message = 'socrata-py must be installed in order to publish to Socrata'
+            raise MissingDependencyError(message)
+
         dataframe = self.run()
 
         # Serialize polygons to WKT (avoids issue with three-dimensional geometry)
@@ -372,16 +380,10 @@ class Query:
         except KeyError:
             pass
 
-        # Look for Socrata credentials in environment
+        # Initialize client
         if auth is None:
             auth = self.collect_socrata_credentials_from_environment()
-
-        # Initialize client
-        try:
-            client = Socrata(Authorization(domain, *auth))
-        except NameError:
-            message = 'socrata-py must be installed in order to publish to Socrata'
-            raise MissingDependencyError(message)
+        client = Socrata(Authorization(domain, *auth))
 
         # Format dataset name
         if len(self.years) > 1:
