@@ -190,7 +190,14 @@ class Query:
         dataframe['label'] = dataframe['label'] \
             .str.replace('^Estimate!!', '') \
             .str.replace('!!', ' - ')
-        dataframe['concept'] = dataframe['concept'].map(titlecase)
+
+        # Title case for variable concept
+        def try_to_titleize(value):
+            try:
+                return titlecase(value)
+            except TypeError:
+                return value
+        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(try_to_titleize)
 
         # Join annotations
         dataframe['value'] = dataframe['value'].astype(float)
