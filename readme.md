@@ -16,7 +16,7 @@ autocensus requires Python 3.7 or higher. Install from this repository as follow
 pip install git+git://github.com/socrata/autocensus@master
 ```
 
-To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or the environment variable `CENSUS_API_KEY`.
+To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or by setting the environment variable `CENSUS_API_KEY`.
 
 ## Example
 
@@ -30,8 +30,8 @@ query = Query(
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
-    # The following line is unnecessary if you've set the environment variable CENSUS_API_KEY
-    census_api_key='d06df8713686672023952f10a85493de1ba24307'
+    # Fill in the following with your actual Census API key
+    census_api_key='Your Census API key'
 )
 
 # Run query and collect output in dataframe
