@@ -3,7 +3,6 @@
 import asyncio
 from functools import reduce
 from itertools import islice, product
-import json
 import logging
 import os
 from pkg_resources import resource_stream
@@ -12,15 +11,20 @@ from tempfile import NamedTemporaryFile
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 import geopandas as gpd
 import pandas as pd
-from shapely.geometry import MultiPolygon
 from tenacity import retry, stop_after_attempt, wait_random
-from titlecase import titlecase
 
 from .errors import (
     CensusAPIUnknownError,
     InvalidQueryError,
     MissingCredentialsError,
     MissingDependencyError
+)
+from .utilities import (
+    change_column_metadata,
+    coerce_polygon_to_multipolygon,
+    flatten_geometry,
+    serialize_to_wkt,
+    titleize_text
 )
 from . import topics  # noqa: F401
 
@@ -192,12 +196,7 @@ class Query:
             .str.replace('!!', ' - ')
 
         # Title case for variable concept
-        def try_to_titleize(value):
-            try:
-                return titlecase(value)
-            except TypeError:
-                return value
-        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(try_to_titleize)
+        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
 
         # Join annotations
         dataframe['value'] = dataframe['value'].astype(float)
@@ -291,12 +290,6 @@ class Query:
         results = asyncio.run(self.gather_geospatial_results())
         geo_dataframe = pd.concat(results, ignore_index=True)
 
-        def coerce_shape_to_multipolygon(shape):
-            if not isinstance(shape, MultiPolygon):
-                return MultiPolygon([shape])
-            else:
-                return shape
-
         # Get centroids
         geo_dataframe['centroid'] = geo_dataframe.centroid
         # Get internal points (guaranteed to be internal to shape)
@@ -304,7 +297,8 @@ class Query:
             .representative_point()
         # Coerce geometry to a series of MultiPolygons
         geo_dataframe['geometry'] = geo_dataframe['geometry'] \
-            .map(coerce_shape_to_multipolygon)
+            .map(coerce_polygon_to_multipolygon) \
+            .map(flatten_geometry)
 
         # Merge dataframes and return
         affgeoid_field = ({'AFFGEOID', 'AFFGEOID10'} & set(geo_dataframe.columns)).pop()
@@ -356,9 +350,6 @@ class Query:
         columns = columns[columns['field_name'].isin(field_names)]
 
         # Reduce output schema with all metadata changes and return
-        def change_column_metadata(prev, record):
-            value = json.loads(record['value']) if record['field'] == 'format' else record['value']
-            return prev.change_column_metadata(record['field_name'], record['field']).to(value)
         output = reduce(change_column_metadata, columns.to_dict(orient='records'), output)
         return output.run()
 
@@ -375,13 +366,8 @@ class Query:
         dataframe = self.run()
 
         # Serialize polygons to WKT (avoids issue with three-dimensional geometry)
-        def serialize_to_well_known_text(value):
-            try:
-                return value.to_wkt()
-            except AttributeError:
-                return value
         try:
-            dataframe['geometry'] = dataframe['geometry'].map(serialize_to_well_known_text)
+            dataframe['geometry'] = dataframe['geometry'].map(serialize_to_wkt)
         except KeyError:
             pass
 
