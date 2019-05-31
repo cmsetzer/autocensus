@@ -6,11 +6,6 @@ class CensusAPIUnknownError(RuntimeError):
     pass
 
 
-class InvalidQueryError(ValueError):
-    """Exception representing one or more invalid query parameters."""
-    pass
-
-
 class MissingCredentialsError(RuntimeError):
     """Exception indicating that API credentials are unavailable."""
     pass

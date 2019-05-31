@@ -15,7 +15,6 @@ from tenacity import retry, stop_after_attempt, wait_random
 
 from .errors import (
     CensusAPIUnknownError,
-    InvalidQueryError,
     MissingCredentialsError,
     MissingDependencyError
 )
@@ -63,10 +62,6 @@ class Query:
         self.join_geography = join_geography
         self.max_connections = max_connections
         self.timeout = timeout
-
-        # Can't programmatically grab shapefiles for years prior to 2013; not available
-        if join_geography is True and min(years) < 2013:
-            raise InvalidQueryError('Sorry, cannot join geography for years prior to 2013')
 
         # If API key is not explicitly supplied, look it up under environment variable
         if census_api_key is None:
@@ -280,7 +275,8 @@ class Query:
             timeout=ClientTimeout(self.timeout),
             connector=TCPConnector(limit=self.max_connections)
         ) as session:
-            for year in self.years:
+            years_2013_to_present = (year for year in self.years if year >= 2013)
+            for year in years_2013_to_present:
                 fetch_calls.append(self.fetch_geospatial_data(session, year))
             tasks = map(asyncio.create_task, fetch_calls)
             return await asyncio.gather(*tasks)

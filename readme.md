@@ -74,7 +74,9 @@ autocensus will map the following table codes to their associated Census API end
 
 ## Joining geospatial data
 
-At present, autocensus supports joining geospatial data for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For earlier years, you'll need to set the keyword arg `join_geography` to `False` when initializing your query:
+At present, autocensus supports automatically joining geospatial data (centroids, representative points, and geometry) for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For queries spanning earlier years, these geometry fields will be populated with null values.
+
+If you don't need geospatial data, set the keyword arg `join_geography` to `False` when initializing your query:
 
 ```python
 query = Query(
