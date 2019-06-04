@@ -349,9 +349,8 @@ class Query:
         output = reduce(change_column_metadata, columns.to_dict(orient='records'), output)
         return output.run()
 
-    def to_socrata(self, domain, *, auth=None, open_in_browser=True):
+    def to_socrata(self, domain, *, name=None, description=None, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
-        # TODO: Expand dataset metadata: title, description, source link
         # TODO: Refactor into multiple smaller functions
         try:
             Socrata
@@ -373,15 +372,20 @@ class Query:
         client = Socrata(Authorization(domain, *auth))
 
         # Format dataset name
-        if len(self.years) > 1:
-            years_range = '{}–{}'.format(min(self.years), max(self.years))
-        else:
-            years_range = self.years[0]
-        dataset_name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
+        if name is None:
+            if len(self.years) > 1:
+                years_range = '{}–{}'.format(min(self.years), max(self.years))
+            else:
+                years_range = self.years[0]
+            name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
 
         # Publish dataset on Socrata
         logger.debug('Creating draft dataset on Socrata')
-        revision, output = client.create(name=dataset_name).df(dataframe)
+        revision, output = client.create(
+            name=name,
+            description=description,
+            attributionLink='https://api.census.gov'
+        ).df(dataframe)
         ok, output = self.prepare_output_schema(output)
         logger.debug('Publishing dataset on Socrata')
         ok, job = revision.apply(output_schema=output)

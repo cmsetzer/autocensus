@@ -120,13 +120,19 @@ from autocensus import Query
 query = Query(
     estimate=5,
     years=range(2013, 2018),
-    variables=['B01002_001E', 'B03001_001E'],
-    for_geo='tract:*',
-    in_geo=['state:08', 'county:005']
+    variables=['DP03_0025E'],
+    for_geo='county:*',
+    in_geo=['state:08'],
+    table='profile'
 )
 
 # Run query and publish results to Socrata domain
-query.to_socrata('some-domain.data.socrata.com')
+query.to_socrata(
+    'some-domain.data.socrata.com',
+    # Optional keyword arguments: name, description
+    name='Average Commute Time by Colorado County, 2013–2017',
+    description='ACS data for mean commute time (in minutes) by Colorado county, 2013 to 2017.'
+)
 ```
 
 By default, autocensus will look up your Socrata credentials under the following pairs of common environment variables:
