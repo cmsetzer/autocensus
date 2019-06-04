@@ -74,6 +74,10 @@ class Query:
         else:
             self.census_api_key = census_api_key
 
+    @property
+    def years_with_geography(self):
+        return [year for year in self.years if year >= 2013 and self.join_geography is True]
+
     @classmethod
     def chunk_variables(cls, variables, max_size=48):
         """Given a series of variables, yield them in even chunks.
@@ -141,6 +145,45 @@ class Query:
             labels['year'] = year
             return labels
 
+    def build_census_geospatial_url(self, year):
+        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
+        """Build a Census shapefile URL based on the supplied parameters."""
+        for_geo_type, _ = self.for_geo.split(':')
+        in_geo = dict(pair.split(':') for pair in self.in_geo)
+        state_fips = in_geo.get('state', '')
+        prefix = 'shp/' if year > 2013 else ''
+        geo_code_mappings = {
+            'state': 'us_state',
+            'zip code tabulation area': 'us_zcta510',
+            'county': 'us_county',
+            'tract': f'{state_fips}_tract',
+            'place': f'{state_fips}_place'
+        }
+        geo_code = geo_code_mappings[for_geo_type]
+        url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
+        return url
+
+    @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
+    async def fetch_geospatial_data(self, session, year):
+        """Fetch a Census shapefile for the supplied parameters.
+
+        To work around geopandas/Fiona's limitations in opening zipped
+        shapefiles, this downloads each shapefile to a temporary file on
+        disk, reads it into a geopandas dataframe, then deletes the
+        temporary file.
+        """
+        url = self.build_census_geospatial_url(year)
+        with NamedTemporaryFile(suffix='.zip') as temporary_file:
+            logger.debug(f'Calling {url}')
+            async with session.get(url) as response:
+                logger.debug(f'{response.url} response: {response.status}')
+                temporary_file.write(await response.read())
+            # Temporarily set environment variable to avoid showing needless vsizip recode warnings
+            os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
+            subset = gpd.read_file(f'zip://{temporary_file.name}')
+            subset['year'] = year
+            return subset
+
     async def gather_results(self):
         """Gather calls to the Census API so they can be run at once."""
         fetch_calls = []
@@ -154,6 +197,8 @@ class Query:
                 fetch_calls.append(self.fetch_acs_data(session, year, chunk))
             for year in self.years:
                 fetch_calls.append(self.fetch_acs_variable_labels(session, year))
+            for year in self.years_with_geography:
+                fetch_calls.append(self.fetch_geospatial_data(session, year))
             tasks = map(asyncio.create_task, fetch_calls)
             return await asyncio.gather(*tasks)
 
@@ -179,12 +224,37 @@ class Query:
         dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
         return dataframe
 
+    def join_geospatial(self, dataframe, geo_dataframe):
+        """Given ACS data, join rows to geospatial points/boundaries."""
+        # Get centroids
+        geo_dataframe['centroid'] = geo_dataframe.centroid
+        # Get internal points (guaranteed to be internal to shape)
+        geo_dataframe['internal_point'] = geo_dataframe['geometry'] \
+            .representative_point()
+        # Coerce geometry to a series of MultiPolygons
+        geo_dataframe['geometry'] = geo_dataframe['geometry'] \
+            .map(coerce_polygon_to_multipolygon) \
+            .map(flatten_geometry)
+
+        # Merge dataframes and return
+        affgeoid_field = ({'AFFGEOID', 'AFFGEOID10'} & set(geo_dataframe.columns)).pop()
+        merged = dataframe.merge(
+            geo_dataframe[[affgeoid_field, 'year', 'centroid', 'internal_point', 'geometry']],
+            how='left',
+            left_on=['geo_id', 'year'],
+            right_on=[affgeoid_field, 'year']
+        ).drop(columns=affgeoid_field)
+        return merged
+
     def assemble_dataframe(self, results):
         """Given results from the Census API, assemble a dataframe."""
         # TODO: Refactor into multiple smaller functions
-        # Split results into data and variables
-        data = results[:-len(self.years)]
-        labels = pd.concat(results[-len(self.years):]).rename(columns={'name': 'variable'})
+        # Split results into data, variable labels
+        geospatial_index = len(results) - len(self.years_with_geography)
+        labels_index = geospatial_index - len(self.years)
+        data = results[:labels_index]
+        labels = results[labels_index:geospatial_index]
+        labels_dataframe = pd.concat(labels).rename(columns={'name': 'variable'})
 
         # Get list of geography types
         for_geo_type = self.for_geo.split(':')[0]
@@ -239,91 +309,18 @@ class Query:
         dataframe = dataframe.rename(columns=columns)
         dataframe = dataframe[columns.values()]
 
+        # Join geospatial data
+        if self.join_geography is True:
+            geospatial_data = results[-len(self.years_with_geography):]
+            geo_dataframe = pd.concat(geospatial_data, ignore_index=True)
+            dataframe = self.join_geospatial(dataframe, geo_dataframe)
+
         return dataframe
-
-    def build_census_geospatial_url(self, year):
-        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
-        """Build a Census shapefile URL based on the supplied parameters."""
-        for_geo_type, _ = self.for_geo.split(':')
-        in_geo = dict(pair.split(':') for pair in self.in_geo)
-        state_fips = in_geo.get('state', '')
-        prefix = 'shp/' if year > 2013 else ''
-        geo_code_mappings = {
-            'state': 'us_state',
-            'zip code tabulation area': 'us_zcta510',
-            'county': 'us_county',
-            'tract': f'{state_fips}_tract',
-            'place': f'{state_fips}_place'
-        }
-        geo_code = geo_code_mappings[for_geo_type]
-        url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
-        return url
-
-    @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
-    async def fetch_geospatial_data(self, session, year):
-        """Fetch a Census shapefile for the supplied parameters.
-
-        To work around geopandas/Fiona's limitations in opening zipped
-        shapefiles, this downloads each shapefile to a temporary file on
-        disk, reads it into a geopandas dataframe, then deletes the
-        temporary file.
-        """
-        url = self.build_census_geospatial_url(year)
-        with NamedTemporaryFile(suffix='.zip') as temporary_file:
-            logger.debug(f'Calling {url}')
-            async with session.get(url) as response:
-                logger.debug(f'{response.url} response: {response.status}')
-                temporary_file.write(await response.read())
-            # Temporarily set environment variable to avoid showing needless vsizip recode warnings
-            os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
-            subset = gpd.read_file(f'zip://{temporary_file.name}')
-            subset['year'] = year
-            return subset
-
-    async def gather_geospatial_results(self):
-        """Gather calls for shapefiles so they can be run at once."""
-        fetch_calls = []
-        async with ClientSession(
-            timeout=ClientTimeout(self.timeout),
-            connector=TCPConnector(limit=self.max_connections)
-        ) as session:
-            years_2013_to_present = (year for year in self.years if year >= 2013)
-            for year in years_2013_to_present:
-                fetch_calls.append(self.fetch_geospatial_data(session, year))
-            tasks = map(asyncio.create_task, fetch_calls)
-            return await asyncio.gather(*tasks)
-
-    def join_geospatial_data(self, dataframe):
-        """Given ACS data, join rows to geospatial points/boundaries."""
-        results = asyncio.run(self.gather_geospatial_results())
-        geo_dataframe = pd.concat(results, ignore_index=True)
-
-        # Get centroids
-        geo_dataframe['centroid'] = geo_dataframe.centroid
-        # Get internal points (guaranteed to be internal to shape)
-        geo_dataframe['internal_point'] = geo_dataframe['geometry'] \
-            .representative_point()
-        # Coerce geometry to a series of MultiPolygons
-        geo_dataframe['geometry'] = geo_dataframe['geometry'] \
-            .map(coerce_polygon_to_multipolygon) \
-            .map(flatten_geometry)
-
-        # Merge dataframes and return
-        affgeoid_field = ({'AFFGEOID', 'AFFGEOID10'} & set(geo_dataframe.columns)).pop()
-        merged = dataframe.merge(
-            geo_dataframe[[affgeoid_field, 'year', 'centroid', 'internal_point', 'geometry']],
-            how='left',
-            left_on=['geo_id', 'year'],
-            right_on=[affgeoid_field, 'year']
-        ).drop(columns=affgeoid_field)
-        return merged
 
     def run(self):
         """Collect ACS data for the given parameters in a dataframe."""
         results = asyncio.run(self.gather_results())
         dataframe = self.assemble_dataframe(results)
-        if self.join_geography is True:
-            dataframe = self.join_geospatial_data(dataframe)
         return dataframe
 
     def collect_socrata_credentials_from_environment(self):
