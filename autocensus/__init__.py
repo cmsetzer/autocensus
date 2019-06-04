@@ -157,6 +157,28 @@ class Query:
             tasks = map(asyncio.create_task, fetch_calls)
             return await asyncio.gather(*tasks)
 
+    def join_labels(self, dataframe, labels_dataframe):
+        """Join data to variable labels/concepts and clean them up."""
+        dataframe = dataframe.merge(right=labels_dataframe, how='left', on=['variable', 'year'])
+        dataframe = dataframe.loc[dataframe['label'].notnull()]  # Drop rows without labels
+
+        # Clean up
+        dataframe['label'] = dataframe['label'] \
+            .str.replace('^Estimate!!', '') \
+            .str.replace('!!', ' - ')
+        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
+
+        return dataframe
+
+    def join_annotations(self, dataframe):
+        """Join data to ACS annotations for specific flagged values."""
+        dataframe['value'] = dataframe['value'].astype(float)
+        annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
+        annotations = pd.read_csv(annotations_csv, dtype={'value': float})
+        dataframe = dataframe.merge(annotations, how='left', left_on='value', right_on='value')
+        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
+        return dataframe
+
     def assemble_dataframe(self, results):
         """Given results from the Census API, assemble a dataframe."""
         # TODO: Refactor into multiple smaller functions
@@ -184,22 +206,9 @@ class Query:
             .sort_values(by=['variable', 'NAME', 'year']) \
             .reset_index(drop=True)
 
-        # Join variable labels/concepts and clean them up
-        dataframe = dataframe.merge(right=labels, how='left', on=['variable', 'year'])
-        dataframe = dataframe.loc[dataframe['label'].notnull()]  # Drop rows without labels
-        dataframe['label'] = dataframe['label'] \
-            .str.replace('^Estimate!!', '') \
-            .str.replace('!!', ' - ')
-
-        # Title case for variable concept
-        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
-
-        # Join annotations
-        dataframe['value'] = dataframe['value'].astype(float)
-        annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
-        annotations = pd.read_csv(annotations_csv, dtype={'value': float})
-        dataframe = dataframe.merge(annotations, how='left', left_on='value', right_on='value')
-        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
+        # Join label and annotation data
+        dataframe = self.join_labels(dataframe, labels_dataframe)
+        dataframe = self.join_annotations(dataframe)
 
         # Compute percent change and difference
         dataframe['percent_change'] = dataframe \
