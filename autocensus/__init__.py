@@ -69,6 +69,8 @@ class Query:
                 self.census_api_key = os.environ['CENSUS_API_KEY']
             except KeyError:
                 raise MissingCredentialsError('No Census API key found in local environment')
+        elif census_api_key == 'Your Census API key':
+            raise MissingCredentialsError('A valid Census API key is required')
         else:
             self.census_api_key = census_api_key
 
@@ -90,7 +92,6 @@ class Query:
 
     def build_census_api_url(self, year):
         """Build a Census API URL based on the supplied parameters."""
-        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
         table_route_mappings = {
             'detail': '',
             'profile': '/profile',
@@ -232,6 +233,7 @@ class Query:
         return dataframe
 
     def build_census_geospatial_url(self, year):
+        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
         """Build a Census shapefile URL based on the supplied parameters."""
         for_geo_type, _ = self.for_geo.split(':')
         in_geo = dict(pair.split(':') for pair in self.in_geo)
@@ -248,6 +250,7 @@ class Query:
         url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
         return url
 
+    @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
     async def fetch_geospatial_data(self, session, year):
         """Fetch a Census shapefile for the supplied parameters.
 

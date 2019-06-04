@@ -4,18 +4,6 @@ import pandas as pd
 import pytest
 
 from autocensus import Query
-from autocensus.errors import InvalidQueryError
-
-
-def test_join_geography_with_year_prior_to_2013():
-    with pytest.raises(InvalidQueryError):
-        Query(
-            estimate=5,
-            years=range(2012, 2014),
-            variables=['B01002_001E'],
-            for_geo='state:*',
-            join_geography=True
-        )
 
 
 def test_chunk_variables():
