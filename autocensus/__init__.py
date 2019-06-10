@@ -76,7 +76,18 @@ class Query:
             self.census_api_key = census_api_key
 
     @property
+    def query_name(self):
+        """Produce a nicely formatted query name."""
+        if len(self.years) > 1:
+            years_range = '{}–{}'.format(min(self.years), max(self.years))
+        else:
+            years_range = self.years[0]
+        name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
+        return name
+
+    @property
     def years_with_geography(self):
+        """Select years for which geography should be obtained."""
         return [year for year in self.years if year >= 2013 and self.join_geography is True]
 
     @classmethod
@@ -359,7 +370,36 @@ class Query:
         output = reduce(change_column_metadata, columns.to_dict(orient='records'), output)
         return output.run()
 
-    def to_socrata(self, domain, *, name=None, description=None, auth=None, open_in_browser=True):
+    def create_new_dataset(self, client, dataframe, name):
+        """Create and publish a dataframe as a new Socrata dataset."""
+        revision, output = client.create(
+            name=name if name is not None else self.query_name,
+            attributionLink='https://api.census.gov'
+        ).df(dataframe)
+        ok, output = self.prepare_output_schema(output)
+        logger.debug('Publishing dataset on Socrata')
+        ok, job = revision.apply(output_schema=output)
+        if ok is True:
+            logger.debug(f'Dataset published to {revision.ui_url()}')
+        else:
+            logger.error(f'Failed to publish dataset')
+        return revision
+
+    def update_existing_dataset(self, client, dataframe, dataset_id):
+        """Use a dataframe to update an existing Socrata dataset."""
+        ok, view = client.views.lookup(dataset_id)
+        ok, revision = view.revisions.create_replace_revision()
+        ok, upload = revision.create_upload('autocensus-update')
+        ok, source = upload.df(dataframe)
+        output = source.get_latest_input_schema().get_latest_output_schema()
+        ok, job = revision.apply(output_schema=output)
+        if ok is True:
+            logger.debug(f'Dataset published to {revision.ui_url()}')
+        else:
+            logger.error(f'Failed to publish dataset')
+        return revision
+
+    def to_socrata(self, domain, *, dataset_id=None, name=None, auth=None, open_in_browser=True):
         """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Refactor into multiple smaller functions
         try:
@@ -381,28 +421,13 @@ class Query:
             auth = self.collect_socrata_credentials_from_environment()
         client = Socrata(Authorization(domain, *auth))
 
-        # Format dataset name
-        if name is None:
-            if len(self.years) > 1:
-                years_range = '{}–{}'.format(min(self.years), max(self.years))
-            else:
-                years_range = self.years[0]
-            name = f'American Community Survey {self.estimate}-Year Estimates, {years_range}'
-
-        # Publish dataset on Socrata
-        logger.debug('Creating draft dataset on Socrata')
-        revision, output = client.create(
-            name=name,
-            description=description,
-            attributionLink='https://api.census.gov'
-        ).df(dataframe)
-        ok, output = self.prepare_output_schema(output)
-        logger.debug('Publishing dataset on Socrata')
-        ok, job = revision.apply(output_schema=output)
-        if ok is True:
-            logger.debug(f'Dataset published to {revision.ui_url()}')
+        # If no 4x4 was supplied, create a new dataset
+        logger.debug('Creating draft on Socrata')
+        if dataset_id is None:
+            revision = self.create_new_dataset(client, dataframe, name)
+        # Otherwise, update an existing dataset
         else:
-            logger.error(f'Failed to publish dataset')
+            revision = self.update_existing_dataset(client, dataframe, dataset_id)
 
         # Return URL
         if open_in_browser is True:

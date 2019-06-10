@@ -89,6 +89,58 @@ query = Query(
 )
 ```
 
+## Publishing to Socrata
+
+If [socrata-py] is installed, you can publish query results directly to Socrata.
+
+By default, autocensus will look up your Socrata credentials under the following pairs of common environment variables:
+
+* `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
+* `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
+* `MY_SOCRATA_USERNAME`, `MY_SOCRATA_PASSWORD`
+* `SODA_USERNAME`, `SODA_PASSWORD`
+
+As an alternative, you may supply credentials explicitly by way of the `auth` keyword argument:
+
+```python
+auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
+query.to_socrata('some-domain.data.socrata.com', auth=auth)
+```
+
+[socrata-py]: https://github.com/socrata/socrata-py
+
+### Create a new dataset
+
+```python
+from autocensus import Query
+
+# Configure query
+query = Query(
+    estimate=5,
+    years=range(2013, 2018),
+    variables=['DP03_0025E'],
+    for_geo='county:*',
+    in_geo=['state:08'],
+    table='profile'
+)
+
+# Run query and publish results as a new dataset on Socrata domain
+query.to_socrata(
+    'some-domain.data.socrata.com',
+    name='Average Commute Time by Colorado County, 2013–2017'  # Optional
+)
+```
+
+### Replace rows in an existing dataset
+
+```python
+# Run query and publish results to an existing dataset on Socrata domain
+query.to_socrata(
+    'some-domain.data.socrata.com',
+    dataset_id='xxxx-xxxx'
+)
+```
+
 ## Topics
 
 autocensus is packaged with some pre-built lists of pertinent ACS variables around topics like race, education, and housing. These live within the `autocensus.topics` module:
@@ -108,48 +160,6 @@ query = Query(
 ```
 
 Topics currently included are `population`, `race`, `education`, `income`, and `housing`.
-
-## Publishing to Socrata
-
-If [socrata-py] is installed, you can publish to Socrata like so:
-
-```python
-from autocensus import Query
-
-# Configure query
-query = Query(
-    estimate=5,
-    years=range(2013, 2018),
-    variables=['DP03_0025E'],
-    for_geo='county:*',
-    in_geo=['state:08'],
-    table='profile'
-)
-
-# Run query and publish results to Socrata domain
-query.to_socrata(
-    'some-domain.data.socrata.com',
-    # Optional keyword arguments: name, description
-    name='Average Commute Time by Colorado County, 2013–2017',
-    description='ACS data for mean commute time (in minutes) by Colorado county, 2013 to 2017.'
-)
-```
-
-By default, autocensus will look up your Socrata credentials under the following pairs of common environment variables:
-
-* `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
-* `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
-* `MY_SOCRATA_USERNAME`, `MY_SOCRATA_PASSWORD`
-* `SODA_USERNAME`, `SODA_PASSWORD`
-
-As an alternative, you may supply credentials explicitly by way of the `auth` keyword argument:
-
-```python
-auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
-query.to_socrata('some-domain.data.socrata.com', auth=auth)
-```
-
-[socrata-py]: https://github.com/socrata/socrata-py
 
 ## Tests
 
