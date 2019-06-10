@@ -70,7 +70,8 @@ class Query:
             except KeyError:
                 raise MissingCredentialsError('No Census API key found in local environment')
         elif census_api_key == 'Your Census API key':
-            raise MissingCredentialsError('A valid Census API key is required')
+            census_api_url = 'https://www.census.gov/developers'
+            raise MissingCredentialsError(f'A valid Census API key is required: {census_api_url}')
         else:
             self.census_api_key = census_api_key
 
