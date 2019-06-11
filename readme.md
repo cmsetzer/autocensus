@@ -10,10 +10,10 @@ This package is under active development and breaking changes to its API are exp
 
 ## Installation
 
-autocensus requires Python 3.7 or higher. Install from this repository as follows:
+autocensus requires Python 3.7 or higher. Install as follows:
 
 ```sh
-pip install git+git://github.com/socrata/autocensus@master
+pip install autocensus
 ```
 
 To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or by setting the environment variable `CENSUS_API_KEY`.
