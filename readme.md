@@ -91,16 +91,14 @@ query = Query(
 
 ## Publishing to Socrata
 
-If [socrata-py] is installed, you can publish query results directly to Socrata.
-
-By default, autocensus will look up your Socrata credentials under the following pairs of common environment variables:
+If [socrata-py] is installed, you can publish query results directly to Socrata. You must have a Socrata account with publishing permissions on the domain to which you are publishing data. By default, autocensus will look up your Socrata account credentials under the following pairs of common environment variables:
 
 * `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
 * `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
 * `MY_SOCRATA_USERNAME`, `MY_SOCRATA_PASSWORD`
 * `SODA_USERNAME`, `SODA_PASSWORD`
 
-As an alternative, you may supply credentials explicitly by way of the `auth` keyword argument:
+Alternatively, you can supply credentials explicitly by way of the `auth` keyword argument:
 
 ```python
 auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
