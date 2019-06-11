@@ -26,7 +26,7 @@ from autocensus import Query
 # Configure query
 query = Query(
     estimate=5,
-    years=range(2014, 2018),
+    years=[2014, 2015, 2016, 2017],
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
@@ -74,14 +74,14 @@ autocensus will map the following table codes to their associated Census API end
 
 ## Joining geospatial data
 
-At present, autocensus supports automatically joining geospatial data (centroids, representative points, and geometry) for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For queries spanning earlier years, these geometry fields will be populated with null values.
+autocensus will automatically join geospatial data (centroids, representative points, and geometry) for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For queries spanning earlier years, these geometry fields will be populated with null values. (Census boundary shapefiles are not available for years prior to 2013.)
 
 If you don't need geospatial data, set the keyword arg `join_geography` to `False` when initializing your query:
 
 ```python
 query = Query(
     estimate=5,
-    years=range(2011, 2018),
+    years=[2011, 2012, 2013, 2014, 2015, 2016, 2017],
     variables=['B01002_001E', 'B03001_001E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
@@ -89,9 +89,17 @@ query = Query(
 )
 ```
 
+If `join_geography` is `False`, the `centroid`, `internal_point`, and `geometry` columns will not be included in your results.
+
 ## Publishing to Socrata
 
-If [socrata-py] is installed, you can publish query results directly to Socrata. You must have a Socrata account with publishing permissions on the domain to which you are publishing data. By default, autocensus will look up your Socrata account credentials under the following pairs of common environment variables:
+If [socrata-py] is installed, you can publish query results directly to Socrata via the method `Query.to_socrata`.
+
+[socrata-py]: https://github.com/socrata/socrata-py
+
+### Credentials
+
+You must have a Socrata account with appropriate permissions on the domain to which you are publishing. By default, autocensus will look up your Socrata account credentials under the following pairs of common environment variables:
 
 * `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
 * `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
@@ -102,12 +110,13 @@ Alternatively, you can supply credentials explicitly by way of the `auth` keywor
 
 ```python
 auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
-query.to_socrata('some-domain.data.socrata.com', auth=auth)
+query.to_socrata(
+    'some-domain.data.socrata.com',
+    auth=auth
+)
 ```
 
-[socrata-py]: https://github.com/socrata/socrata-py
-
-### Create a new dataset
+### Example: Create a new dataset
 
 ```python
 from autocensus import Query
@@ -129,7 +138,7 @@ query.to_socrata(
 )
 ```
 
-### Replace rows in an existing dataset
+### Example: Replace rows in an existing dataset
 
 ```python
 # Run query and publish results to an existing dataset on Socrata domain
@@ -149,15 +158,15 @@ from autocensus import Query
 
 query = Query(
     estimate=5,
-    years=range(2013, 2018),
-    # Housing variables: B25064_001E, B25035_001E, B25077_001E
+    years=[2013, 2014, 2015, 2016, 2017],
+    # Housing variables: B25035_001E, B25064_001E, B25077_001E
     variables=autocensus.topics.housing,
     for_geo='tract:*',
     in_geo=['state:08', 'county:005']
 )
 ```
 
-Topics currently included are `population`, `race`, `education`, `income`, and `housing`.
+Topics currently included with autocensus are `population`, `race`, `education`, `income`, and `housing`.
 
 ## Tests
 

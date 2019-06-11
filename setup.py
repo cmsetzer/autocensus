@@ -26,10 +26,13 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/socrata/autocensus',
     author='Christopher Setzer',
+    author_email='chris.setzer@socrata.com',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.7'
     ],
     keywords='census acs api open data socrata',
@@ -39,7 +42,7 @@ setup(
         'aiohttp',
         'geopandas',
         'pandas~=0.24.1',
-        'shapely',
+        'Shapely',
         'tenacity',
         'titlecase'
     ],
