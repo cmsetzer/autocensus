@@ -168,6 +168,31 @@ query = Query(
 
 Topics currently included with autocensus are `population`, `race`, `education`, `income`, and `housing`.
 
+## Known issues
+
+### SSL errors
+
+Some users report errors like the following when querying the Census API:
+
+```
+SSL handshake failed on verifying the certificate
+protocol: <asyncio.sslproto.SSLProtocol object at 0x11f805ac8>
+transport: <_SelectorSocketTransport fd=11 read=polling write=<idle, bufsize=0>>
+```
+
+To disable SSL verification, specify `verify_ssl=False` when initializing your `Query`:
+
+```python
+query = Query(
+    estimate=5,
+    years=[2014, 2015, 2016, 2017],
+    variables=['B01002_001E', 'B03001_001E'],
+    for_geo='tract:*',
+    in_geo=['state:08', 'county:005'],
+    verify_ssl=False
+)
+```
+
 ## Tests
 
 Use [pytest] to run the test suite:
