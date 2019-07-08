@@ -51,6 +51,7 @@ class Query:
         join_geography=True,   # True; False
         max_connections=50,    # Concurrent connections
         timeout=120,           # Seconds
+        verify_ssl=True,       # Verify SSL in aiohttp session
         census_api_key=None    # Census API key
     ):
         self.years = [years] if isinstance(years, int) else years
@@ -61,6 +62,7 @@ class Query:
         self.table = table
         self.join_geography = join_geography
         self.max_connections = max_connections
+        self.verify_ssl = verify_ssl
         self.timeout = timeout
 
         # If API key is not explicitly supplied, look it up under environment variable
@@ -203,7 +205,7 @@ class Query:
         chunks_by_year = product(chunks, self.years)
         async with ClientSession(
             timeout=ClientTimeout(self.timeout),
-            connector=TCPConnector(limit=self.max_connections)
+            connector=TCPConnector(limit=self.max_connections, verify_ssl=self.verify_ssl)
         ) as session:
             for chunk, year in chunks_by_year:
                 fetch_calls.append(self.fetch_acs_data(session, year, chunk))
