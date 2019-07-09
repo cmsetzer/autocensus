@@ -1,4 +1,5 @@
 aiohttp==3.5.4
+appdirs==1.4.3
 async-timeout==3.0.1
 attrs==19.1.0
 chardet==3.0.4
@@ -12,7 +13,7 @@ multidict==4.5.2
 munch==2.3.2
 numpy==1.16.4
 pandas==0.24.2
-pyproj==2.2.0
+pyproj==2.2.1
 python-dateutil==2.8.0
 pytz==2019.1
 Shapely==1.6.4.post2

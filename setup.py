@@ -40,6 +40,7 @@ setup(
     python_requires='~=3.7',
     install_requires=[
         'aiohttp',
+        'appdirs',
         'geopandas',
         'pandas~=0.24.1',
         'Shapely',

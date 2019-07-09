@@ -91,6 +91,12 @@ query = Query(
 
 If `join_geography` is `False`, the `centroid`, `internal_point`, and `geometry` columns will not be included in your results.
 
+To improve performance across queries, autocensus caches shapefiles on disk by default. The cache location varies by platform:
+
+* Linux: `/home/{username}/.cache/autocensus`
+* Mac: `/Users/{username}/Library/Application Support/Caches/autocensus`
+* Windows: `C:\\Users\\{username}\\AppData\\Local\\socrata\\autocensus`
+
 ## Publishing to Socrata
 
 If [socrata-py] is installed, you can publish query results directly to Socrata via the method `Query.to_socrata`.
