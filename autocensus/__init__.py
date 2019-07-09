@@ -6,7 +6,9 @@ from itertools import islice, product
 import logging
 import os
 from pkg_resources import resource_stream
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile # may be able to remove
+import urllib.request # new dependency
+import appdirs # new dependency
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 import geopandas as gpd
@@ -33,6 +35,13 @@ try:
     from socrata.authorization import Authorization
 except ImportError:
     pass
+
+# directory settings and creation for appdirs
+appname = 'autocensus'
+appauthor = 'socrata_AE'
+data_dir = appdirs.user_data_dir(appname, appauthor)
+if not os.path.isdir(data_dir):
+    os.mkdir(data_dir)
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -178,25 +187,27 @@ class Query:
         return url
 
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
+
     async def fetch_geospatial_data(self, session, year):
         """Fetch a Census shapefile for the supplied parameters.
 
         To work around geopandas/Fiona's limitations in opening zipped
-        shapefiles, this downloads each shapefile to a temporary file on
-        disk, reads it into a geopandas dataframe, then deletes the
-        temporary file.
+        shapefiles from URL, this downloads each shapefile to a file on
+        disk defined by the appdirs library and reads it into a geopandas dataframe.
+
+        NOTES:
+        1. not async
+        2. method of pointing download to data_dir may be suboptimal
         """
         url = self.build_census_geospatial_url(year)
-        with NamedTemporaryFile(suffix='.zip') as temporary_file:
-            logger.debug(f'Calling {url}')
-            async with session.get(url) as response:
-                logger.debug(f'{response.url} response: {response.status}')
-                temporary_file.write(await response.read())
-            # Temporarily set environment variable to avoid showing needless vsizip recode warnings
+        dir = data_dir+'/' # may be a better way to specify directory than appending slashes...temporarily chdir?
+        filename = dir+url.replace('https://www2.census.gov/','').replace('/','_')
+        if not os.path.isfile(filename):
+            urllib.request.urlretrieve(url,filename)
             os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
-            subset = gpd.read_file(f'zip://{temporary_file.name}')
-            subset['year'] = year
-            return subset
+        subset = gpd.read_file(f'zip://{filename}')
+        subset['year'] = year
+        return subset
 
     async def gather_results(self):
         """Gather calls to the Census API so they can be run at once."""
