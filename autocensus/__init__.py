@@ -5,12 +5,11 @@ from functools import reduce
 from itertools import islice, product
 import logging
 import os
+from pathlib import Path
 from pkg_resources import resource_stream
-from tempfile import NamedTemporaryFile # may be able to remove
-import urllib.request # new dependency
-import appdirs # new dependency
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
+from appdirs import user_cache_dir
 import geopandas as gpd
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_random
@@ -35,13 +34,6 @@ try:
     from socrata.authorization import Authorization
 except ImportError:
     pass
-
-# directory settings and creation for appdirs
-appname = 'autocensus'
-appauthor = 'socrata_AE'
-data_dir = appdirs.user_data_dir(appname, appauthor)
-if not os.path.isdir(data_dir):
-    os.mkdir(data_dir)
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -85,6 +77,10 @@ class Query:
             raise MissingCredentialsError(f'A valid Census API key is required: {census_api_url}')
         else:
             self.census_api_key = census_api_key
+
+        # Create cache directory if it doesn't exist
+        self.cache_directory_path = Path(user_cache_dir('autocensus', 'socrata'))
+        self.cache_directory_path.mkdir(exist_ok=True)
 
     @property
     def query_name(self):
@@ -187,25 +183,25 @@ class Query:
         return url
 
     @retry(stop=stop_after_attempt(5), wait=wait_random(min=1, max=5))
-
     async def fetch_geospatial_data(self, session, year):
         """Fetch a Census shapefile for the supplied parameters.
 
-        To work around geopandas/Fiona's limitations in opening zipped
-        shapefiles from URL, this downloads each shapefile to a file on
-        disk defined by the appdirs library and reads it into a geopandas dataframe.
-
-        NOTES:
-        1. not async
-        2. method of pointing download to data_dir may be suboptimal
+        Downloads each shapefile to a cache directory and reads it into
+        a geopandas dataframe.
         """
         url = self.build_census_geospatial_url(year)
-        dir = data_dir+'/' # may be a better way to specify directory than appending slashes...temporarily chdir?
-        filename = dir+url.replace('https://www2.census.gov/','').replace('/','_')
-        if not os.path.isfile(filename):
-            urllib.request.urlretrieve(url,filename)
-            os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
-        subset = gpd.read_file(f'zip://{filename}')
+        _, filename = url.rsplit('/', maxsplit=1)
+        cached_filepath = self.cache_directory_path.joinpath(filename)
+        if not cached_filepath.exists():
+            with open(cached_filepath, 'wb') as cached_file:
+                async with session.get(url) as response:
+                    logger.debug(f'{response.url} response: {response.status}')
+                    response_bytes = await response.read()
+                cached_file.write(response_bytes)
+        else:
+            logger.debug(f'Reading {filename} from cache on disk: {cached_filepath}')
+        os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
+        subset = gpd.read_file(f'zip://{cached_filepath}')
         subset['year'] = year
         return subset
 
