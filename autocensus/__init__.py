@@ -175,6 +175,7 @@ class Query:
             'state': 'us_state',
             'zip code tabulation area': 'us_zcta510',
             'county': 'us_county',
+            'metropolitan statistical area/micropolitan statistical area': 'us_cbsa',
             'tract': f'{state_fips}_tract',
             'place': f'{state_fips}_place'
         }
