@@ -74,7 +74,32 @@ autocensus will map the following table codes to their associated Census API end
 
 ## Joining geospatial data
 
-autocensus will automatically join geospatial data (centroids, representative points, and geometry) for the geography types `state`, `county`, `zip code tabulation area`, `tract`, and `place` for years 2013 and on. For queries spanning earlier years, these geometry fields will be populated with null values. (Census boundary shapefiles are not available for years prior to 2013.)
+autocensus will automatically join geospatial data (centroids, representative points, and geometry) for the following geography types for years 2013 and on:
+
+* Nation-level
+  + `nation`
+  + `region`
+  + `division`
+  + `state`
+  + `urban area`
+  + `zip code tabulation area`
+  + `county`
+  + `congressional district`
+  + `metropolitan statistical area/micropolitan statistical area`
+  + `combined statistical area`
+  + `american indian area/alaska native area/hawaiian home land`
+  + `new england city and town area`
+* State-level
+  + `alaska native regional corporation`
+  + `block group`
+  + `county subdivision`
+  + `tract`
+  + `place`
+  + `public use microdata area`
+  + `state legislative district (upper chamber)`
+  + `state legislative district (lower chamber)`
+
+For queries spanning earlier years, these geometry fields will be populated with null values. (Census boundary shapefiles are not available for years prior to 2013.)
 
 If you don't need geospatial data, set the keyword arg `join_geography` to `False` when initializing your query:
 
@@ -90,6 +115,8 @@ query = Query(
 ```
 
 If `join_geography` is `False`, the `centroid`, `internal_point`, and `geometry` columns will not be included in your results.
+
+### Caching
 
 To improve performance across queries, autocensus caches shapefiles on disk by default. The cache location varies by platform:
 

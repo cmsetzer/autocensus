@@ -2,6 +2,7 @@
 
 from functools import wraps
 import json
+import math
 
 from shapely.geometry import MultiPolygon, Polygon
 from titlecase import titlecase
@@ -21,6 +22,48 @@ def forgive(*exceptions):
                 return value
         return wrapped
     return decorator
+
+
+def calculate_congress_for_year(year):
+    """Given a year, calculate the number of the U.S. Congress."""
+    congress = math.ceil((year - 1789) / 2) + 1
+    return congress
+
+
+def determine_geo_code(year, for_geo_type, state_fips):
+    """Determine the shapefile naming code for a given geography."""
+    if for_geo_type == 'congressional district':
+        congress = calculate_congress_for_year(year)
+    else:
+        congress = None
+    geo_code_mappings = {
+        # National geographies
+        'nation': 'us_nation',
+        'region': 'us_region',
+        'division': 'us_division',
+        'state': 'us_state',
+        'urban area': 'us_ua10',
+        'zip code tabulation area': 'us_zcta510',
+        'county': 'us_county',
+        'congressional district': f'us_cd{congress}',
+        'metropolitan statistical area/micropolitan statistical area': 'us_cbsa',
+        'combined statistical area': 'us_csa',
+        'american indian area/alaska native area/hawaiian home land': 'us_aiannh',
+        'new england city and town area': 'us_necta',
+        # State-level geographies
+        'alaska native regional corporation': '02_anrc',
+        'block group': f'{state_fips}_bg',
+        'county subdivision': f'{state_fips}_cousub',
+        'tract': f'{state_fips}_tract',
+        'place': f'{state_fips}_place',
+        'public use microdata area': f'{state_fips}_puma10',
+        'state legislative district (upper chamber)': f'{state_fips}_sldu',
+        'state legislative district (lower chamber)': f'{state_fips}_sldl',
+        # Note: consolidated city doesn't work (Census API won't permit inclusion of state, but
+        # state is required to download a shapefile)
+        # 'consolidated city': f'{state_fips}_concity'
+    }
+    return geo_code_mappings[for_geo_type]
 
 
 def change_column_metadata(prev, record):

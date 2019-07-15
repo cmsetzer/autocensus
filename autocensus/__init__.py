@@ -22,6 +22,7 @@ from .errors import (
 from .utilities import (
     change_column_metadata,
     coerce_polygon_to_multipolygon,
+    determine_geo_code,
     flatten_geometry,
     serialize_to_wkt,
     titleize_text
@@ -165,21 +166,12 @@ class Query:
             return labels
 
     def build_census_geospatial_url(self, year):
-        # TODO: Investigate querying Census TIGERweb GeoServices REST API for geospatial data
         """Build a Census shapefile URL based on the supplied parameters."""
         for_geo_type, _ = self.for_geo.split(':')
         in_geo = dict(pair.split(':') for pair in self.in_geo)
         state_fips = in_geo.get('state', '')
         prefix = 'shp/' if year > 2013 else ''
-        geo_code_mappings = {
-            'state': 'us_state',
-            'zip code tabulation area': 'us_zcta510',
-            'county': 'us_county',
-            'metropolitan statistical area/micropolitan statistical area': 'us_cbsa',
-            'tract': f'{state_fips}_tract',
-            'place': f'{state_fips}_place'
-        }
-        geo_code = geo_code_mappings[for_geo_type]
+        geo_code = determine_geo_code(year, for_geo_type, state_fips)
         url = f'https://www2.census.gov/geo/tiger/GENZ{year}/{prefix}cb_{year}_{geo_code}_500k.zip'
         return url
 
@@ -334,7 +326,7 @@ class Query:
         # Join geospatial data
         if self.join_geography is True:
             geospatial_data = results[-len(self.years_with_geography):]
-            geo_dataframe = pd.concat(geospatial_data, ignore_index=True)
+            geo_dataframe = pd.concat(geospatial_data, ignore_index=True, sort=True)
             dataframe = self.join_geospatial(dataframe, geo_dataframe)
 
         return dataframe
