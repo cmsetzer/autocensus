@@ -41,6 +41,7 @@ setup(
     install_requires=[
         'aiohttp',
         'appdirs',
+        'Fiona',
         'geopandas',
         'pandas~=0.24.1',
         'Shapely',
