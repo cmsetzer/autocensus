@@ -10,6 +10,7 @@ from pkg_resources import resource_stream
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from appdirs import user_cache_dir
+from fiona.crs import from_epsg
 import geopandas as gpd
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_random
@@ -240,6 +241,11 @@ class Query:
 
     def join_geospatial(self, dataframe, geo_dataframe):
         """Given ACS data, join rows to geospatial points/boundaries."""
+        # Reproject dataframe
+        wgs_84 = 4326
+        geo_dataframe['geometry'] = geo_dataframe['geometry'].to_crs(epsg=wgs_84)
+        geo_dataframe.crs = from_epsg(wgs_84)
+
         # Get centroids
         geo_dataframe['centroid'] = geo_dataframe.centroid
         # Get internal points (guaranteed to be internal to shape)
