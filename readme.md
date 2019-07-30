@@ -245,7 +245,7 @@ Topics currently included with autocensus are `population`, `race`, `education`,
 
 Some users report errors like the following when querying the Census API:
 
-```
+```raw
 SSL handshake failed on verifying the certificate
 protocol: <asyncio.sslproto.SSLProtocol object at 0x11f805ac8>
 transport: <_SelectorSocketTransport fd=11 read=polling write=<idle, bufsize=0>>
