@@ -372,10 +372,11 @@ class Query:
         output = reduce(change_column_metadata, columns.to_dict(orient='records'), output)
         return output.run()
 
-    def create_new_dataset(self, client, dataframe, name):
+    def create_new_dataset(self, client, dataframe, name, description):
         """Create and publish a dataframe as a new Socrata dataset."""
         revision, output = client.create(
             name=name if name is not None else self.query_name,
+            description=description if description is not None else '',
             attributionLink='https://api.census.gov'
         ).df(dataframe)
         ok, output = self.prepare_output_schema(output)
@@ -401,7 +402,17 @@ class Query:
             logger.error(f'Failed to publish dataset')
         return revision
 
-    def to_socrata(self, domain, *, dataset_id=None, name=None, auth=None, open_in_browser=True):
+    def to_socrata(
+        self,
+        domain,
+        *,
+        dataframe=None,
+        dataset_id=None,
+        name=None,
+        description=None,
+        auth=None,
+        open_in_browser=True
+    ):
         """Run query and publish the resulting dataframe to Socrata."""
         # TODO: Refactor into multiple smaller functions
         try:
@@ -410,7 +421,9 @@ class Query:
             message = 'socrata-py must be installed in order to publish to Socrata'
             raise MissingDependencyError(message)
 
-        dataframe = self.run()
+        # Run query if dataframe hasn't been supplied
+        if dataframe is None:
+            dataframe = self.run()
 
         # Serialize polygons to WKT (avoids issue with three-dimensional geometry)
         try:
@@ -426,7 +439,7 @@ class Query:
         # If no 4x4 was supplied, create a new dataset
         logger.debug('Creating draft on Socrata')
         if dataset_id is None:
-            revision = self.create_new_dataset(client, dataframe, name)
+            revision = self.create_new_dataset(client, dataframe, name, description)
         # Otherwise, update an existing dataset
         else:
             revision = self.update_existing_dataset(client, dataframe, dataset_id)

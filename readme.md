@@ -126,7 +126,7 @@ To improve performance across queries, autocensus caches shapefiles on disk by d
 
 ## Publishing to Socrata
 
-If [socrata-py] is installed, you can publish query results directly to Socrata via the method `Query.to_socrata`.
+If [socrata-py] is installed, you can publish query results (or dataframes containing the results of multiple queries) directly to Socrata via the method `Query.to_socrata`.
 
 [socrata-py]: https://github.com/socrata/socrata-py
 
@@ -167,7 +167,8 @@ query = Query(
 # Run query and publish results as a new dataset on Socrata domain
 query.to_socrata(
     'some-domain.data.socrata.com',
-    name='Average Commute Time by Colorado County, 2013–2017'  # Optional
+    name='Average Commute Time by Colorado County, 2013–2017',  # Optional
+    description='5-year estimates from the American Community Survey',  # Optional
 )
 ```
 
@@ -179,6 +180,43 @@ query.to_socrata(
     'some-domain.data.socrata.com',
     dataset_id='xxxx-xxxx'
 )
+```
+
+### Example: Create a new dataset from multiple queries
+
+```python
+import pandas as pd
+
+# configure county-level query
+county_query = Query(
+    estimate=5,
+    years=range(2013, 2018),
+    variables=['DP03_0025E'],
+    for_geo='county:*',
+    in_geo=['state:08'],
+    table='profile'
+)
+county_dataframe = county_query.run()
+
+# configure state-level query
+state_query = Query(
+    estimate=5,
+    years=range(2013, 2018),
+    variables=['DP03_0025E'],
+    for_geo='state:08',
+    table='profile'
+)
+state_dataframe = state_query.run()
+
+# concatenate dataframes and upload to Socrata
+combined_dataframe = pd.concat([county_dataframe,state_dataframe])
+state_query.to_socrata(
+    'some-domain.data.socrata.com',
+    dataframe=combined_dataframe,
+    name='Average Commute Time by Colorado County with Statewide Averages, 2013–2017',  # Optional
+    description='5-year estimates from the American Community Survey',  # Optional
+)
+
 ```
 
 ## Topics
