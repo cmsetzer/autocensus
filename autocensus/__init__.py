@@ -7,10 +7,12 @@ import logging
 import os
 from pathlib import Path
 from pkg_resources import resource_stream
+from zipfile import ZipFile
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from appdirs import user_cache_dir
 from fiona.crs import from_epsg
+from fiona.io import ZipMemoryFile
 import geopandas as gpd
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_random
@@ -21,6 +23,7 @@ from .errors import (
     MissingDependencyError
 )
 from .utilities import (
+    is_shp_file,
     change_column_metadata,
     coerce_polygon_to_multipolygon,
     determine_geo_code,
@@ -195,7 +198,15 @@ class Query:
         else:
             logger.debug(f'Reading {filename} from cache on disk: {cached_filepath}')
         os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
-        subset = gpd.read_file(f'zip://{cached_filepath}')
+        # Get .shp filename from within zipped shapefile
+        with ZipFile(cached_filepath, 'r') as zip_file:
+            shp_filename = next(filter(is_shp_file, zip_file.filelist)).filename
+        # Use default Python opener to avoid cryptic Fiona/GDAL 'filepath does not exist' errors
+        with open(cached_filepath, 'rb') as zip_file:
+            with ZipMemoryFile(zip_file.read()) as zip_memory_file:
+                with zip_memory_file.open(shp_filename) as collection:
+                    # Load GeoDataFrame using NAD83 projection (EPSG 4269)
+                    subset = gpd.GeoDataFrame.from_features(collection, crs=from_epsg(4269))
         subset['year'] = year
         return subset
 

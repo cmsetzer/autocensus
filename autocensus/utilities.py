@@ -66,6 +66,11 @@ def determine_geo_code(year, for_geo_type, state_fips):
     return geo_code_mappings[for_geo_type]
 
 
+def is_shp_file(zipped_file):
+    """Determine whether a zipped file's filename ends with .shp."""
+    return zipped_file.filename.casefold().endswith('.shp')
+
+
 def change_column_metadata(prev, record):
     """Add a column metadata change to a Socrata revision object.
 
