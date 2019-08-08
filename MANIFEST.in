@@ -1,2 +1,4 @@
 include autocensus/resources/annotations.csv
 include autocensus/resources/columns.csv
+include autocensus/resources/geo_codes.csv
+include autocensus/resources/names.csv

@@ -1,21 +1,35 @@
 """Utility functions for processing Census API data."""
 
-from functools import wraps
-import json
-import math
+from functools import lru_cache, wraps
+from itertools import islice
+from pathlib import Path
+from pkg_resources import resource_stream
+import re
+from shutil import rmtree
+from typing import Any, Callable, Iterable, Iterator, Tuple, Union
 
-from shapely.geometry import MultiPolygon, Polygon
+from appdirs import user_cache_dir
+import pandas as pd
+from pandas import DataFrame
 from titlecase import titlecase
 
+from .errors import InvalidVariableError
 
-def forgive(*exceptions):
-    """Decorator for gracefully ignoring specified exception types.
+# Types
+Chunk = Tuple[str, ...]
+
+# Constants
+CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus', 'socrata'))
+
+
+def forgive(*exceptions) -> Callable:
+    """Gracefully ignore the specified exceptions when calling function.
 
     This is especially useful for skipping NA values in columns.
     """
-    def decorator(func):
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapped(value):
+        def wrapped(value: Any) -> Any:
             try:
                 return func(value)
             except tuple(exceptions):
@@ -24,89 +38,70 @@ def forgive(*exceptions):
     return decorator
 
 
-def calculate_congress_for_year(year):
-    """Given a year, calculate the number of the U.S. Congress."""
-    congress = math.ceil((year - 1789) / 2) + 1
-    return congress
+def clear_cache() -> bool:
+    """Clear the autocensus cache."""
+    rmtree(CACHE_DIRECTORY_PATH)
+    cache_is_cleared: bool = not CACHE_DIRECTORY_PATH.exists()
+    return cache_is_cleared
 
 
-def determine_geo_code(year, for_geo_type, state_fips):
-    """Determine the shapefile naming code for a given geography."""
-    if for_geo_type == 'congressional district':
-        congress = calculate_congress_for_year(year)
+def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable[Union[int, str]]:
+    """If a string or integer is passed, wrap it in a list."""
+    if isinstance(value, (int, str)):
+        return [value]
     else:
-        congress = None
-    geo_code_mappings = {
-        # National geographies
-        'nation': 'us_nation',
-        'region': 'us_region',
-        'division': 'us_division',
-        'state': 'us_state',
-        'urban area': 'us_ua10',
-        'zip code tabulation area': 'us_zcta510',
-        'county': 'us_county',
-        'congressional district': f'us_cd{congress}',
-        'metropolitan statistical area/micropolitan statistical area': 'us_cbsa',
-        'combined statistical area': 'us_csa',
-        'american indian area/alaska native area/hawaiian home land': 'us_aiannh',
-        'new england city and town area': 'us_necta',
-        # State-level geographies
-        'alaska native regional corporation': '02_anrc',
-        'block group': f'{state_fips}_bg',
-        'county subdivision': f'{state_fips}_cousub',
-        'tract': f'{state_fips}_tract',
-        'place': f'{state_fips}_place',
-        'public use microdata area': f'{state_fips}_puma10',
-        'state legislative district (upper chamber)': f'{state_fips}_sldu',
-        'state legislative district (lower chamber)': f'{state_fips}_sldl',
-        # Note: consolidated city doesn't work (Census API won't permit inclusion of state, but
-        # state is required to download a shapefile)
-        # 'consolidated city': f'{state_fips}_concity'
-    }
-    return geo_code_mappings[for_geo_type]
+        return value
 
 
-def is_shp_file(zipped_file):
-    """Determine whether a zipped file's filename ends with .shp."""
-    return zipped_file.filename.casefold().endswith('.shp')
+def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Chunk]:
+    """Given a series of variables, yield them in even chunks.
 
-
-def change_column_metadata(prev, record):
-    """Add a column metadata change to a Socrata revision object.
-
-    To be used in reducing a series of such changes.
+    Uses a default maximum size of 48 to avoid exceeding the Census
+    API's limit of 50 variables per request (and leaving room for 'NAME'
+    and 'GEO_ID').
     """
-    value = json.loads(record['value']) if record['field'] == 'format' else record['value']
-    return prev.change_column_metadata(record['field_name'], record['field']).to(value)
+    iterator = iter(variables)
+    while True:
+        chunk: Chunk = tuple(islice(iterator, max_size))
+        if chunk:
+            yield chunk
+        else:
+            return
 
 
-def coerce_polygon_to_multipolygon(shape):
-    """Convert a polygon into a MultiPolygon if it's not one already."""
-    if not isinstance(shape, MultiPolygon):
-        return MultiPolygon([shape])
+@lru_cache(maxsize=1024)
+def parse_table_name_from_variable(variable: str) -> str:
+    """Given an ACS variable name, determine its associated table."""
+    # Extract table code from variable name
+    end_of_table_code: int = [character.isdigit() for character in variable].index(True)
+    table_code: str = variable[:end_of_table_code]
+    # Map table code to table name
+    mappings = {'B': 'detail', 'C': 'detail', 'CP': 'cprofile', 'DP': 'profile', 'S': 'subject'}
+    try:
+        table_name: str = mappings[table_code]
+    except KeyError as error:
+        message = f'Variable cannot be associated with an ACS table: {variable}'
+        raise InvalidVariableError(message) from error
     else:
-        return shape
-
-
-@forgive(AttributeError)
-def flatten_geometry(multipolygon):
-    """Flatten a three-dimensional multipolygon to two dimensions."""
-    if not multipolygon.has_z:
-        return multipolygon
-    polygons = []
-    for polygon in multipolygon:
-        new_coordinates = [(x, y) for (x, y, *_) in polygon.exterior.coords]
-        polygons.append(Polygon(new_coordinates))
-    return MultiPolygon(polygons)
-
-
-@forgive(AttributeError)
-def serialize_to_wkt(value):
-    """Serialize a geometry value to well-known text (WKT)."""
-    return value.to_wkt()
+        return table_name
 
 
 @forgive(TypeError)
-def titleize_text(value):
+def tidy_variable_label(value: str) -> str:
+    """Tidy a variable label to make it human-friendly."""
+    estimate_trimmed = re.sub(r'^Estimate!!', '', value)
+    delimiters_replaced = re.sub(r'!!', ' - ', estimate_trimmed)
+    return delimiters_replaced
+
+
+@forgive(TypeError)
+def titleize_text(value: str) -> str:
     """Convert a text string to title case."""
     return titlecase(value)
+
+
+def load_annotations_dataframe() -> DataFrame:
+    """Load the included annotations.csv resource as a dataframe."""
+    annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
+    dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
+    return dataframe

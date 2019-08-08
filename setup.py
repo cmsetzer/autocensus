@@ -15,12 +15,9 @@ local_path = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(local_path, 'readme.md')) as f:
     long_description = f.read()
 
-# Dependencies for test environment
-test_dependencies = ['aioresponses', 'pytest']
-
 setup(
     name='autocensus',
-    version='0.3.1',
+    version='1.0.0',
     description='A tool for collecting ACS and geospatial data from the Census API',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -28,7 +25,6 @@ setup(
     author='Christopher Setzer',
     author_email='chris.setzer@socrata.com',
     classifiers=[
-        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
@@ -37,18 +33,19 @@ setup(
     ],
     keywords='census acs api open data socrata',
     packages=find_packages(exclude=['tests']),
-    python_requires='~=3.7',
+    python_requires='>=3.7',
     install_requires=[
-        'aiohttp',
         'appdirs',
-        'Fiona',
+        'Fiona>=1.8.6',
         'geopandas',
-        'pandas~=0.24.1',
+        'pandas>=0.24.1',
+        'requests',
         'Shapely',
+        'socrata-py',
         'tenacity',
-        'titlecase'
+        'titlecase',
+        'tqdm',
+        'yarl'
     ],
-    tests_require=test_dependencies,
-    extras_require={'socrata': ['socrata-py'], 'test': test_dependencies},
     include_package_data=True
 )

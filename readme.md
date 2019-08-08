@@ -2,8 +2,6 @@
 
 Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe.
 
-Uses aiohttp to call Census endpoints with a series of concurrent requests, which saves a bit of time.
-
 This package is under active development and breaking changes to its API are expected.
 
 [Census API]: https://www.census.gov/developers
@@ -49,28 +47,6 @@ Output:
 | Census Tract 49.51, Arapahoe County, Colorado | 1400000US08005004951 | 2014 | 2018-12-31 | B01002_001E   | Median age - Total | Median Age by Sex |            | 26.4  |                |            | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
 
 [Census API key]: https://api.census.gov/data/key_signup.html
-
-## Other tables
-
-By default, autocensus queries the detailed tables of the ACS. If your variables are located in other tables, use the `table` keyword argument:
-
-```python
-query = Query(
-    estimate=5,
-    years=[2016, 2017],
-    variables=['DP03_0025E'],
-    for_geo='tract:*',
-    in_geo=['state:17', 'county:031'],
-    table='profile'
-)
-```
-
-autocensus will map the following table codes to their associated Census API endpoints:
-
-* Detailed tables: `detail`
-* Data profiles: `profile`
-* Subject tables: `subject`
-* Comparison profiles: `cprofile`
 
 ## Joining geospatial data
 
@@ -152,18 +128,6 @@ query.to_socrata(
 ### Example: Create a new dataset
 
 ```python
-from autocensus import Query
-
-# Configure query
-query = Query(
-    estimate=5,
-    years=range(2013, 2018),
-    variables=['DP03_0025E'],
-    for_geo='county:*',
-    in_geo=['state:08'],
-    table='profile'
-)
-
 # Run query and publish results as a new dataset on Socrata domain
 query.to_socrata(
     'some-domain.data.socrata.com',
@@ -185,6 +149,8 @@ query.to_socrata(
 ### Example: Create a new dataset from multiple queries
 
 ```python
+from autocensus import Query
+from autocensus.socrata import to_socrata
 import pandas as pd
 
 # configure county-level query
@@ -208,13 +174,16 @@ state_query = Query(
 )
 state_dataframe = state_query.run()
 
-# concatenate dataframes and upload to Socrata
-combined_dataframe = pd.concat([county_dataframe,state_dataframe])
-state_query.to_socrata(
+# Concatenate dataframes and upload to Socrata
+combined_dataframe = pd.concat([
+    county_dataframe,
+    state_dataframe
+])
+to_socrata(
     'some-domain.data.socrata.com',
     dataframe=combined_dataframe,
     name='Average Commute Time by Colorado County with Statewide Averages, 2013–2017',  # Optional
-    description='5-year estimates from the American Community Survey',  # Optional
+    description='5-year estimates from the American Community Survey'  # Optional
 )
 
 ```
@@ -263,13 +232,3 @@ query = Query(
     verify_ssl=False
 )
 ```
-
-## Tests
-
-Use [pytest] to run the test suite:
-
-```sh
-pytest
-```
-
-[pytest]: https://pytest.org

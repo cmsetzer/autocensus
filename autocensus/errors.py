@@ -3,14 +3,11 @@
 
 class CensusAPIUnknownError(RuntimeError):
     """Exception representing an unknown error from the Census API."""
-    pass
+
+
+class InvalidVariableError(ValueError):
+    """Exception representing one or more invalid variables."""
 
 
 class MissingCredentialsError(RuntimeError):
     """Exception indicating that API credentials are unavailable."""
-    pass
-
-
-class MissingDependencyError(ImportError):
-    """Exception indicating that a needed dependency is unavailable."""
-    pass

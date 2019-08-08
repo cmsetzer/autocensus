@@ -1,0 +1,21 @@
+type,geo_code
+nation,us_nation
+region,us_region
+division,us_division
+state,us_state
+urban area,us_ua10
+zip code tabulation area,us_zcta510
+county,us_county
+congressional district,us_cd{congress}
+metropolitan statistical area/micropolitan statistical area,us_cbsa
+combined statistical area,us_csa
+american indian area/alaska native area/hawaiian home land,us_aiannh
+new england city and town area,us_necta
+alaska native regional corporation,02_anrc
+block group,{state_fips}_bg
+county subdivision,{state_fips}_cousub
+tract,{state_fips}_tract
+place,{state_fips}_place
+public use microdata area,{state_fips}_puma10
+state legislative district (upper chamber),{state_fips}_sldu
+state legislative district (lower chamber),{state_fips}_sldl
