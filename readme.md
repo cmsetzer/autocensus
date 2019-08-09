@@ -25,7 +25,7 @@ from autocensus import Query
 query = Query(
     estimate=5,
     years=[2014, 2015, 2016, 2017],
-    variables=['B01002_001E', 'B03001_001E'],
+    variables=['B01002_001E', 'B03001_001E', 'DP03_0025E', 'S0503_C02_077E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
     # Fill in the following with your actual Census API key
