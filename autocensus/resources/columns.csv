@@ -1,6 +1,7 @@
 field_name,field,value
 name,display_name,Name
 geo_id,display_name,Geographic Identifier
+geo_type,display_name,Geographic Type
 year,display_name,Year
 date,display_name,Date
 variable_code,display_name,Variable Code
@@ -15,6 +16,7 @@ internal_point,display_name,Internal Point
 geometry,display_name,Geometry
 name,description,Name of geographic boundary
 geo_id,description,Unique identifier for geographic boundary
+geo_type,description,Type of geographic boundary
 year,description,Final year of survey vintage
 date,description,Date representing final year of survey vintage
 variable_code,description,Code for American Community Survey variable

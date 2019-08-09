@@ -168,7 +168,7 @@ class Query:
         for header, *rows in tables:
             subset = DataFrame(rows, columns=header)
             pertinent_geography_types = set(geography_types) & set(subset.columns)
-            id_vars = ['NAME', 'GEO_ID', *pertinent_geography_types, 'year']
+            id_vars = ['NAME', 'GEO_ID', 'geo_type', *pertinent_geography_types, 'year']
             melted: DataFrame = subset \
                 .melt(id_vars=id_vars) \
                 .drop(columns=pertinent_geography_types)

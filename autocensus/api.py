@@ -103,6 +103,11 @@ class CensusAPI:
         }
         response: Response = self._session.get(url, params=params)
         response_json: Table = response.json()
+        # Add geo_type
+        response_json[0].append('geo_type')
+        geo_type = extract_geo_type(for_geo)
+        for row in response_json[1:]:
+            row.append(geo_type)
         return response_json
 
     def fetch_geography(self, year: int, for_geo: str, in_geo: Iterable) -> Path:
