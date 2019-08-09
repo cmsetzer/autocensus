@@ -9,7 +9,7 @@ from json import JSONDecodeError
 import os
 from pathlib import Path
 from pkg_resources import resource_string
-from typing import Callable, DefaultDict, Dict, Iterable, List, Tuple, Union
+from typing import Any, Callable, DefaultDict, Dict, Iterable, List, Tuple, Union
 
 from fiona.crs import from_epsg
 import pandas as pd
@@ -51,6 +51,7 @@ class Query:
         for_geo: Union[Iterable, str],
         in_geo: Iterable = None,
         join_geography: bool = True,
+        table: Any = None,  # Deprecated (no longer necessary)
         census_api_key: str = None,
         verify_ssl: bool = True
     ):

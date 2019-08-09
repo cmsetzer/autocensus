@@ -159,8 +159,7 @@ county_query = Query(
     years=range(2013, 2018),
     variables=['DP03_0025E'],
     for_geo='county:*',
-    in_geo=['state:08'],
-    table='profile'
+    in_geo=['state:08']
 )
 county_dataframe = county_query.run()
 
@@ -169,8 +168,7 @@ state_query = Query(
     estimate=5,
     years=range(2013, 2018),
     variables=['DP03_0025E'],
-    for_geo='state:08',
-    table='profile'
+    for_geo='state:08'
 )
 state_dataframe = state_query.run()
 
