@@ -36,7 +36,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'appdirs',
-        'Fiona>=1.8.6',
+        'Fiona',
         'geopandas',
         'pandas>=0.24.1',
         'requests',
