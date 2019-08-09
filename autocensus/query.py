@@ -176,7 +176,7 @@ class Query:
 
         # Ensure correct computation of percent change and difference
         dataframe: DataFrame = pd.concat(subsets) \
-            .sort_values(by=['variable', 'NAME', 'year']) \
+            .sort_values(by=['geo_type', 'variable', 'NAME', 'year']) \
             .reset_index(drop=True)
         dataframe['value'] = dataframe['value'].astype(float)
 
