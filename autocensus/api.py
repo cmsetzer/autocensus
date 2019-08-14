@@ -1,11 +1,12 @@
 """Functions for retrieving data from the Census API."""
 
-from contextlib import contextmanager
+from asyncio import Future, create_task, gather
+from contextlib import asynccontextmanager
 import os
 from pathlib import Path
-from typing import Iterable, Iterator, List, Union
+from typing import AsyncGenerator, Iterable, List, Union
 
-from requests import Response, Session
+from aiohttp import ClientResponseError, ClientSession, ClientTimeout, TCPConnector
 from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
@@ -37,21 +38,25 @@ def look_up_census_api_key(census_api_key: str = None) -> str:
 
 class CensusAPI:
     """A class for retrieving data from the Census API via HTTP."""
-    def __init__(self, census_api_key: str, verify_ssl: bool = True):
+    def __init__(self, census_api_key: str, verify_ssl: bool = True) -> None:
         self.census_api_key: str = census_api_key
         self.verify_ssl: bool = verify_ssl
 
-    @contextmanager
-    def create_session(self) -> Iterator[None]:
+    @asynccontextmanager
+    async def create_session(self) -> AsyncGenerator[None, None]:
         """Furnish an HTTP session for re-use across API calls.
 
         Closes and deletes the session when we're done with it.
         """
-        with Session() as session:
-            session.params = {'key': self.census_api_key}
-            session.verify = self.verify_ssl
+        timeout = ClientTimeout(300)
+        connector = TCPConnector(limit=50)
+        async with ClientSession(
+            timeout=timeout,
+            connector=connector
+        ) as session:
             self._session = session
             yield
+            await session.close()
             del self._session
 
     def build_url(self, estimate: int, year: int, table_name: str) -> URL:
@@ -78,43 +83,61 @@ class CensusAPI:
         url = base_url / f'cb_{year}_{geo_code}_500k.zip'
         return url
 
-    def fetch_variable(self, estimate: int, year: int, table_name: str, variable: str) -> dict:
-        url: URL = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
-        response: Response = self._session.get(url)
-        variable_json: dict = response.json()
-        return variable_json
-
-    @retry(wait=wait_exponential(multiplier=1, min=3, max=10), stop=stop_after_attempt(5))
-    def fetch_table(
+    @retry(wait=wait_exponential(multiplier=1, min=3, max=15), stop=stop_after_attempt(5))
+    async def fetch_variable(
         self,
         estimate: int,
         year: int,
         table_name: str,
-        variables: Iterable,
+        variable: str
+    ) -> dict:
+        url: URL = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
+        async with self._session.get(url, ssl=self.verify_ssl) as response:
+            try:
+                variable_json: dict = await response.json()
+            except ClientResponseError:
+                # Handle erroneous variable by returning a stub with variable/year
+                variable_json = {'name': variable}
+            variable_json['year'] = year
+            return variable_json
+
+    @retry(wait=wait_exponential(multiplier=1, min=3, max=15), stop=stop_after_attempt(5))
+    async def fetch_table(
+        self,
+        estimate: int,
+        year: int,
+        table_name: str,
+        variables: Iterable[str],
         for_geo: str,
-        in_geo: Iterable
+        in_geo: Iterable[str]
     ) -> Table:
         url: URL = self.build_url(estimate, year, table_name)
-        params = {
-            'get': ','.join(['NAME', 'GEO_ID', *variables]),
-            'for': for_geo,
-            'in': in_geo,
-            'key': self.census_api_key
-        }
-        response: Response = self._session.get(url, params=params)
-        response_json: Table = response.json()
-        # Add geo_type
-        response_json[0].append('geo_type')
-        geo_type = extract_geo_type(for_geo)
-        for row in response_json[1:]:
-            row.append(geo_type)
-        return response_json
+        params = [
+            ('get', ','.join(['NAME', 'GEO_ID', *variables])),
+            ('for', for_geo),
+            *(('in', geo) for geo in in_geo),
+            ('key', self.census_api_key)
+        ]
+        async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
+            response_json: Table = await response.json()
+            # Add geo_type
+            response_json[0].extend(['geo_type', 'year'])
+            geo_type = extract_geo_type(for_geo)
+            for row in response_json[1:]:
+                row.extend([geo_type, year])
+            return response_json
 
-    def fetch_geography(self, year: int, for_geo: str, in_geo: Iterable) -> Path:
+    async def fetch_geography(self, year: int, for_geo: str, in_geo: Iterable) -> Path:
         url: URL = self.build_shapefile_url(year, for_geo, in_geo)
         cached_filepath: Path = CACHE_DIRECTORY_PATH / url.name
         if not cached_filepath.exists():
-            with open(cached_filepath, 'wb') as cached_file:
-                response = self._session.get(url)
-                cached_file.write(response.content)
+            async with self._session.get(url, ssl=self.verify_ssl) as response:
+                with open(cached_filepath, 'wb') as cached_file:
+                    cached_file.write(await response.content)
         return cached_filepath
+
+    async def gather_calls(self, calls) -> Future:
+        async with self.create_session():
+            tasks: Iterable = map(create_task, calls)
+            gathered: Future = await gather(*tasks)
+            return gathered

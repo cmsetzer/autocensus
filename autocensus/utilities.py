@@ -6,7 +6,7 @@ from pathlib import Path
 from pkg_resources import resource_stream
 import re
 from shutil import rmtree
-from typing import Any, Callable, Iterable, Iterator, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, List, Union
 
 from appdirs import user_cache_dir
 import pandas as pd
@@ -16,7 +16,7 @@ from titlecase import titlecase
 from .errors import InvalidVariableError
 
 # Types
-Chunk = Tuple[str, ...]
+Chunk = List[str]
 
 # Constants
 CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus', 'socrata'))
@@ -62,7 +62,7 @@ def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Ch
     """
     iterator = iter(variables)
     while True:
-        chunk: Chunk = tuple(islice(iterator, max_size))
+        chunk: Chunk = list(islice(iterator, max_size))
         if chunk:
             yield chunk
         else:

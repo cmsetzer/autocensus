@@ -1,23 +1,24 @@
 """A class and methods for performing Census API queries."""
 
+import asyncio
+from asyncio import Future
+from contextlib import contextmanager
 from csv import reader
 from collections import defaultdict
 from functools import partial
 from io import StringIO
 from itertools import chain, product
-from json import JSONDecodeError
 import os
 from pathlib import Path
 from pkg_resources import resource_string
-from typing import Any, Callable, DefaultDict, Dict, Iterable, List, Tuple, Union
+from typing import Any, Callable, Coroutine, DefaultDict, Dict, Iterable, List, Tuple, Union
 
 from fiona.crs import from_epsg
 import pandas as pd
 from pandas import DataFrame
-from tqdm import tqdm
 from yarl import URL
 
-from .api import CensusAPI, look_up_census_api_key
+from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
     extract_geo_type,
     load_geodataframe,
@@ -37,7 +38,7 @@ from .utilities import (
 )
 
 # Types
-Tables = List[List[List[Union[int, str]]]]
+Tables = List[Table]
 Variables = Dict[Tuple[int, str], dict]
 Geography = List[Path]
 
@@ -99,49 +100,74 @@ class Query:
             variables[year, table_name].append(variable)
         return variables
 
-    def get_variables(self, census_api: CensusAPI) -> Variables:
-        variables = {}
-        variables_items = list(self.variables_by_year_and_table_name.items())
-        for (year, table_name), group in tqdm(variables_items, desc='Retrieving variables'):
+    @contextmanager
+    def create_census_api_session(self):
+        self._census_api = CensusAPI(self.census_api_key)
+        yield
+        del self._census_api
+
+    def get_variables(self) -> Variables:
+        # Assemble API calls for concurrent execution
+        calls = []
+        for (year, table_name), group in self.variables_by_year_and_table_name.items():
             for variable in group:
-                try:
-                    variable_json: dict = census_api.fetch_variable(
-                        self.estimate,
-                        year,
-                        table_name,
-                        variable
-                    )
-                except JSONDecodeError:
-                    self._invalid_variables[year].append(variable)
-                    continue
+                call: Coroutine[Any, Any, dict] = self._census_api.fetch_variable(
+                    self.estimate,
+                    year,
+                    table_name,
+                    variable
+                )
+                calls.append(call)
+        # Make concurrent API calls
+        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+
+        # Compile invalid variables
+        variables = {}
+        for variable_json in results:
+            year = variable_json['year']
+            if not variable_json.get('label', False):
+                self._invalid_variables[year].append(variable_json['name'])
+            else:
                 variables[year, variable_json['name']] = variable_json
         return variables
 
-    def get_tables(self, census_api: CensusAPI) -> Tables:
-        estimate, in_geo = self.estimate, self.in_geo
-        tables = []
-        variables_items = self.variables_by_year_and_table_name.items()
-        for (year, table_name), variables in tqdm(variables_items, desc='Retrieving tables'):
+    def get_tables(self) -> Tables:
+        # Assemble API calls for concurrent execution
+        calls = []
+        for (year, table_name), variables in self.variables_by_year_and_table_name.items():
             # Handle multiple for_geo values by year
             chunked_variables_by_for_geo = product(self.for_geo, chunk_variables(variables))
             for for_geo, chunk in chunked_variables_by_for_geo:
-                table = census_api.fetch_table(estimate, year, table_name, chunk, for_geo, in_geo)
-                # Append year column to data table
-                table[0].append('year')
-                for row in table[1:]:
-                    row.append(year)
-                tables.append(table)
+                call: Coroutine[Any, Any, Table] = self._census_api.fetch_table(
+                    self.estimate,
+                    year,
+                    table_name,
+                    chunk,
+                    for_geo,
+                    self.in_geo
+                )
+                calls.append(call)
+        # Make concurrent API calls
+        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        tables = list(results)
         return tables
 
-    def get_geography(self, census_api: CensusAPI) -> List[Path]:
-        filepaths = []
+    def get_geography(self) -> List[Path]:
+        # Assemble API calls for concurrent execution
+        calls = []
         years_with_geography = [year for year in self.years if year >= 2013]
-        for_geo_by_year = list(product(years_with_geography, self.for_geo))
         # Handle multiple for_geo values by year
-        for year, for_geo in tqdm(for_geo_by_year, desc='Retrieving shapefiles'):
-            cached_filepath: Path = census_api.fetch_geography(year, for_geo, self.in_geo)
-            filepaths.append(cached_filepath)
-        return filepaths
+        for year, for_geo in product(years_with_geography, self.for_geo):
+            call: Coroutine[Any, Any, Path] = self._census_api.fetch_geography(
+                year,
+                for_geo,
+                self.in_geo
+            )
+            calls.append(call)
+        # Make concurrent API calls
+        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        geography = list(results)
+        return geography
 
     def convert_variables_to_dataframe(self, variables: Variables) -> DataFrame:
         records = []
@@ -243,6 +269,7 @@ class Query:
         geography: Geography
     ) -> DataFrame:
         # Merge tables with variables, annotations
+        print('Merging ACS tables and variables...')
         tables_dataframe: DataFrame = self.convert_tables_to_dataframe(tables)
         variables_dataframe: DataFrame = self.convert_variables_to_dataframe(variables)
         dataframe = tables_dataframe.merge(
@@ -250,11 +277,13 @@ class Query:
             how='left',
             on=['variable', 'year']
         )
+        print('Merging annotations...')
         annotations_dataframe: DataFrame = load_annotations_dataframe()
         dataframe = dataframe.merge(right=annotations_dataframe, how='left', on=['value'])
 
         # Merge geospatial data if included
         if self.join_geography is True:
+            print('Merging shapefiles...')
             geography_dataframe: DataFrame = self.convert_geography_to_dataframe(geography)
             affgeoid_field = identify_affgeoid_field(geography_dataframe.columns)
             dataframe = dataframe.merge(
@@ -265,17 +294,20 @@ class Query:
             )
 
         # Finalize dataframe
+        print('Finalizing data...')
         dataframe = self.finalize_dataframe(dataframe)
 
         return dataframe
 
     def run(self) -> DataFrame:
-        census_api = CensusAPI(self.census_api_key)
-        with census_api.create_session():
-            variables: Variables = self.get_variables(census_api)
-            tables: Tables = self.get_tables(census_api)
+        with self.create_census_api_session():
+            print('Retrieving variables...')
+            variables: Variables = self.get_variables()
+            print('Retrieving ACS tables...')
+            tables: Tables = self.get_tables()
             if self.join_geography is True:
-                geography: list = self.get_geography(census_api)
+                print('Retrieving shapefiles...')
+                geography: List[Path] = self.get_geography()
             else:
                 geography = None  # type: ignore
         dataframe = self.assemble_dataframe(variables, tables, geography)
