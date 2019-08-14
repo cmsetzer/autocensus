@@ -6,6 +6,21 @@ This package is under active development and breaking changes to its API are exp
 
 [Census API]: https://www.census.gov/developers
 
+## Contents
+
+* [Installation](#installation)
+* [Example](#example)
+* [Joining geospatial data](#joining-geospatial-data)
+  + [Caching](#caching)
+* [Publishing to Socrata](#publishing-to-socrata)
+  + [Credentials](#credentials)
+  + [Example: Create a new dataset](#example-create-a-new-dataset)
+  + [Example: Replace rows in an existing dataset](#example-replace-rows-in-an-existing-dataset)
+  + [Example: Create a new dataset from multiple queries](#example-create-a-new-dataset-from-multiple-queries)
+* [Topics](#topics)
+* [Known issues](#known-issues)
+  + [SSL errors](#ssl-errors)
+
 ## Installation
 
 autocensus requires Python 3.7 or higher. Install as follows:
