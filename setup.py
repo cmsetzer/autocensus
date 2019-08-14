@@ -35,16 +35,15 @@ setup(
     packages=find_packages(exclude=['tests']),
     python_requires='>=3.7',
     install_requires=[
+        'aiohttp>=3.0.0',
         'appdirs',
         'Fiona',
         'geopandas',
         'pandas>=0.24.1',
-        'requests',
         'Shapely',
         'socrata-py',
         'tenacity',
         'titlecase',
-        'tqdm',
         'yarl'
     ],
     include_package_data=True

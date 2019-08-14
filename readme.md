@@ -1,6 +1,6 @@
 # autocensus
 
-Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe.
+Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe. Uses asyncio/aiohttp to request data concurrently.
 
 This package is under active development and breaking changes to its API are expected.
 
@@ -82,8 +82,8 @@ If you don't need geospatial data, set the keyword arg `join_geography` to `Fals
 ```python
 query = Query(
     estimate=5,
-    years=[2011, 2012, 2013, 2014, 2015, 2016, 2017],
-    variables=['B01002_001E', 'B03001_001E'],
+    years=[2014, 2015, 2016, 2017],
+    variables=['B01002_001E', 'B03001_001E', 'DP03_0025E', 'S0503_C02_077E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
     join_geography=False
@@ -153,17 +153,17 @@ from autocensus import Query
 from autocensus.socrata import to_socrata
 import pandas as pd
 
-# configure county-level query
+# County-level query
 county_query = Query(
     estimate=5,
     years=range(2013, 2018),
     variables=['DP03_0025E'],
     for_geo='county:*',
-    in_geo=['state:08']
+    in_geo='state:08'
 )
 county_dataframe = county_query.run()
 
-# configure state-level query
+# State-level query
 state_query = Query(
     estimate=5,
     years=range(2013, 2018),
@@ -183,7 +183,6 @@ to_socrata(
     name='Average Commute Time by Colorado County with Statewide Averages, 2013–2017',  # Optional
     description='5-year estimates from the American Community Survey'  # Optional
 )
-
 ```
 
 ## Topics
@@ -196,7 +195,7 @@ from autocensus import Query
 
 query = Query(
     estimate=5,
-    years=[2013, 2014, 2015, 2016, 2017],
+    years=[2014, 2015, 2016, 2017],
     # Housing variables: B25035_001E, B25064_001E, B25077_001E
     variables=autocensus.topics.housing,
     for_geo='tract:*',
@@ -216,7 +215,7 @@ To disable SSL verification, specify `verify_ssl=False` when initializing your `
 query = Query(
     estimate=5,
     years=[2014, 2015, 2016, 2017],
-    variables=['B01002_001E', 'B03001_001E'],
+    variables=['B01002_001E', 'B03001_001E', 'DP03_0025E', 'S0503_C02_077E'],
     for_geo='tract:*',
     in_geo=['state:08', 'county:005'],
     verify_ssl=False
