@@ -1,3 +1,5 @@
+"""Functions for publishing autocensus data to Socrata."""
+
 from functools import reduce
 import json
 import os
@@ -112,6 +114,7 @@ def to_socrata(
     auth: Credentials = None,
     open_in_browser: bool = True
 ) -> URL:
+    """Publish an autocensus dataframe to Socrata."""
     # Serialize geometry to WKT
     try:
         dataframe['geometry'] = dataframe['geometry'].map(serialize_to_wkt)

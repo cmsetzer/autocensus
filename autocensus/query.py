@@ -40,10 +40,17 @@ from .utilities import (
 # Types
 Tables = List[Table]
 Variables = Dict[Tuple[int, str], dict]
-Geography = List[Path]
+Shapefiles = List[Path]
 
 
 class Query:
+    """A query for American Community Survey data from the Census API.
+
+    A Query instance can be used to fetch ACS variables, tables, and
+    shapefiles for a given ACS estimate (1-, 3-, or 5-year), year(s),
+    and geographic units.
+    """
+
     def __init__(
         self,
         estimate: int,
@@ -84,14 +91,17 @@ class Query:
 
     @property
     def years(self) -> List[int]:
+        """Return the supplied years as a sorted, unique list."""
         return sorted(set(self._years))
 
     @property
     def variables(self) -> List[str]:
+        """Return the supplied variables as a sorted, unique list."""
         return sorted(set(self._variables))
 
     @property
     def variables_by_year_and_table_name(self) -> DefaultDict[Tuple[int, str], List[str]]:
+        """Group the supplied variables by year and table name."""
         variables: DefaultDict[Tuple[int, str], List[str]] = defaultdict(list)
         for year, variable in product(self.years, self.variables):
             if variable in self._invalid_variables[year]:
@@ -102,11 +112,20 @@ class Query:
 
     @contextmanager
     def create_census_api_session(self):
+        """Initialize a Census API session.
+
+        Adds an instance of the CensusAPI class to this Query as an
+        internal attribute, then removes it upon completion.
+        """
         self._census_api = CensusAPI(self.census_api_key)
         yield
         del self._census_api
 
     def get_variables(self) -> Variables:
+        """Get labels and concepts for the supplied variables.
+
+        Sets aside any variables that are invalid for a given year.
+        """
         # Assemble API calls for concurrent execution
         calls = []
         for (year, table_name), group in self.variables_by_year_and_table_name.items():
@@ -132,6 +151,7 @@ class Query:
         return variables
 
     def get_tables(self) -> Tables:
+        """Get data tables for the supplied variables."""
         # Assemble API calls for concurrent execution
         calls = []
         for (year, table_name), variables in self.variables_by_year_and_table_name.items():
@@ -152,7 +172,8 @@ class Query:
         tables = list(results)
         return tables
 
-    def get_geography(self) -> List[Path]:
+    def get_geography(self) -> Shapefiles:
+        """Get shapefiles for the supplied variables and geography."""
         # Assemble API calls for concurrent execution
         calls = []
         years_with_geography = [year for year in self.years if year >= 2013]
@@ -170,6 +191,7 @@ class Query:
         return geography
 
     def convert_variables_to_dataframe(self, variables: Variables) -> DataFrame:
+        """Convert Census API variable data to a dataframe."""
         records = []
         for (year, variable_name), variable in variables.items():
             variable['year'] = year
@@ -186,6 +208,7 @@ class Query:
         return dataframe
 
     def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
+        """Reshape and convert ACS data tables to a dataframe."""
         geographies: Iterable = chain(self.for_geo, self.in_geo)
         geography_types = [extract_geo_type(geo) for geo in geographies]
 
@@ -208,7 +231,8 @@ class Query:
 
         return dataframe
 
-    def convert_geography_to_dataframe(self, geography: List[Path]) -> DataFrame:
+    def convert_geography_to_dataframe(self, geography: Shapefiles) -> DataFrame:
+        """Convert one or more shapefiles to a dataframe using geopandas."""
         # Avoid needless encoding warnings
         os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
         subsets = []
@@ -236,6 +260,10 @@ class Query:
         return dataframe
 
     def finalize_dataframe(self, dataframe: DataFrame) -> DataFrame:
+        """Clean up and finalize a dataframe.
+
+        Adds columns, normalizes column names, and reorders columns.
+        """
         # Compute percent change and difference
         dataframe['percent_change'] = dataframe \
             .groupby(['GEO_ID', 'variable'])['value'] \
@@ -266,8 +294,13 @@ class Query:
         self,
         variables: Variables,
         tables: Tables,
-        geography: Geography
+        geography: Shapefiles
     ) -> DataFrame:
+        """Merge and finalize the query dataframe.
+
+        Joins tables, variables, annotations, and geospatial data, then
+        cleans up and finalizes the combined dataframe.
+        """
         # Merge tables with variables, annotations
         print('Merging ACS tables and variables...')
         tables_dataframe: DataFrame = self.convert_tables_to_dataframe(tables)
@@ -300,6 +333,11 @@ class Query:
         return dataframe
 
     def run(self) -> DataFrame:
+        """Run the supplied query and return the output as a dataframe.
+
+        Depending on the complexity of the query, may take anywhere from
+        a few seconds to several minutes.
+        """
         with self.create_census_api_session():
             print('Retrieving variables...')
             variables: Variables = self.get_variables()
@@ -307,7 +345,7 @@ class Query:
             tables: Tables = self.get_tables()
             if self.join_geography is True:
                 print('Retrieving shapefiles...')
-                geography: List[Path] = self.get_geography()
+                geography: Shapefiles = self.get_geography()
             else:
                 geography = None  # type: ignore
         dataframe = self.assemble_dataframe(variables, tables, geography)
@@ -324,7 +362,7 @@ class Query:
         auth: Credentials = None,
         open_in_browser: bool = True
     ) -> URL:
-        """Publish an autocensus dataframe to Socrata."""
+        """Run query and publish the resulting dataframe to Socrata."""
         if dataframe is None:
             dataframe = self.run()
         revision_url: URL = to_socrata(

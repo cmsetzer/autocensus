@@ -19,6 +19,13 @@ Table = List[List[Union[int, str]]]
 
 
 def look_up_census_api_key(census_api_key: str = None) -> str:
+    """Look up a Census API key from the local environment.
+
+    If a key is passed as an argument, confirms that it was not copied
+    directly from the example in the readme, then returns the key. If
+    no key has been provided, looks for one under the environment
+    variable CENSUS_API_KEY.
+    """
     # If an API key was supplied, check whether it was copied from the readme
     if census_api_key == 'Your Census API key':
         census_api_url = 'https://www.census.gov/developers'
@@ -38,6 +45,7 @@ def look_up_census_api_key(census_api_key: str = None) -> str:
 
 class CensusAPI:
     """A class for retrieving data from the Census API via HTTP."""
+
     def __init__(self, census_api_key: str, verify_ssl: bool = True) -> None:
         self.census_api_key: str = census_api_key
         self.verify_ssl: bool = verify_ssl
@@ -60,6 +68,7 @@ class CensusAPI:
             del self._session
 
     def build_url(self, estimate: int, year: int, table_name: str) -> URL:
+        """Build a Census API URL for a given estimate, year, and table."""
         table_route_mappings = {
             'detail': '',
             'cprofile': '/cprofile',
@@ -91,6 +100,7 @@ class CensusAPI:
         table_name: str,
         variable: str
     ) -> dict:
+        """Fetch a given variable definition from the Census API."""
         url: URL = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
         async with self._session.get(url, ssl=self.verify_ssl) as response:
             try:
@@ -111,6 +121,7 @@ class CensusAPI:
         for_geo: str,
         in_geo: Iterable[str]
     ) -> Table:
+        """Fetch a given ACS data table from the Census API."""
         url: URL = self.build_url(estimate, year, table_name)
         params = [
             ('get', ','.join(['NAME', 'GEO_ID', *variables])),
@@ -128,6 +139,11 @@ class CensusAPI:
             return response_json
 
     async def fetch_geography(self, year: int, for_geo: str, in_geo: Iterable) -> Path:
+        """Fetch a given shapefile and download it to the local cache.
+
+        Returns a path to the cached shapefile. If the shapefile is
+        already cached, skips the download and returns the path.
+        """
         url: URL = self.build_shapefile_url(year, for_geo, in_geo)
         cached_filepath: Path = CACHE_DIRECTORY_PATH / url.name
         if not cached_filepath.exists():
@@ -137,6 +153,7 @@ class CensusAPI:
         return cached_filepath
 
     async def gather_calls(self, calls) -> Future:
+        """Gather a series of fetch calls for concurrent scheduling."""
         async with self.create_session():
             tasks: Iterable = map(create_task, calls)
             gathered: Future = await gather(*tasks)
