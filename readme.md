@@ -147,7 +147,7 @@ query.to_socrata(
 query.to_socrata(
     'some-domain.data.socrata.com',
     name='Average Commute Time by Colorado County, 2013–2017',  # Optional
-    description='5-year estimates from the American Community Survey',  # Optional
+    description='5-year estimates from the American Community Survey'  # Optional
 )
 ```
 
