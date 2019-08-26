@@ -32,7 +32,7 @@ setup(
         'Programming Language :: Python :: 3.7'
     ],
     keywords='census acs api open data socrata',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(),
     python_requires='>=3.7',
     install_requires=[
         'aiohttp>=3.0.0',
