@@ -39,6 +39,7 @@ setup(
         'appdirs',
         'Fiona',
         'geopandas',
+        'nest-asyncio',
         'pandas>=0.24.1',
         'Shapely',
         'socrata-py',

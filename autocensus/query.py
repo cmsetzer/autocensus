@@ -137,8 +137,17 @@ class Query:
                     variable
                 )
                 calls.append(call)
+
         # Make concurrent API calls
-        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        gathered_calls = self._census_api.gather_calls(calls)
+        try:
+            results: Future = asyncio.run(gathered_calls)
+        except RuntimeError as error:
+            # Handle Jupyter issue with multiple running event loops by importing nest_asyncio
+            if error.args[0] == 'asyncio.run() cannot be called from a running event loop':
+                import nest_asyncio
+                nest_asyncio.apply()
+                results: Future = asyncio.run(gathered_calls)
 
         # Compile invalid variables
         variables = {}
