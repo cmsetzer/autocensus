@@ -17,7 +17,7 @@ with open(os.path.join(local_path, 'readme.md')) as f:
 
 setup(
     name='autocensus',
-    version='1.0.0',
+    version='1.0.1',
     description='A tool for collecting ACS and geospatial data from the Census API',
     long_description=long_description,
     long_description_content_type='text/markdown',
