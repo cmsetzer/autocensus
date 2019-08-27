@@ -12,7 +12,7 @@ geopandas==0.5.1
 idna==2.8
 multidict==4.5.2
 munch==2.3.2
-nest_asyncio==1.2.0
+nest-asyncio==1.2.0
 numpy==1.17.0
 pandas==0.25.0
 pyproj==2.2.1
