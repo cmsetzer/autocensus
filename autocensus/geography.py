@@ -8,10 +8,12 @@ from pkg_resources import resource_string
 from typing import Iterable, List, Union
 from zipfile import ZipFile, ZipInfo
 
+# Must import shapely before fiona to prevent GEOS race condition (see
+# https://github.com/Toblerity/Shapely/issues/553 for more information)
+from shapely.geometry import MultiPolygon, Polygon, Point
 from fiona.crs import from_epsg
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
-from shapely.geometry import MultiPolygon, Polygon, Point
 
 from .utilities import forgive
 
