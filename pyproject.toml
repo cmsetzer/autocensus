@@ -11,12 +11,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research"
 ]
-include = [
-    "autocensus/resources/annotations.csv",
-    "autocensus/resources/columns.csv",
-    "autocensus/resources/geo_codes.csv",
-    "autocensus/resources/names.csv"
-]
 
 [tool.poetry.dependencies]
 python = "^3.7"
