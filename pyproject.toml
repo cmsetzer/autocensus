@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "autocensus"
+version = "1.0.1"
+description = "A tool for collecting ACS and geospatial data from the Census API"
+license = "MIT"
+authors = ["Christopher Setzer <chris.setzer@socrata.com>"]
+readme = "readme.md"
+homepage = "https://github.com/socrata/autocensus"
+keywords = ["census", "acs", "api", "data", "socrata"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research"
+]
+include = [
+    "autocensus/resources/annotations.csv",
+    "autocensus/resources/columns.csv",
+    "autocensus/resources/geo_codes.csv",
+    "autocensus/resources/names.csv"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+aiohttp = "^3.5"
+appdirs = "^1.4"
+Fiona = "^1.8"
+geopandas = "^0.5.1"
+nest-asyncio = "^1.2"
+pandas = "^0.24.1"
+socrata-py = "^0.4.20"
+tenacity = "^5.1"
+titlecase = "^0.12.0"
+yarl = "^1.3"
+shapely = "^1.6"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7"
+pydocstyle = "^4.0"
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
+mypy = "^0.720.0"
+
+[tool.black]
+line-length = 99
+target-version = ["py37"]
+skip-string-normalization = true
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
