@@ -43,7 +43,7 @@ def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
 
 def extract_geo_type(value: str) -> str:
     """Extract the geography type from a string like 'state:08'."""
-    return value[:value.index(':')]
+    return value[: value.index(':')]
 
 
 def is_shp_file(zipped_file: ZipInfo) -> bool:

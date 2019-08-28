@@ -27,6 +27,7 @@ def forgive(*exceptions) -> Callable:
 
     This is especially useful for skipping NA values in columns.
     """
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapped(value: Any) -> Any:
@@ -34,7 +35,9 @@ def forgive(*exceptions) -> Callable:
                 return func(value)
             except tuple(exceptions):
                 return value
+
         return wrapped
+
     return decorator
 
 

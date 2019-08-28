@@ -58,10 +58,7 @@ class CensusAPI:
         """
         timeout = ClientTimeout(300)
         connector = TCPConnector(limit=50)
-        async with ClientSession(
-            timeout=timeout,
-            connector=connector
-        ) as session:
+        async with ClientSession(timeout=timeout, connector=connector) as session:
             self._session = session
             yield
             await session.close()
@@ -73,7 +70,7 @@ class CensusAPI:
             'detail': '',
             'cprofile': '/cprofile',
             'profile': '/profile',
-            'subject': '/subject'
+            'subject': '/subject',
         }
         table_route: str = table_route_mappings[table_name]
         url = URL(f'https://api.census.gov/data/{year}/acs/acs{estimate}{table_route}')
@@ -94,11 +91,7 @@ class CensusAPI:
 
     @retry(wait=wait_exponential(multiplier=1, min=3, max=15), stop=stop_after_attempt(5))
     async def fetch_variable(
-        self,
-        estimate: int,
-        year: int,
-        table_name: str,
-        variable: str
+        self, estimate: int, year: int, table_name: str, variable: str
     ) -> dict:
         """Fetch a given variable definition from the Census API."""
         url: URL = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
@@ -119,7 +112,7 @@ class CensusAPI:
         table_name: str,
         variables: Iterable[str],
         for_geo: str,
-        in_geo: Iterable[str]
+        in_geo: Iterable[str],
     ) -> Table:
         """Fetch a given ACS data table from the Census API."""
         url: URL = self.build_url(estimate, year, table_name)
@@ -127,7 +120,7 @@ class CensusAPI:
             ('get', ','.join(['NAME', 'GEO_ID', *variables])),
             ('for', for_geo),
             *(('in', geo) for geo in in_geo),
-            ('key', self.census_api_key)
+            ('key', self.census_api_key),
         ]
         async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
             response_json: Table = await response.json()

@@ -24,7 +24,7 @@ from .geography import (
     load_geodataframe,
     coerce_polygon_to_multipolygon,
     flatten_geometry,
-    identify_affgeoid_field
+    identify_affgeoid_field,
 )
 from .socrata import Credentials, build_dataset_name, to_socrata
 from .utilities import (
@@ -34,7 +34,7 @@ from .utilities import (
     wrap_scalar_value_in_list,
     tidy_variable_label,
     titleize_text,
-    load_annotations_dataframe
+    load_annotations_dataframe,
 )
 
 # Types
@@ -61,7 +61,7 @@ class Query:
         join_geography: bool = True,
         table: Any = None,  # Deprecated (no longer necessary)
         census_api_key: str = None,
-        verify_ssl: bool = True
+        verify_ssl: bool = True,
     ):
         self.estimate: int = estimate
         self._years: Iterable = wrap_scalar_value_in_list(years)
@@ -131,10 +131,7 @@ class Query:
         for (year, table_name), group in self.variables_by_year_and_table_name.items():
             for variable in group:
                 call: Coroutine[Any, Any, dict] = self._census_api.fetch_variable(
-                    self.estimate,
-                    year,
-                    table_name,
-                    variable
+                    self.estimate, year, table_name, variable
                 )
                 calls.append(call)
 
@@ -146,8 +143,9 @@ class Query:
             # Handle Jupyter issue with multiple running event loops by importing nest_asyncio
             if error.args[0] == 'asyncio.run() cannot be called from a running event loop':
                 import nest_asyncio
+
                 nest_asyncio.apply()
-                results: Future = asyncio.run(gathered_calls)
+                results: Future = asyncio.run(gathered_calls)  # type: ignore
 
         # Compile invalid variables
         variables = {}
@@ -168,12 +166,7 @@ class Query:
             chunked_variables_by_for_geo = product(self.for_geo, chunk_variables(variables))
             for for_geo, chunk in chunked_variables_by_for_geo:
                 call: Coroutine[Any, Any, Table] = self._census_api.fetch_table(
-                    self.estimate,
-                    year,
-                    table_name,
-                    chunk,
-                    for_geo,
-                    self.in_geo
+                    self.estimate, year, table_name, chunk, for_geo, self.in_geo
                 )
                 calls.append(call)
         # Make concurrent API calls
@@ -189,9 +182,7 @@ class Query:
         # Handle multiple for_geo values by year
         for year, for_geo in product(years_with_geography, self.for_geo):
             call: Coroutine[Any, Any, Path] = self._census_api.fetch_geography(
-                year,
-                for_geo,
-                self.in_geo
+                year, for_geo, self.in_geo
             )
             calls.append(call)
         # Make concurrent API calls
@@ -208,9 +199,9 @@ class Query:
         dataframe = DataFrame.from_records(records)
 
         # Drop/rename columns, clean up label/concept values
-        dataframe = dataframe \
-            .drop(columns=['attributes', 'group', 'limit', 'predicateType']) \
-            .rename(columns={'name': 'variable'})
+        dataframe = dataframe.drop(
+            columns=['attributes', 'group', 'limit', 'predicateType']
+        ).rename(columns={'name': 'variable'})
         dataframe['label'] = dataframe['label'].map(tidy_variable_label)
         dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
 
@@ -227,15 +218,15 @@ class Query:
             subset = DataFrame(rows, columns=header)
             pertinent_geography_types = set(geography_types) & set(subset.columns)
             id_vars = ['NAME', 'GEO_ID', 'geo_type', *pertinent_geography_types, 'year']
-            melted: DataFrame = subset \
-                .melt(id_vars=id_vars) \
-                .drop(columns=pertinent_geography_types)
+            melted: DataFrame = subset.melt(id_vars=id_vars).drop(
+                columns=pertinent_geography_types
+            )
             subsets.append(melted)
 
         # Ensure correct computation of percent change and difference
-        dataframe: DataFrame = pd.concat(subsets) \
-            .sort_values(by=['geo_type', 'variable', 'NAME', 'year']) \
-            .reset_index(drop=True)
+        dataframe: DataFrame = pd.concat(subsets).sort_values(
+            by=['geo_type', 'variable', 'NAME', 'year']
+        ).reset_index(drop=True)
         dataframe['value'] = dataframe['value'].astype(float)
 
         return dataframe
@@ -258,9 +249,9 @@ class Query:
         # Geometry columns
         dataframe['centroid'] = dataframe.centroid
         dataframe['internal_point'] = dataframe['geometry'].representative_point()
-        dataframe['geometry'] = dataframe['geometry'] \
-            .map(coerce_polygon_to_multipolygon) \
-            .map(flatten_geometry)
+        dataframe['geometry'] = (
+            dataframe['geometry'].map(coerce_polygon_to_multipolygon).map(flatten_geometry)
+        )
 
         # Clean up
         affgeoid_field = identify_affgeoid_field(dataframe.columns)
@@ -274,12 +265,10 @@ class Query:
         Adds columns, normalizes column names, and reorders columns.
         """
         # Compute percent change and difference
-        dataframe['percent_change'] = dataframe \
-            .groupby(['GEO_ID', 'variable'])['value'] \
-            .pct_change()
-        dataframe['difference'] = dataframe \
-            .groupby(['GEO_ID', 'variable'])['value'] \
-            .diff()
+        dataframe['percent_change'] = dataframe.groupby(['GEO_ID', 'variable'])[
+            'value'
+        ].pct_change()
+        dataframe['difference'] = dataframe.groupby(['GEO_ID', 'variable'])['value'].diff()
 
         # Create year date column
         convert_datetime: Callable = partial(pd.to_datetime, format='%Y-%m-%d')
@@ -300,10 +289,7 @@ class Query:
         return dataframe
 
     def assemble_dataframe(
-        self,
-        variables: Variables,
-        tables: Tables,
-        geography: Shapefiles
+        self, variables: Variables, tables: Tables, geography: Shapefiles
     ) -> DataFrame:
         """Merge and finalize the query dataframe.
 
@@ -315,9 +301,7 @@ class Query:
         tables_dataframe: DataFrame = self.convert_tables_to_dataframe(tables)
         variables_dataframe: DataFrame = self.convert_variables_to_dataframe(variables)
         dataframe = tables_dataframe.merge(
-            right=variables_dataframe,
-            how='left',
-            on=['variable', 'year']
+            right=variables_dataframe, how='left', on=['variable', 'year']
         )
         print('Merging annotations...')
         annotations_dataframe: DataFrame = load_annotations_dataframe()
@@ -332,7 +316,7 @@ class Query:
                 right=geography_dataframe,
                 how='left',
                 left_on=['GEO_ID', 'year'],
-                right_on=[affgeoid_field, 'year']
+                right_on=[affgeoid_field, 'year'],
             )
 
         # Finalize dataframe
@@ -369,7 +353,7 @@ class Query:
         name: str = None,
         description: str = None,
         auth: Credentials = None,
-        open_in_browser: bool = True
+        open_in_browser: bool = True,
     ) -> URL:
         """Run query and publish the resulting dataframe to Socrata."""
         if dataframe is None:
@@ -381,6 +365,6 @@ class Query:
             name=build_dataset_name(self.estimate, self.years) if name is None else name,
             description=description,
             auth=auth,
-            open_in_browser=open_in_browser
+            open_in_browser=open_in_browser,
         )
         return revision_url

@@ -32,7 +32,7 @@ def look_up_socrata_credentials(credentials: Credentials = None) -> Credentials:
         ('SOCRATA_KEY_ID', 'SOCRATA_KEY_SECRET'),
         ('SOCRATA_USERNAME', 'SOCRATA_PASSWORD'),
         ('MY_SOCRATA_USERNAME', 'MY_SOCRATA_PASSWORD'),
-        ('SODA_USERNAME', 'SODA_PASSWORD')
+        ('SODA_USERNAME', 'SODA_PASSWORD'),
     ]
     for identifier, secret in environment_variable_pairs:
         try:
@@ -64,9 +64,7 @@ def prepare_output_schema(output_schema):
 
     # Reduce output schema with all metadata changes and return
     output_schema = reduce(
-        change_column_metadata,
-        columns.to_dict(orient='records'),
-        output_schema
+        change_column_metadata, columns.to_dict(orient='records'), output_schema
     )
     return output_schema.run()
 
@@ -74,9 +72,7 @@ def prepare_output_schema(output_schema):
 def create_new_dataset(client: Socrata, dataframe: DataFrame, name, description):
     """Create and publish a dataframe as a new Socrata dataset."""
     revision, output = client.create(
-        name=name,
-        description=description,
-        attributionLink='https://api.census.gov'
+        name=name, description=description, attributionLink='https://api.census.gov'
     ).df(dataframe)
     ok, output = prepare_output_schema(output)
     ok, job = revision.apply(output_schema=output)
@@ -112,7 +108,7 @@ def to_socrata(
     name: str = None,
     description: str = None,
     auth: Credentials = None,
-    open_in_browser: bool = True
+    open_in_browser: bool = True,
 ) -> URL:
     """Publish an autocensus dataframe to Socrata."""
     # Serialize geometry to WKT
