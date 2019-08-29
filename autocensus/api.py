@@ -142,7 +142,8 @@ class CensusAPI:
         if not cached_filepath.exists():
             async with self._session.get(url, ssl=self.verify_ssl) as response:
                 with open(cached_filepath, 'wb') as cached_file:
-                    cached_file.write(await response.content)
+                    content = await response.content.read()
+                    cached_file.write(content)
         return cached_filepath
 
     async def gather_calls(self, calls) -> Future:
