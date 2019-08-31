@@ -130,6 +130,10 @@ class CensusAPI:
             ('key', self.census_api_key)
         ]
         async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
+            if response.status != 200:
+                text = await response.text()
+                print(f'Response: {text}') # check if function or attribute
+                raise ValueError(f'Non-200 response from: {response.url}')
             response_json: Table = await response.json()
             # Add geo_type
             response_json[0].extend(['geo_type', 'year'])

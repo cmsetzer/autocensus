@@ -12,6 +12,7 @@ from appdirs import user_cache_dir
 import pandas as pd
 from pandas import DataFrame
 from titlecase import titlecase
+from datetime import datetime
 
 from .errors import InvalidVariableError
 
@@ -105,3 +106,37 @@ def load_annotations_dataframe() -> DataFrame:
     annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
     dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
     return dataframe
+
+def check_estimate_year(estimate):
+    if estimate != 1 and estimate != 3 and estimate != 5:
+        raise ValueError('Please enter an estimate of 1, 3, or 5')
+    else:
+        return
+
+def check_years(years):
+    current_year = datetime.today().year
+    if type(years) == 'int':
+        years = [years]
+    if min(years) < 2009:
+        raise ValueError('The Census API does not contain data before 2009')
+    elif max(years) == current_year:
+        raise ValueError(f'The Census API does not yet contain data from {current_year} or later')
+    else:
+        return
+
+def check_geo_combinations(in_geo,for_geo):
+    geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
+    in_geo=str(in_geo)
+    for_geo=str(for_geo)
+    if 'tract' in for_geo and ('state' not in in_geo or 'county' not in in_geo):
+        raise ValueError(f'Queries by tract must include state and county in in_geo. See {geo_url}.')
+    elif 'tract' in for_geo and 'place' in in_geo:
+        raise ValueError(f'Queries by tract cannot have place in in_geo. See {geo_url}.')
+    elif 'place' in for_geo and 'state' not in in_geo:
+        raise ValueError(f'Queries by place must have state in in_geo. See {geo_url}.')
+    elif 'place' in for_geo and in_geo == '':
+        raise ValueError(f'Queries by place must also have state in in_geo. See {geo_url}.')
+    elif 'county' in for_geo and in_geo == '':
+        raise ValueError(f'Queries by county must also have state in in_geo. See {geo_url}.')
+    else:
+        return

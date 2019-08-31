@@ -17,6 +17,8 @@ from fiona.crs import from_epsg
 import pandas as pd
 from pandas import DataFrame
 from yarl import URL
+from warnings import warn
+from datetime import datetime
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
@@ -34,7 +36,10 @@ from .utilities import (
     wrap_scalar_value_in_list,
     tidy_variable_label,
     titleize_text,
-    load_annotations_dataframe
+    load_annotations_dataframe,
+    check_estimate_year,
+    check_years,
+    check_geo_combinations
 )
 
 # Types
@@ -76,6 +81,18 @@ class Query:
 
         # Initialize invalid variables defaultdict
         self._invalid_variables: DefaultDict[int, list] = defaultdict(list)
+
+        # Confirm valid estimate year
+        check_estimate_year(estimate)
+
+        # Confirm valid years
+        check_years(years)
+
+        # Confirm that some common geography mistakes are not found
+        check_geo_combinations(in_geo,for_geo)
+
+        # Confirm that tracts are only called with 5-year estimates
+        check_geo_estimates(for_geo,estimate)
 
         # Create cache directory if it doesn't exist
         CACHE_DIRECTORY_PATH.mkdir(exist_ok=True)
@@ -154,7 +171,13 @@ class Query:
         for variable_json in results:
             year = variable_json['year']
             if not variable_json.get('label', False):
-                self._invalid_variables[year].append(variable_json['name'])
+                invalid_var = variable_json['name']
+                self._invalid_variables[year].append(invalid_var)
+                if year == 2009:
+                    warn(f'''{invalid_var} is not a recognized variable in {year}.
+                    Note that the Census API doesn't contain 1-year estimates from 2009.''')
+                else:
+                    warn(f'{invalid_var} is not a recognized variable in {year}')
             else:
                 variables[year, variable_json['name']] = variable_json
         return variables
