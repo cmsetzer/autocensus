@@ -129,8 +129,8 @@ def check_years(years):
 
 def check_geo_combinations(in_geo,for_geo):
     geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
-    in_geo=str(in_geo)
-    for_geo=str(for_geo)
+    in_geo = str(in_geo)
+    for_geo = str(for_geo)
     if 'tract' in for_geo and ('state' not in in_geo or 'county' not in in_geo):
         raise ValueError(f'Queries by tract must include state and county in in_geo. See {geo_url}.')
     elif 'tract' in for_geo and 'place' in in_geo:
@@ -143,3 +143,11 @@ def check_geo_combinations(in_geo,for_geo):
         raise ValueError(f'Queries by county must also have state in in_geo. See {geo_url}.')
     else:
         return
+
+def check_geo_estimates(for_geo,estimate):
+    estimate = str(estimate)
+    for_geo = str(for_geo)
+    if 'tract' in estimate and (estimate == '1' or estimate == '3'):
+        raise ValueError(f'Queries by tract can only be performed with 5-year estimates.')
+    else:
+        pass
