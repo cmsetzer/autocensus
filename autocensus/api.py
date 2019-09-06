@@ -10,7 +10,7 @@ from aiohttp import ClientResponseError, ClientSession, ClientTimeout, TCPConnec
 from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
-from .errors import MissingCredentialsError
+from .errors import CensusAPIUnknownError, MissingCredentialsError
 from .geography import determine_geo_code, extract_geo_type
 from .utilities import CACHE_DIRECTORY_PATH
 
@@ -92,7 +92,11 @@ class CensusAPI:
         url = base_url / f'cb_{year}_{geo_code}_500k.zip'
         return url
 
-    @retry(wait=wait_exponential(multiplier=1, min=3, max=15), stop=stop_after_attempt(5))
+    @retry(
+        wait=wait_exponential(multiplier=1, min=3, max=15),
+        stop=stop_after_attempt(5),
+        reraise=True
+    )
     async def fetch_variable(
         self,
         estimate: int,
@@ -111,7 +115,11 @@ class CensusAPI:
             variable_json['year'] = year
             return variable_json
 
-    @retry(wait=wait_exponential(multiplier=1, min=3, max=15), stop=stop_after_attempt(5))
+    @retry(
+        wait=wait_exponential(multiplier=1, min=3, max=15),
+        stop=stop_after_attempt(5),
+        reraise=True
+    )
     async def fetch_table(
         self,
         estimate: int,
@@ -130,10 +138,10 @@ class CensusAPI:
             ('key', self.census_api_key)
         ]
         async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
+            # Raise informative exception for non-200 response
             if response.status != 200:
-                text = await response.text()
-                print(f'Response: {text}') # check if function or attribute
-                raise ValueError(f'Non-200 response from: {response.url}')
+                text: str = await response.text()
+                raise CensusAPIUnknownError(f'Non-200 response from: {response.url}\n{text}')
             response_json: Table = await response.json()
             # Add geo_type
             response_json[0].extend(['geo_type', 'year'])
