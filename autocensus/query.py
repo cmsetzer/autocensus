@@ -38,7 +38,7 @@ from .utilities import (
     load_annotations_dataframe,
     check_years,
     check_geo_combinations,
-    check_geo_estimates
+    check_geo_estimates,
 )
 
 # Types

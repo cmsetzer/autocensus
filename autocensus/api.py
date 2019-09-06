@@ -92,7 +92,7 @@ class CensusAPI:
     @retry(
         wait=wait_exponential(multiplier=1, min=3, max=15),
         stop=stop_after_attempt(5),
-        reraise=True
+        reraise=True,
     )
     async def fetch_variable(
         self, estimate: int, year: int, table_name: str, variable: str
@@ -111,7 +111,7 @@ class CensusAPI:
     @retry(
         wait=wait_exponential(multiplier=1, min=3, max=15),
         stop=stop_after_attempt(5),
-        reraise=True
+        reraise=True,
     )
     async def fetch_table(
         self,
