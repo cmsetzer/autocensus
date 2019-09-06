@@ -92,11 +92,10 @@ class Query:
 
     def __repr__(self) -> str:
         attributes = ['estimate', 'years', 'variables', 'for_geo', 'in_geo']
-        mappings = {attribute: repr(getattr(self, attribute)) for attribute in attributes}
-        representation = (
-            '<Query estimate={estimate} years={years} variables={variables} '
-            'for_geo={for_geo} in_geo={in_geo}>'
-        ).format_map(mappings)
+        attribute_representations = [repr(getattr(self, attribute)) for attribute in attributes]
+        representation = '<Query estimate={} years={} variables={} for_geo={} in_geo={}>'.format(
+            *attribute_representations
+        )
         return representation
 
     @property

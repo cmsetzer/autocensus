@@ -1,6 +1,6 @@
 """Functions for retrieving data from the Census API."""
 
-from asyncio import Future, create_task, gather
+from asyncio import Future, gather
 from contextlib import asynccontextmanager
 import os
 from pathlib import Path
@@ -161,6 +161,5 @@ class CensusAPI:
     async def gather_calls(self, calls) -> Future:
         """Gather a series of fetch calls for concurrent scheduling."""
         async with self.create_session():
-            tasks: Iterable = map(create_task, calls)
-            gathered: Future = await gather(*tasks)
+            gathered: Future = await gather(*calls)
             return gathered
