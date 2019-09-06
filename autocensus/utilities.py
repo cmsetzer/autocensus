@@ -14,7 +14,7 @@ from pandas import DataFrame
 from titlecase import titlecase
 from datetime import datetime
 
-from .errors import InvalidVariableError
+from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
 
 # Types
 Chunk = List[str]
@@ -107,44 +107,58 @@ def load_annotations_dataframe() -> DataFrame:
     dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
     return dataframe
 
-def check_estimate_year(estimate):
-    if estimate != 1 and estimate != 3 and estimate != 5:
-        raise ValueError('Please enter an estimate of 1, 3, or 5')
-    else:
-        return
 
-def check_years(years):
-    current_year = datetime.today().year
-    if type(years) == 'int':
-        years = [years]
+def check_years(years: Iterable) -> bool:
+    """Validate a range of query years.
+
+    Raises an InvalidYearError if a given year falls outside the
+    expected window of data available from the Census API.
+    """
+    current_year: int = datetime.today().year
     if min(years) < 2009:
-        raise ValueError('The Census API does not contain data before 2009')
-    elif max(years) == current_year:
-        raise ValueError(f'The Census API does not yet contain data from {current_year} or later')
+        raise InvalidYearError('The Census API does not contain data from before 2009')
+    elif max(years) >= current_year:
+        raise InvalidYearError(
+            f'The Census API does not yet contain data from {current_year} or later'
+        )
     else:
-        return
+        return True
 
-def check_geo_combinations(in_geo,for_geo):
+
+def check_geo_combinations(for_geo: Iterable, in_geo: Iterable) -> bool:
+    """Validate a given combination of for_geo and in_geo values.
+
+    Raises an InvalidGeographyError for invalid combinations that come
+    up often.
+    """
+    for_geo_types = {geo.partition(':')[0] for geo in for_geo}
+    in_geo_types = {geo.partition(':')[0] for geo in in_geo}
+
     geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
-    in_geo = str(in_geo)
-    for_geo = str(for_geo)
-    if 'tract' in for_geo and ('state' not in in_geo or 'county' not in in_geo):
-        raise ValueError(f'Queries by tract must include state and county in in_geo. See {geo_url}.')
-    elif 'tract' in for_geo and 'place' in in_geo:
-        raise ValueError(f'Queries by tract cannot have place in in_geo. See {geo_url}.')
-    elif 'place' in for_geo and 'state' not in in_geo:
-        raise ValueError(f'Queries by place must have state in in_geo. See {geo_url}.')
-    elif 'place' in for_geo and in_geo == '':
-        raise ValueError(f'Queries by place must also have state in in_geo. See {geo_url}.')
-    elif 'county' in for_geo and in_geo == '':
-        raise ValueError(f'Queries by county must also have state in in_geo. See {geo_url}.')
+    if 'tract' in for_geo_types and not ({'state', 'county'} & in_geo_types):
+        raise InvalidGeographyError(
+            f'Queries by tract must include state and county. See {geo_url}'
+        )
+    elif 'tract' in for_geo_types and 'place' in in_geo_types:
+        raise InvalidGeographyError(f'Queries by tract cannot have place in in_geo. See {geo_url}')
+    elif 'place' in for_geo_types and 'state' not in in_geo_types:
+        raise InvalidGeographyError(f'Queries by place must have state in in_geo. See {geo_url}')
+    elif 'county' in for_geo_types and 'state' not in in_geo_types:
+        raise InvalidGeographyError(
+            f'Queries by county must also have state in in_geo. See {geo_url}'
+        )
     else:
-        return
+        return True
 
-def check_geo_estimates(for_geo,estimate):
-    estimate = str(estimate)
-    for_geo = str(for_geo)
-    if 'tract' in estimate and (estimate == '1' or estimate == '3'):
-        raise ValueError(f'Queries by tract can only be performed with 5-year estimates.')
+
+def check_geo_estimates(estimate: int, for_geo: Iterable) -> bool:
+    """Validate a given estimate in combination with for_geo values.
+
+    Raises an InvalidGeographyError for invalid combinations that come
+    up often.
+    """
+    for_geo_types = {geo.split(':')[0] for geo in for_geo}
+    if estimate in [1, 3] and 'tract' in for_geo_types:
+        raise ValueError('Queries by tract can only be performed with 5-year estimates')
     else:
-        pass
+        return True

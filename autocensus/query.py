@@ -37,9 +37,9 @@ from .utilities import (
     tidy_variable_label,
     titleize_text,
     load_annotations_dataframe,
-    check_estimate_year,
     check_years,
-    check_geo_combinations
+    check_geo_combinations,
+    check_geo_estimates
 )
 
 # Types
@@ -68,7 +68,10 @@ class Query:
         census_api_key: str = None,
         verify_ssl: bool = True
     ):
-        self.estimate: int = estimate
+        if estimate in [1, 3, 5]:
+            self.estimate: int = estimate
+        else:
+            raise ValueError('Please specify an estimate of 1, 3, or 5 years')
         self._years: Iterable = wrap_scalar_value_in_list(years)
         self._variables: Iterable = wrap_scalar_value_in_list(variables)
         self.for_geo: Iterable = wrap_scalar_value_in_list(for_geo)
@@ -76,23 +79,14 @@ class Query:
         if join_geography in [True, False]:
             self.join_geography: bool = join_geography
         else:
-            raise ValueError(f'Invalid value for join_geography: {join_geography}')
+            raise ValueError('Please specify a True/False value for join_geography')
         self.census_api_key: str = look_up_census_api_key(census_api_key)
+
+        # Validate query parameters to avoid common pitfalls
+        self._validate_query_parameters()
 
         # Initialize invalid variables defaultdict
         self._invalid_variables: DefaultDict[int, list] = defaultdict(list)
-
-        # Confirm valid estimate year
-        check_estimate_year(estimate)
-
-        # Confirm valid years
-        check_years(years)
-
-        # Confirm that some common geography mistakes are not found
-        check_geo_combinations(in_geo,for_geo)
-
-        # Confirm that tracts are only called with 5-year estimates
-        check_geo_estimates(for_geo,estimate)
 
         # Create cache directory if it doesn't exist
         CACHE_DIRECTORY_PATH.mkdir(exist_ok=True)
@@ -126,6 +120,13 @@ class Query:
             table_name: str = parse_table_name_from_variable(variable)
             variables[year, table_name].append(variable)
         return variables
+
+    def _validate_query_parameters(self) -> bool:
+        """Validate query parameters to avoid common pitfalls."""
+        check_years(self._years)
+        check_geo_combinations(self.for_geo, self.in_geo)
+        check_geo_estimates(self.estimate, self.for_geo)
+        return True
 
     @contextmanager
     def create_census_api_session(self):
