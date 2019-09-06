@@ -12,13 +12,12 @@ import os
 from pathlib import Path
 from pkg_resources import resource_string
 from typing import Any, Callable, Coroutine, DefaultDict, Dict, Iterable, List, Tuple, Union
+from warnings import warn
 
 from fiona.crs import from_epsg
 import pandas as pd
 from pandas import DataFrame
 from yarl import URL
-from warnings import warn
-from datetime import datetime
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
@@ -172,13 +171,16 @@ class Query:
         for variable_json in results:
             year = variable_json['year']
             if not variable_json.get('label', False):
-                invalid_var = variable_json['name']
-                self._invalid_variables[year].append(invalid_var)
+                invalid_variable = variable_json['name']
+                self._invalid_variables[year].append(invalid_variable)
                 if year == 2009:
-                    warn(f'''{invalid_var} is not a recognized variable in {year}.
-                    Note that the Census API doesn't contain 1-year estimates from 2009.''')
+                    message = (
+                        f'{invalid_variable} is not a recognized variable for {year}. Note that '
+                        'the Census API does not contain 1-year estimate data for 2009'
+                    )
                 else:
-                    warn(f'{invalid_var} is not a recognized variable in {year}')
+                    message = f'{invalid_variable} is not a recognized variable for {year}'
+                warn(message)
             else:
                 variables[year, variable_json['name']] = variable_json
         return variables
