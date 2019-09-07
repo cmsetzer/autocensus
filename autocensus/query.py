@@ -21,8 +21,8 @@ from yarl import URL
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
+    Geo,
     get_geo_codes,
-    extract_geo_type,
     load_geodataframe,
     coerce_polygon_to_multipolygon,
     flatten_geometry,
@@ -74,8 +74,10 @@ class Query:
             raise ValueError('Please specify an estimate of 1, 3, or 5 years')
         self._years: Iterable = wrap_scalar_value_in_list(years)
         self._variables: Iterable = wrap_scalar_value_in_list(variables)
-        self.for_geo: Iterable = wrap_scalar_value_in_list(for_geo)
-        self.in_geo: Iterable = [] if in_geo is None else wrap_scalar_value_in_list(in_geo)
+        self.for_geo: Iterable = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
+        self.in_geo: Iterable = [] if in_geo is None else [
+            Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)
+        ]
         if join_geography in [True, False]:
             self.join_geography: bool = join_geography
         else:
@@ -235,7 +237,7 @@ class Query:
     def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
         """Reshape and convert ACS data tables to a dataframe."""
         geographies: Iterable = chain(self.for_geo, self.in_geo)
-        geography_types = [extract_geo_type(geo) for geo in geographies]
+        geography_types = [geo.type for geo in geographies]
         other_geography_types: Iterable[str] = get_geo_codes().keys()
 
         # Melt each subset to adopt common schema

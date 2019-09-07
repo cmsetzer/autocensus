@@ -1,6 +1,7 @@
 """Utility functions for working with geospatial data."""
 
 from csv import reader
+from dataclasses import dataclass
 from io import StringIO
 import math
 from pathlib import Path
@@ -20,6 +21,31 @@ from .utilities import forgive
 # Types
 Geometry = Union[MultiPolygon, Point, Polygon]
 Shape = Union[MultiPolygon, Polygon]
+
+
+@dataclass
+class Geo:
+    """A Census geography, e.g. "state:08", to be used in a query."""
+
+    type: str
+    code: str
+
+    def __init__(self, value: str, code: str = None):
+        if value == 'us' and code is None:
+            self.type = 'us'
+            self.code = '*'
+        elif code is None:
+            try:
+                self.type, self.code = value.split(':')
+            except ValueError as error:
+                message = 'Please specify a valid geography value, e.g. "state:08"'
+                raise ValueError(message) from error
+        else:
+            self.type = value
+            self.code = code
+
+    def __str__(self):
+        return f'{self.type}:{self.code}'
 
 
 def calculate_congress_number(year: int) -> int:
@@ -45,11 +71,6 @@ def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
         congress: int = calculate_congress_number(year)
         geo_code: str = geo_codes[for_geo_type].format(congress=congress)  # type: ignore
     return geo_code
-
-
-def extract_geo_type(value: str) -> str:
-    """Extract the geography type from a string like 'state:08'."""
-    return value[: value.index(':')]
 
 
 def is_shp_file(zipped_file: ZipInfo) -> bool:

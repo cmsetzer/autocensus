@@ -49,7 +49,7 @@ def clear_cache() -> bool:
     return cache_is_cleared
 
 
-def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable[Union[int, str]]:
+def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable:
     """If a string or integer is passed, wrap it in a list."""
     if isinstance(value, (int, str)):
         return [value]
@@ -134,8 +134,8 @@ def check_geo_combinations(for_geo: Iterable, in_geo: Iterable) -> bool:
     Raises an InvalidGeographyError for invalid combinations that come
     up often.
     """
-    for_geo_types = {geo.partition(':')[0] for geo in for_geo}
-    in_geo_types = {geo.partition(':')[0] for geo in in_geo}
+    for_geo_types = {geo.type for geo in for_geo}
+    in_geo_types = {geo.type for geo in in_geo}
 
     geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
     if 'tract' in for_geo_types and not ({'state', 'county'} & in_geo_types):
@@ -160,7 +160,7 @@ def check_geo_estimates(estimate: int, for_geo: Iterable) -> bool:
     Raises an InvalidGeographyError for invalid combinations that come
     up often.
     """
-    for_geo_types = {geo.split(':')[0] for geo in for_geo}
+    for_geo_types = {geo.type for geo in for_geo}
     if estimate in [1, 3] and 'tract' in for_geo_types:
         raise ValueError('Queries by tract can only be performed with 5-year estimates')
     else:

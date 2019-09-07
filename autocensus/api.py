@@ -4,14 +4,14 @@ from asyncio import Future, gather
 from contextlib import asynccontextmanager
 import os
 from pathlib import Path
-from typing import AsyncGenerator, Iterable, List, Union
+from typing import AsyncGenerator, Dict, Iterable, List, Union
 
 from aiohttp import ClientResponseError, ClientSession, ClientTimeout, TCPConnector
 from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
 from .errors import CensusAPIUnknownError, MissingCredentialsError
-from .geography import determine_geo_code, extract_geo_type
+from .geography import Geo, determine_geo_code
 from .utilities import CACHE_DIRECTORY_PATH
 
 # Types
@@ -76,17 +76,17 @@ class CensusAPI:
         url = URL(f'https://api.census.gov/data/{year}/acs/acs{estimate}{table_route}')
         return url
 
-    def build_shapefile_url(self, year: int, for_geo: str, in_geo: Iterable) -> URL:
+    def build_shapefile_url(self, year: int, for_geo: Geo, in_geo: Iterable) -> URL:
         """Build a Census shapefile URL based on the supplied parameters."""
-        for_geo_type: str = extract_geo_type(for_geo)
-        in_geo_dict = dict(pair.split(':') for pair in in_geo)
+        in_geo_dict: Dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
         state_fips = in_geo_dict.get('state', '')
         if year > 2013:
             base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{year}/shp')
         else:
             base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{year}')
-        geo_code: str = determine_geo_code(year, for_geo_type, state_fips)
-        url = base_url / f'cb_{year}_{geo_code}_500k.zip'
+        geo_code: str = determine_geo_code(year, for_geo.type, state_fips)
+        resolution = '500k' if not for_geo.type == 'us' else '5m'
+        url: URL = base_url / f'cb_{year}_{geo_code}_{resolution}.zip'
         return url
 
     @retry(
@@ -119,15 +119,15 @@ class CensusAPI:
         year: int,
         table_name: str,
         variables: Iterable[str],
-        for_geo: str,
+        for_geo: Geo,
         in_geo: Iterable[str],
     ) -> Table:
         """Fetch a given ACS data table from the Census API."""
         url: URL = self.build_url(estimate, year, table_name)
         params = [
             ('get', ','.join(['NAME', 'GEO_ID', *variables])),
-            ('for', for_geo),
-            *(('in', geo) for geo in in_geo),
+            ('for', str(for_geo)),
+            *(('in', str(geo)) for geo in in_geo),
             ('key', self.census_api_key),
         ]
         async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
@@ -138,12 +138,11 @@ class CensusAPI:
             response_json: Table = await response.json()
             # Add geo_type
             response_json[0].extend(['geo_type', 'year'])
-            geo_type = extract_geo_type(for_geo)
             for row in response_json[1:]:
-                row.extend([geo_type, year])
+                row.extend([for_geo.type, year])
             return response_json
 
-    async def fetch_geography(self, year: int, for_geo: str, in_geo: Iterable) -> Path:
+    async def fetch_geography(self, year: int, for_geo: Geo, in_geo: Iterable) -> Path:
         """Fetch a given shapefile and download it to the local cache.
 
         Returns a path to the cached shapefile. If the shapefile is

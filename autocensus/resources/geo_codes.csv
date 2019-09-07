@@ -1,5 +1,5 @@
 type,geo_code
-nation,us_nation
+us,us_nation
 region,us_region
 division,us_division
 state,us_state
