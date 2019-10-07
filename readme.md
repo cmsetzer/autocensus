@@ -18,7 +18,8 @@ This package is under active development and breaking changes to its API are exp
   + [Example: Replace rows in an existing dataset](#example-replace-rows-in-an-existing-dataset)
   + [Example: Create a new dataset from multiple queries](#example-create-a-new-dataset-from-multiple-queries)
 * [Topics](#topics)
-* [Known issues](#known-issues)
+* [Troubleshooting](#troubleshooting)
+  + [Clearing the cache](#clearing-the-cache)
   + [SSL errors](#ssl-errors)
 
 ## Installation
@@ -114,6 +115,10 @@ To improve performance across queries, autocensus caches shapefiles on disk by d
 * Linux: `/home/{username}/.cache/autocensus`
 * Mac: `/Users/{username}/Library/Application Support/Caches/autocensus`
 * Windows: `C:\\Users\\{username}\\AppData\\Local\\socrata\\autocensus`
+
+You can clear the cache by manually deleting the cache directory or by executing the `autocensus.clear_cache` function. See the section [Troubleshooting: Clearing the cache] for more details.
+
+[Troubleshooting: Clearing the cache]: #clearing-the-cache
 
 ## Publishing to Socrata
 
@@ -220,7 +225,19 @@ query = Query(
 
 Topics currently included with autocensus are `population`, `race`, `education`, `income`, and `housing`.
 
-## Known issues
+## Troubleshooting
+
+### Clearing the cache
+
+Sometimes it is useful to clear the [cache directory] that autocensus uses to store downloaded shapefiles for future queries, especially if you're running into `BadZipFile: File is not a zip file` errors or other shapefile-related problems. Clear your cache like so:
+
+```python
+import autocensus
+
+autocensus.clear_cache()
+```
+
+[cache directory]: #caching
 
 ### SSL errors
 
