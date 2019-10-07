@@ -17,7 +17,6 @@ This package is under active development and breaking changes to its API are exp
   + [Example: Create a new dataset](#example-create-a-new-dataset)
   + [Example: Replace rows in an existing dataset](#example-replace-rows-in-an-existing-dataset)
   + [Example: Create a new dataset from multiple queries](#example-create-a-new-dataset-from-multiple-queries)
-* [Topics](#topics)
 * [Troubleshooting](#troubleshooting)
   + [Clearing the cache](#clearing-the-cache)
   + [SSL errors](#ssl-errors)
@@ -204,26 +203,6 @@ to_socrata(
     description='5-year estimates from the American Community Survey'  # Optional
 )
 ```
-
-## Topics
-
-autocensus is packaged with some pre-built lists of pertinent ACS variables around topics like race, education, and housing. These live within the `autocensus.topics` module:
-
-```python
-import autocensus
-from autocensus import Query
-
-query = Query(
-    estimate=5,
-    years=[2014, 2015, 2016, 2017],
-    # Housing variables: B25035_001E, B25064_001E, B25077_001E
-    variables=autocensus.topics.housing,
-    for_geo='tract:*',
-    in_geo=['state:08', 'county:005']
-)
-```
-
-Topics currently included with autocensus are `population`, `race`, `education`, `income`, and `housing`.
 
 ## Troubleshooting
 

@@ -2,6 +2,6 @@
 
 __version__ = '1.0.4'
 
-from . import api, errors, geography, query, socrata, topics, utilities  # noqa
+from . import api, errors, geography, query, socrata, utilities  # noqa
 from .query import Query  # noqa
 from .utilities import clear_cache  # noqa
