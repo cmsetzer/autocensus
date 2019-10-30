@@ -109,8 +109,7 @@ class Query:
         """Return the supplied variables as a sorted, unique list."""
         return sorted(set(self._variables))
 
-    @property
-    def variables_by_year_and_table_name(self) -> DefaultDict[Tuple[int, str], List[str]]:
+    def get_variables_by_year_and_table_name(self) -> DefaultDict[Tuple[int, str], List[str]]:
         """Group the supplied variables by year and table name."""
         variables: DefaultDict[Tuple[int, str], List[str]] = defaultdict(list)
         for year, variable in product(self.years, self.variables):
@@ -145,7 +144,7 @@ class Query:
         """
         # Assemble API calls for concurrent execution
         calls = []
-        for (year, table_name), group in self.variables_by_year_and_table_name.items():
+        for (year, table_name), group in self.get_variables_by_year_and_table_name().items():
             for variable in group:
                 call: Coroutine[Any, Any, dict] = self._census_api.fetch_variable(
                     self.estimate, year, table_name, variable
@@ -187,7 +186,7 @@ class Query:
         """Get data tables for the supplied variables."""
         # Assemble API calls for concurrent execution
         calls = []
-        for (year, table_name), variables in self.variables_by_year_and_table_name.items():
+        for (year, table_name), variables in self.get_variables_by_year_and_table_name().items():
             # Handle multiple for_geo values by year
             chunked_variables_by_for_geo = product(self.for_geo, chunk_variables(variables))
             for for_geo, chunk in chunked_variables_by_for_geo:
