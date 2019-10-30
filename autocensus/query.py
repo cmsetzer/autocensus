@@ -11,7 +11,7 @@ from itertools import chain, product
 import os
 from pathlib import Path
 from pkg_resources import resource_string
-from typing import Any, Callable, Coroutine, DefaultDict, Dict, Iterable, List, Tuple, Union
+from typing import Any, Callable, Coroutine, DefaultDict, Dict, Iterable, List, Set, Tuple, Union
 from warnings import warn
 
 from fiona.crs import from_epsg
@@ -21,6 +21,7 @@ from yarl import URL
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
+    get_geo_codes,
     extract_geo_type,
     load_geodataframe,
     coerce_polygon_to_multipolygon,
@@ -152,7 +153,7 @@ class Query:
                 calls.append(call)
 
         # Make concurrent API calls
-        gathered_calls = self._census_api.gather_calls(calls)
+        gathered_calls: Future = self._census_api.gather_calls(calls)
         try:
             results: Future = asyncio.run(gathered_calls)
         except RuntimeError as error:
@@ -236,16 +237,18 @@ class Query:
         """Reshape and convert ACS data tables to a dataframe."""
         geographies: Iterable = chain(self.for_geo, self.in_geo)
         geography_types = [extract_geo_type(geo) for geo in geographies]
+        other_geography_types: Iterable[str] = get_geo_codes().keys()
 
         # Melt each subset to adopt common schema
         subsets = []
         for header, *rows in tables:
             subset = DataFrame(rows, columns=header)
-            pertinent_geography_types = set(geography_types) & set(subset.columns)
-            id_vars = ['NAME', 'GEO_ID', 'geo_type', *pertinent_geography_types, 'year']
-            melted: DataFrame = subset.melt(id_vars=id_vars).drop(
-                columns=pertinent_geography_types
+            # Consolidate geography type in a single column
+            geography_columns: Set[str] = (
+                set(geography_types) & set(other_geography_types) & set(subset.columns)
             )
+            id_vars = ['NAME', 'GEO_ID', 'geo_type', *geography_columns, 'year']
+            melted: DataFrame = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
 
         # Ensure correct computation of percent change and difference

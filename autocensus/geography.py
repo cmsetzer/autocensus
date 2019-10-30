@@ -5,7 +5,7 @@ from io import StringIO
 import math
 from pathlib import Path
 from pkg_resources import resource_string
-from typing import Iterable, List, Union
+from typing import Dict, Iterable, List, Union
 from zipfile import ZipFile, ZipInfo
 
 # Must import shapely before fiona to prevent GEOS race condition (see
@@ -28,11 +28,17 @@ def calculate_congress_number(year: int) -> int:
     return congress
 
 
-def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
-    """Determine the shapefile naming code for a given geography."""
+def get_geo_codes() -> Dict[str, str]:
+    """Read shapefile naming codes from a local CSV."""
     geo_codes_csv: bytes = resource_string(__name__, 'resources/geo_codes.csv')
     csv_reader: Iterable[List[str]] = reader(StringIO(geo_codes_csv.decode('utf-8')))
     geo_codes = {type_: geo_code for type_, geo_code in csv_reader}
+    return geo_codes
+
+
+def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
+    """Determine the shapefile naming code for a given geography."""
+    geo_codes: Dict[str, str] = get_geo_codes()
     if for_geo_type != 'congressional district':
         geo_code: str = geo_codes[for_geo_type].format(state_fips=state_fips)
     else:
