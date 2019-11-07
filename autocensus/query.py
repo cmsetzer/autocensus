@@ -293,11 +293,21 @@ class Query:
 
         Adds columns, normalizes column names, and reorders columns.
         """
-        # Compute percent change and difference
-        dataframe['percent_change'] = dataframe.groupby(['GEO_ID', 'variable'])[
-            'value'
-        ].pct_change()
-        dataframe['difference'] = dataframe.groupby(['GEO_ID', 'variable'])['value'].diff()
+        # Insert NAs for annotated rows to avoid outlier values like -999,999,999
+        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
+
+        # Compute percent change and difference from prior year (if prior year is NA, uses value
+        # from most recent available year)
+        dataframe['percent_change'] = (
+            dataframe.loc[dataframe['value'].notnull()]
+            .groupby(['GEO_ID', 'variable'])['value']
+            .pct_change()
+        )
+        dataframe['difference'] = (
+            dataframe.loc[dataframe['value'].notnull()]
+            .groupby(['GEO_ID', 'variable'])['value']
+            .diff()
+        )
 
         # Create year date column
         convert_datetime: Callable = partial(pd.to_datetime, format='%Y-%m-%d')
