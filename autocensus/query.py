@@ -226,9 +226,8 @@ class Query:
         dataframe = DataFrame.from_records(records)
 
         # Drop/rename columns, clean up label/concept values
-        dataframe = dataframe.drop(
-            columns=['attributes', 'group', 'limit', 'predicateType']
-        ).rename(columns={'name': 'variable'})
+        extra_columns = {'attributes', 'group', 'limit', 'predicateType'} & set(dataframe.columns)
+        dataframe = dataframe.drop(columns=extra_columns).rename(columns={'name': 'variable'})
         dataframe['label'] = dataframe['label'].map(tidy_variable_label)
         dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
 
