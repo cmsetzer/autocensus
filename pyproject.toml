@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "autocensus"
-version = "1.0.5"
+version = "1.0.6"
 description = "A tool for collecting ACS and geospatial data from the Census API"
 license = "MIT"
 authors = ["Christopher Setzer <chris.setzer@socrata.com>"]
