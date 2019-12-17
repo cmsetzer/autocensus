@@ -29,7 +29,7 @@ shapely = "^1.6"
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
 pydocstyle = "^4.0"
-black = {version = "^18.3-alpha.0", allows-prereleases = true}
+black = {version = "^18.3-alpha.0", allow-prereleases = true}
 mypy = "^0.720.0"
 
 [tool.black]
