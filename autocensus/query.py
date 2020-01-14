@@ -11,8 +11,21 @@ from itertools import chain, product
 import os
 from pathlib import Path
 from pkg_resources import resource_string
-from typing import Any, Callable, Coroutine, DefaultDict, Dict, Iterable, List, Set, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 from warnings import warn
+from zipfile import BadZipFile
 
 from fiona.crs import from_epsg
 import pandas as pd
@@ -45,7 +58,7 @@ from .utilities import (
 # Types
 Tables = List[Table]
 Variables = Dict[Tuple[int, str], dict]
-Shapefiles = List[Path]
+Shapefiles = List[Optional[Path]]
 
 
 class Query:
@@ -260,12 +273,29 @@ class Query:
         return dataframe
 
     def convert_geography_to_dataframe(self, geography: Shapefiles) -> DataFrame:
-        """Convert one or more shapefiles to a dataframe using geopandas."""
+        """Convert one or more shapefiles to a dataframe.
+
+        Skips over null filepaths produced by invalid responses from the
+        Census shapefile endpoint. For corrupt or invalid zip files
+        (typically caused by an interrupted shapefile download to the
+        autocensus cache), issues a warning and skips to the next
+        filepath.
+        """
         # Avoid needless encoding warnings
         os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
         subsets = []
-        for filepath in geography:
-            subset = load_geodataframe(filepath)
+        # Drop null values (e.g., for not-yet-released shapefiles) from list of filepaths
+        filepaths: Iterable[Path] = filter(None, geography)
+        for filepath in filepaths:
+            try:
+                subset = load_geodataframe(filepath)
+            except BadZipFile:
+                warn(
+                    f'Failed to load zip file {filepath}. It may be corrupted. You might try '
+                    'clearing your autocensus cache by calling autocensus.clear_cache() or '
+                    f'manually deleting the cache folder at {CACHE_DIRECTORY_PATH}. Continuing…'
+                )
+                continue
             subsets.append(subset)
         dataframe: DataFrame = pd.concat(subsets, ignore_index=True, sort=True)
 

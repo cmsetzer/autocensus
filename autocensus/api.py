@@ -4,7 +4,8 @@ from asyncio import Future, gather
 from contextlib import asynccontextmanager
 import os
 from pathlib import Path
-from typing import AsyncGenerator, Dict, Iterable, List, Union
+from typing import AsyncGenerator, Dict, Iterable, List, Optional, Union
+from warnings import warn
 
 from aiohttp import ClientResponseError, ClientSession, ClientTimeout, TCPConnector
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -142,16 +143,23 @@ class CensusAPI:
                 row.extend([for_geo.type, year])
             return response_json
 
-    async def fetch_geography(self, year: int, for_geo: Geo, in_geo: Iterable) -> Path:
+    async def fetch_geography(self, year: int, for_geo: Geo, in_geo: Iterable) -> Optional[Path]:
         """Fetch a given shapefile and download it to the local cache.
 
         Returns a path to the cached shapefile. If the shapefile is
         already cached, skips the download and returns the path.
+
+        If the shapefile URL returns a non-200 response, warns the user
+        and returns a null value.
         """
         url: URL = self.build_shapefile_url(year, for_geo, in_geo)
         cached_filepath: Path = CACHE_DIRECTORY_PATH / url.name
         if not cached_filepath.exists():
             async with self._session.get(url, ssl=self.verify_ssl) as response:
+                # Handle bad response or missing shapefile (if, e.g., it hasn't been released yet)
+                if response.status != 200:
+                    warn(f'Failed to obtain a Census boundary shapefile from {response.url}')
+                    return None
                 with open(cached_filepath, 'wb') as cached_file:
                     content = await response.content.read()
                     cached_file.write(content)
