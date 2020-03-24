@@ -1,20 +1,21 @@
 """Utility functions for working with geospatial data."""
 
+# Must import shapely before fiona to prevent GEOS race condition (see
+# https://github.com/Toblerity/Shapely/issues/553 for more information)
+from shapely.geometry import MultiPolygon, Point, Polygon  # isort:skip
+
 from csv import reader
 from dataclasses import dataclass
 from io import StringIO
 import math
 from pathlib import Path
-from pkg_resources import resource_string
 from typing import Dict, Iterable, List, Union
 from zipfile import ZipFile, ZipInfo
 
-# Must import shapely before fiona to prevent GEOS race condition (see
-# https://github.com/Toblerity/Shapely/issues/553 for more information)
-from shapely.geometry import MultiPolygon, Polygon, Point
 from fiona.crs import from_epsg
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
+from pkg_resources import resource_string
 
 from .utilities import forgive
 
