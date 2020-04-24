@@ -46,13 +46,16 @@ def look_up_socrata_credentials(credentials: Credentials = None) -> Credentials:
         raise MissingCredentialsError('No Socrata credentials found in local environment')
 
 
-def change_column_metadata(prev, record: Dict[str, str]):
-    """Add a column metadata change to a Socrata revision object.
+def change_column(prev: OutputSchema, record: Dict[str, str]) -> OutputSchema:
+    """Add a column change to a Socrata revision object.
 
     To be used in reducing a series of such changes.
     """
     value = json.loads(record['value']) if record['field'] == 'format' else record['value']
-    return prev.change_column_metadata(record['field_name'], record['field']).to(value)
+    if record['field'] == 'transform':
+        return prev.change_column_transform(record['field_name']).to(value)
+    else:
+        return prev.change_column_metadata(record['field_name'], record['field']).to(value)
 
 
 def prepare_output_schema(output_schema: OutputSchema):
@@ -64,9 +67,7 @@ def prepare_output_schema(output_schema: OutputSchema):
     columns = columns[columns['field_name'].isin(field_names)]
 
     # Reduce output schema with all metadata changes and return
-    output_schema = reduce(
-        change_column_metadata, columns.to_dict(orient='records'), output_schema
-    )
+    output_schema = reduce(change_column, columns.to_dict(orient='records'), output_schema)
     return output_schema.run()
 
 
@@ -79,6 +80,7 @@ def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, descrip
     # Handle pre-1.x versions of Socrata-py
     if isinstance(output, tuple):
         ok, output = output
+    output.wait_for_finish()
     revision.apply(output_schema=output)
     return revision
 
@@ -92,13 +94,17 @@ def update_existing_dataset(client: Socrata, dataframe, dataset_id):
         ok, revision = view.revisions.create_replace_revision()
         ok, upload = revision.create_upload('autocensus-update')
         ok, source = upload.df(dataframe)
+        source.wait_for_finish()
         output = source.get_latest_input_schema().get_latest_output_schema()
-        ok, job = revision.apply(output_schema=output)
+        output.wait_for_finish()
+        revision.apply(output_schema=output)
     else:
         revision = view.revisions.create_replace_revision()
         upload = revision.create_upload('autocensus-update')
         source = upload.df(dataframe)
+        source.wait_for_finish()
         output = source.get_latest_input_schema().get_latest_output_schema()
+        output.wait_for_finish()
         revision.apply(output_schema=output)
     return revision
 

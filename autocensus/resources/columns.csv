@@ -29,6 +29,21 @@ difference,description,Absolute change from previous year's value for geographic
 centroid,description,Point representing the center of geographic boundary
 internal_point,description,Point guaranteed to fall within geographic boundary
 geometry,description,Polygon(s) representing geographic boundary for a given year
+name,transform,"to_text(`name`)"
+geo_id,transform,"to_text(`geo_id`)"
+geo_type,transform,"to_text(`geo_type`)"
+year,transform,"to_number(`year`)"
+date,transform,"to_floating_timestamp(`date`, '%Y-%m-%d')"
+variable_code,transform,"to_text(`variable_code`)"
+variable_label,transform,"to_text(`variable_label`)"
+variable_concept,transform,"to_text(`variable_concept`)"
+annotation,transform,"to_text(`annotation`)"
+value,transform,"to_number(`value`)"
+percent_change,transform,"to_number(`percent_change`)"
+difference,transform,"to_number(`difference`)"
+centroid,transform,"to_point(`centroid`)"
+internal_point,transform,"to_point(`internal_point`)"
+geometry,transform,"to_multipolygon(`geometry`)"
 year,format,"{""noCommas"": true, ""align"": ""left""}"
 date,format,"{""view"": ""date_y""}"
 value,format,"{""precision"": 1}"
