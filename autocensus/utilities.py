@@ -1,9 +1,9 @@
 """Utility functions for processing Census API data."""
 
+from datetime import datetime
 from functools import lru_cache, wraps
 from itertools import islice
 from pathlib import Path
-from pkg_resources import resource_stream
 import re
 from shutil import rmtree
 from typing import Any, Callable, Iterable, Iterator, List, Union
@@ -11,8 +11,8 @@ from typing import Any, Callable, Iterable, Iterator, List, Union
 from appdirs import user_cache_dir
 import pandas as pd
 from pandas import DataFrame
+from pkg_resources import resource_stream
 from titlecase import titlecase
-from datetime import datetime
 
 from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
 

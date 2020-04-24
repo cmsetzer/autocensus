@@ -3,11 +3,11 @@
 from functools import reduce
 import json
 import os
-from pkg_resources import resource_stream
 from typing import Dict, Iterable, Tuple, Union
 
 import pandas as pd
 from pandas import DataFrame
+from pkg_resources import resource_stream
 from socrata import Socrata
 from socrata.authorization import Authorization
 from yarl import URL

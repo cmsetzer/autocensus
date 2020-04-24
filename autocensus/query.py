@@ -2,15 +2,14 @@
 
 import asyncio
 from asyncio import Future
+from collections import defaultdict
 from contextlib import contextmanager
 from csv import reader
-from collections import defaultdict
 from functools import partial
 from io import StringIO
 from itertools import chain, product
 import os
 from pathlib import Path
-from pkg_resources import resource_string
 from typing import (
     Any,
     Callable,
@@ -30,29 +29,30 @@ from zipfile import BadZipFile
 from fiona.crs import from_epsg
 import pandas as pd
 from pandas import DataFrame
+from pkg_resources import resource_string
 from yarl import URL
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
     Geo,
-    get_geo_codes,
-    load_geodataframe,
     coerce_polygon_to_multipolygon,
     flatten_geometry,
+    get_geo_codes,
     identify_affgeoid_field,
+    load_geodataframe,
 )
 from .socrata import Credentials, build_dataset_name, to_socrata
 from .utilities import (
     CACHE_DIRECTORY_PATH,
-    chunk_variables,
-    parse_table_name_from_variable,
-    wrap_scalar_value_in_list,
-    tidy_variable_label,
-    titleize_text,
-    load_annotations_dataframe,
-    check_years,
     check_geo_combinations,
     check_geo_estimates,
+    check_years,
+    chunk_variables,
+    load_annotations_dataframe,
+    parse_table_name_from_variable,
+    tidy_variable_label,
+    titleize_text,
+    wrap_scalar_value_in_list,
 )
 
 # Types
