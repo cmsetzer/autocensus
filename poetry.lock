@@ -520,7 +520,7 @@ description = "SDK For publishing to Socrata"
 name = "socrata-py"
 optional = false
 python-versions = "*"
-version = "0.4.21"
+version = "1.0.3"
 
 [package.dependencies]
 requests = "*"
@@ -618,7 +618,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6e0ad0df0c33b9a4476d655aad0a1cd39c37f54371b2f369aab7029bd52d68e6"
+content-hash = "e1943d49c75ffa6f33998d3cd38b34913731e7684727f79caa9ef280b378c70c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -942,7 +942,7 @@ snowballstemmer = [
     {file = "snowballstemmer-2.0.0.tar.gz", hash = "sha256:df3bac3df4c2c01363f3dd2cfa78cce2840a79b9f1c2d2de9ce8d31683992f52"},
 ]
 socrata-py = [
-    {file = "socrata-py-0.4.21.tar.gz", hash = "sha256:fc502e2a782fdaa4467aa00d50e93ca7835fd8b5219d59f3f9acbac81b13fa86"},
+    {file = "socrata-py-1.0.3.tar.gz", hash = "sha256:2799ed5690be1bbba67104811957485099f85e184f2adb9215b8958d4ab5974c"},
 ]
 tenacity = [
     {file = "tenacity-6.1.0-py2.py3-none-any.whl", hash = "sha256:f7bcbf5bb53875cfc38f61f596a88b1c994af32420f120c4409542a683ad613b"},

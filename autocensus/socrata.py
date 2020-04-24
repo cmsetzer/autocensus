@@ -10,6 +10,7 @@ from pandas import DataFrame
 from pkg_resources import resource_stream
 from socrata import Socrata
 from socrata.authorization import Authorization
+from socrata.output_schema import OutputSchema
 from yarl import URL
 
 from .errors import MissingCredentialsError
@@ -54,7 +55,7 @@ def change_column_metadata(prev, record: Dict[str, str]):
     return prev.change_column_metadata(record['field_name'], record['field']).to(value)
 
 
-def prepare_output_schema(output_schema):
+def prepare_output_schema(output_schema: OutputSchema):
     """Add column metadata for improved data display on Socrata."""
     columns = pd.read_csv(resource_stream(__name__, 'resources/columns.csv'))
 
@@ -69,24 +70,36 @@ def prepare_output_schema(output_schema):
     return output_schema.run()
 
 
-def create_new_dataset(client: Socrata, dataframe: DataFrame, name, description):
+def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, description: str):
     """Create and publish a dataframe as a new Socrata dataset."""
     revision, output = client.create(
         name=name, description=description, attributionLink='https://api.census.gov'
     ).df(dataframe)
-    ok, output = prepare_output_schema(output)
-    ok, job = revision.apply(output_schema=output)
+    output = prepare_output_schema(output)
+    # Handle pre-1.x versions of Socrata-py
+    if isinstance(output, tuple):
+        ok, output = output
+    revision.apply(output_schema=output)
     return revision
 
 
 def update_existing_dataset(client: Socrata, dataframe, dataset_id):
     """Use a dataframe to update an existing Socrata dataset."""
-    ok, view = client.views.lookup(dataset_id)
-    ok, revision = view.revisions.create_replace_revision()
-    ok, upload = revision.create_upload('autocensus-update')
-    ok, source = upload.df(dataframe)
-    output = source.get_latest_input_schema().get_latest_output_schema()
-    ok, job = revision.apply(output_schema=output)
+    view = client.views.lookup(dataset_id)
+    # Handle pre-1.x versions of Socrata-py
+    if isinstance(view, tuple):
+        ok, view = view
+        ok, revision = view.revisions.create_replace_revision()
+        ok, upload = revision.create_upload('autocensus-update')
+        ok, source = upload.df(dataframe)
+        output = source.get_latest_input_schema().get_latest_output_schema()
+        ok, job = revision.apply(output_schema=output)
+    else:
+        revision = view.revisions.create_replace_revision()
+        upload = revision.create_upload('autocensus-update')
+        source = upload.df(dataframe)
+        output = source.get_latest_input_schema().get_latest_output_schema()
+        revision.apply(output_schema=output)
     return revision
 
 
