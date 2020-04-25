@@ -27,6 +27,7 @@ from warnings import warn
 from zipfile import BadZipFile
 
 from fiona.crs import from_epsg
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_string
@@ -242,7 +243,7 @@ class Query:
         extra_columns = {'attributes', 'group', 'limit', 'predicateType'} & set(dataframe.columns)
         dataframe = dataframe.drop(columns=extra_columns).rename(columns={'name': 'variable'})
         dataframe['label'] = dataframe['label'].map(tidy_variable_label)
-        dataframe['concept'] = dataframe['concept'].fillna(pd.np.NaN).map(titleize_text)
+        dataframe['concept'] = dataframe['concept'].fillna('').map(titleize_text)
 
         return dataframe
 
@@ -323,7 +324,7 @@ class Query:
         Adds columns, normalizes column names, and reorders columns.
         """
         # Insert NAs for annotated rows to avoid outlier values like -999,999,999
-        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = pd.np.NaN
+        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = np.NaN
 
         # Compute percent change and difference from prior year (if prior year is NA, uses value
         # from most recent available year)

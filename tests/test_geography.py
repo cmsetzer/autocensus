@@ -117,7 +117,7 @@ def test_load_geodataframe(shapefile_path):
 
     assert geodataframe.shape == (2, 11)
     assert set(geodataframe.columns) == expected_columns
-    assert geodataframe.crs['init'] == 'epsg:4269'
+    assert geodataframe.crs.name == 'NAD83'
     assert set(geodataframe['year']) == {shapefile_year}
 
 
