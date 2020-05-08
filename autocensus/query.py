@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from csv import reader
 from functools import partial
 from io import StringIO
-from itertools import chain, product
+from itertools import product
 import os
 from pathlib import Path
 from typing import (
@@ -249,18 +249,14 @@ class Query:
 
     def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
         """Reshape and convert ACS data tables to a dataframe."""
-        geographies: Iterable = chain(self.for_geo, self.in_geo)
-        geography_types = [geo.type for geo in geographies]
-        other_geography_types: Iterable[str] = get_geo_codes().keys()
+        geography_types: Iterable[str] = get_geo_codes().keys()
 
         # Melt each subset to adopt common schema
         subsets = []
         for header, *rows in tables:
             subset = DataFrame(rows, columns=header)
             # Consolidate geography type in a single column
-            geography_columns: Set[str] = (
-                set(geography_types) & set(other_geography_types) & set(subset.columns)
-            )
+            geography_columns: Set[str] = (set(geography_types) & set(subset.columns))
             id_vars = ['NAME', 'GEO_ID', 'geo_type', *geography_columns, 'year']
             melted: DataFrame = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
