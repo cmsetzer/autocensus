@@ -26,7 +26,6 @@ from typing import (
 from warnings import warn
 from zipfile import BadZipFile
 
-from fiona.crs import from_epsg
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
@@ -299,7 +298,7 @@ class Query:
         # Reproject dataframe from NAD 83 to WGS 84
         wgs_84_epsg = 4326
         dataframe['geometry'] = dataframe['geometry'].to_crs(epsg=wgs_84_epsg)
-        dataframe.crs = from_epsg(wgs_84_epsg)
+        dataframe.crs = f'EPSG:{wgs_84_epsg}'
 
         # Geometry columns
         dataframe['centroid'] = dataframe.centroid

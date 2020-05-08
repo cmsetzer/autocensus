@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Union
 from zipfile import ZipFile, ZipInfo
 
-from fiona.crs import from_epsg
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
@@ -95,7 +94,7 @@ def load_geodataframe(filepath: Path) -> GeoDataFrame:
         with ZipMemoryFile(bytes_file.read()) as zip_memory_file:
             with zip_memory_file.open(shp_filename) as collection:
                 # Load GeoDataFrame using NAD83 projection (EPSG 4269)
-                geodataframe = GeoDataFrame.from_features(collection, crs=from_epsg(4269))
+                geodataframe = GeoDataFrame.from_features(collection, crs='EPSG:4269')
 
     # Add year column
     geodataframe['year'] = int(shp_filename[3:7])
