@@ -316,8 +316,14 @@ class Query:
     def finalize_dataframe(self, dataframe: DataFrame) -> DataFrame:
         """Clean up and finalize a dataframe.
 
-        Adds columns, normalizes column names, and reorders columns.
+        Drops duplicates, adds columns, normalizes column names, and
+        reorders columns.
         """
+        # Drop duplicates (some geospatial datasets, like ZCTAs, include redundant rows)
+        geo_names = {'centroid', 'internal_point', 'geometry'}
+        non_geo_names: set = set(dataframe.columns) - geo_names
+        dataframe = dataframe.drop_duplicates(subset=non_geo_names, ignore_index=True)
+
         # Insert NAs for annotated rows to avoid outlier values like -999,999,999
         dataframe.loc[dataframe['annotation'].notnull(), 'value'] = np.NaN
 
@@ -343,7 +349,6 @@ class Query:
         csv_reader = reader(StringIO(names_csv.decode('utf-8')))
         next(csv_reader)  # Skip header row
         names: dict = dict(csv_reader)  # type: ignore
-        geo_names = ['centroid', 'internal_point', 'geometry']
         if self.join_geography is True:
             name_order = [*names.values(), *geo_names]
         else:
