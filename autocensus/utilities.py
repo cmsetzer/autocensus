@@ -4,7 +4,6 @@ from datetime import datetime
 from functools import lru_cache, wraps
 from itertools import islice
 from pathlib import Path
-import re
 from shutil import rmtree
 from typing import Any, Callable, Iterable, Iterator, List, Union
 
@@ -12,7 +11,6 @@ from appdirs import user_cache_dir
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_stream
-from titlecase import titlecase
 
 from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
 
@@ -88,20 +86,6 @@ def parse_table_name_from_variable(variable: str) -> str:
         raise InvalidVariableError(message) from error
     else:
         return table_name
-
-
-@forgive(TypeError)
-def tidy_variable_label(value: str) -> str:
-    """Tidy a variable label to make it human-friendly."""
-    estimate_trimmed = re.sub(r'^Estimate!!', '', value)
-    delimiters_replaced = re.sub(r'!!', ' - ', estimate_trimmed)
-    return delimiters_replaced
-
-
-@forgive(TypeError)
-def titleize_text(value: str) -> str:
-    """Convert a text string to title case."""
-    return titlecase(value)
 
 
 def load_annotations_dataframe() -> DataFrame:

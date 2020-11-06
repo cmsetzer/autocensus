@@ -613,14 +613,6 @@ six = ">=1.9.0"
 doc = ["reno", "sphinx", "tornado (>=4.5)"]
 
 [[package]]
-category = "main"
-description = "Python Port of John Gruber's titlecase.pl"
-name = "titlecase"
-optional = false
-python-versions = "*"
-version = "0.12.0"
-
-[[package]]
 category = "dev"
 description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
@@ -691,7 +683,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6fc40cd6ec624e99516a3cafe6c3650ef84898cb35f4e1eb30534a8cc9f84ea9"
+content-hash = "74f110aa820044e99942a5d73843799b7eaa78862315f85e5f2cd31c039a2ddd"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1055,10 +1047,6 @@ stevedore = [
 tenacity = [
     {file = "tenacity-6.2.0-py2.py3-none-any.whl", hash = "sha256:5a5d3dcd46381abe8b4f82b5736b8726fd3160c6c7161f53f8af7f1eb9b82173"},
     {file = "tenacity-6.2.0.tar.gz", hash = "sha256:29ae90e7faf488a8628432154bb34ace1cca58244c6ea399fd33f066ac71339a"},
-]
-titlecase = [
-    {file = "titlecase-0.12.0-py3-none-any.whl", hash = "sha256:95d643a0c08097c02933aced707adfe1c275c335019e8e514dea782a465c5b84"},
-    {file = "titlecase-0.12.0.tar.gz", hash = "sha256:84de7a97fb702c400e5ba11c6b30849944b39db12e20fbf4515a23c7538a0611"},
 ]
 toml = [
     {file = "toml-0.10.0-py2.7.egg", hash = "sha256:f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"},

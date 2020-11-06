@@ -50,8 +50,6 @@ from .utilities import (
     chunk_variables,
     load_annotations_dataframe,
     parse_table_name_from_variable,
-    tidy_variable_label,
-    titleize_text,
     wrap_scalar_value_in_list,
 )
 
@@ -243,8 +241,6 @@ class Query:
         # Drop/rename columns, clean up label/concept values
         extra_columns = {'attributes', 'group', 'limit', 'predicateType'} & set(dataframe.columns)
         dataframe = dataframe.drop(columns=extra_columns).rename(columns={'name': 'variable'})
-        dataframe['label'] = dataframe['label'].map(tidy_variable_label)
-        dataframe['concept'] = dataframe['concept'].fillna('').map(titleize_text)
 
         return dataframe
 
