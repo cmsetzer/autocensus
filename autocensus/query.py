@@ -262,7 +262,7 @@ class Query:
             melted: DataFrame = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
 
-        # Ensure correct computation of percent change and difference
+        # Ensure correct sort order and value dtype
         dataframe: DataFrame = pd.concat(subsets).sort_values(
             by=['geo_type', 'variable', 'NAME', 'year']
         ).reset_index(drop=True)
@@ -328,19 +328,6 @@ class Query:
 
         # Insert NAs for annotated rows to avoid outlier values like -999,999,999
         dataframe.loc[dataframe['annotation'].notnull(), 'value'] = np.NaN
-
-        # Compute percent change and difference from prior year (if prior year is NA, uses value
-        # from most recent available year)
-        dataframe['percent_change'] = (
-            dataframe.loc[dataframe['value'].notnull()]
-            .groupby(['GEO_ID', 'variable'])['value']
-            .pct_change()
-        )
-        dataframe['difference'] = (
-            dataframe.loc[dataframe['value'].notnull()]
-            .groupby(['GEO_ID', 'variable'])['value']
-            .diff()
-        )
 
         # Create year date column
         convert_datetime: Callable = partial(pd.to_datetime, format='%Y-%m-%d')

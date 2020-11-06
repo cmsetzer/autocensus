@@ -9,8 +9,6 @@ variable_label,display_name,Variable Label
 variable_concept,display_name,Variable Concept
 annotation,display_name,Annotation
 value,display_name,Value
-percent_change,display_name,Percent Change
-difference,display_name,Difference
 centroid,display_name,Centroid
 internal_point,display_name,Internal Point
 geometry,display_name,Geometry
@@ -24,8 +22,6 @@ variable_label,description,Label for American Community Survey variable
 variable_concept,description,Concept for American Community Survey variable
 annotation,description,Annotation for American Community Survey estimate
 value,description,Numeric value of American Community Survey estimate
-percent_change,description,Percent change from previous year's value for geographic boundary and variable
-difference,description,Absolute change from previous year's value for geographic boundary and variable
 centroid,description,Point representing the center of geographic boundary
 internal_point,description,Point guaranteed to fall within geographic boundary
 geometry,description,Polygon(s) representing geographic boundary for a given year
@@ -39,13 +35,9 @@ variable_label,transform,"to_text(`variable_label`)"
 variable_concept,transform,"to_text(`variable_concept`)"
 annotation,transform,"to_text(`annotation`)"
 value,transform,"to_number(`value`)"
-percent_change,transform,"to_number(`percent_change`)"
-difference,transform,"to_number(`difference`)"
 centroid,transform,"to_point(`centroid`)"
 internal_point,transform,"to_point(`internal_point`)"
 geometry,transform,"to_multipolygon(`geometry`)"
 year,format,"{""noCommas"": true, ""align"": ""left""}"
 date,format,"{""view"": ""date_y""}"
 value,format,"{""precision"": 1}"
-percent_change,format,"{""precision"": 1, ""precisionStyle"": ""percentage"", ""percentScale"": 1}"
-difference,format,"{""precision"": 1}"
