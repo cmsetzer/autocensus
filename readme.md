@@ -51,12 +51,12 @@ dataframe = query.run()
 
 Output:
 
-| name                    | geo_id         | geo_type | year | date       | variable_code  | variable_label                                                                     | variable_concept                                  | annotation |  value | centroid  | internal_point | geometry         |
-|-------------------------|----------------|----------|------|------------|----------------|------------------------------------------------------------------------------------|---------------------------------------------------|------------|--------|-----------|----------------|------------------|
-| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | DP03_0025E     | COMMUTING TO WORK - Mean travel time to work (minutes)                             | Selected Economic Characteristics                 |            |   30.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | DP03_0025E     | COMMUTING TO WORK - Workers 16 years and over - Mean travel time to work (minutes) | Selected Economic Characteristics                 |            |   30.2 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | S0103_C01_104E | Total - Estimate - GROSS RENT - Median gross rent (dollars)                        | Population 65 Years and Over in the United States |            | 1555.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | S0103_C01_104E | Total - Renter-occupied housing units - GROSS RENT - Median gross rent (dollars)   | Population 65 Years and Over in the United States |            | 1674.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
+| name                    | geo_id         | geo_type | year | date       | variable_code  | variable_label                                                                             | variable_concept                                  | annotation |  value | centroid  | internal_point | geometry         |
+|-------------------------|----------------|----------|------|------------|----------------|--------------------------------------------------------------------------------------------|---------------------------------------------------|------------|--------|-----------|----------------|------------------|
+| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Mean travel time to work (minutes)                            | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
+| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Workers 16 years and over!!Mean travel time to work (minutes) | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.2 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
+| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | S0103_C01_104E | Total!!Estimate!!GROSS RENT!!Median gross rent (dollars)                                   | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1555.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
+| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | S0103_C01_104E | Estimate!!Total!!Renter-occupied housing units!!GROSS RENT!!Median gross rent (dollars)    | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1674.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
 
 [Census API key]: https://api.census.gov/data/key_signup.html
 
@@ -214,18 +214,3 @@ autocensus.clear_cache()
 ```
 
 [cache directory]: #caching
-
-### SSL errors
-
-To disable SSL verification, specify `verify_ssl=False` when initializing your `Query`:
-
-```python
-query = Query(
-    estimate=1,
-    years=[2017, 2018],
-    variables=['DP03_0025E', 'S0103_C01_104E'],
-    for_geo='county:033',
-    in_geo=['state:53'],
-    verify_ssl=False
-)
-```

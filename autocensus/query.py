@@ -75,9 +75,7 @@ class Query:
         for_geo: Union[Iterable, str],
         in_geo: Iterable = None,
         join_geography: bool = True,
-        table: Any = None,  # Deprecated (no longer necessary)
         census_api_key: str = None,
-        verify_ssl: bool = True,
     ):
         if estimate in [1, 3, 5]:
             self.estimate: int = estimate
