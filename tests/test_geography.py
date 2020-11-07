@@ -7,6 +7,7 @@ from autocensus.geography import (
     Geo,
     calculate_congress_number,
     coerce_polygon_to_multipolygon,
+    determine_gazetteer_code,
     determine_geo_code,
     flatten_geometry,
     identify_affgeoid_field,
@@ -14,7 +15,6 @@ from autocensus.geography import (
     load_geodataframe,
     serialize_to_wkt,
 )
-
 
 def test_geo():
     geo = Geo('state', '08')
@@ -69,7 +69,7 @@ def test_calculate_congress_number():
 
 
 @pytest.mark.parametrize(
-    'geo_code,expected',
+    'geo_type,expected',
     [
         ('us', 'us_nation'),
         ('region', 'us_region'),
@@ -93,8 +93,28 @@ def test_calculate_congress_number():
         ('state legislative district (lower chamber)', '08_sldl'),
     ],
 )
-def test_determine_geo_code(geo_code, expected):
-    assert determine_geo_code(2019, geo_code, '08') == expected
+def test_determine_geo_code(geo_type, expected):
+    assert determine_geo_code(2019, geo_type, '08') == expected
+
+
+@pytest.mark.parametrize(
+    'geo_type,expected',
+    [
+        ('urban area', 'ua'),
+        ('zip code tabulation area', 'zcta'),
+        ('county', 'counties'),
+        ('congressional district', '116CDs'),
+        ('metropolitan statistical area/micropolitan statistical area', 'cbsa'),
+        ('american indian area/alaska native area/hawaiian home land', 'aiannh'),
+        ('county subdivision', 'cousubs'),
+        ('tract', 'tracts'),
+        ('place', 'place'),
+        ('state legislative district (upper chamber)', 'sldu'),
+        ('state legislative district (lower chamber)', 'sldl'),
+    ],
+)
+def test_determine_gazetteer_code(geo_type, expected):
+    assert determine_gazetteer_code(2019, geo_type) == expected
 
 
 def test_is_shp_file():

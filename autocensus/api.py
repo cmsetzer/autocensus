@@ -13,7 +13,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
 from .errors import CensusAPIUnknownError, MissingCredentialsError
-from .geography import Geo, determine_geo_code
+from .geography import Geo, determine_gazetteer_code, determine_geo_code
 from .utilities import CACHE_DIRECTORY_PATH
 
 # Types
@@ -73,6 +73,15 @@ class CensusAPI:
         }
         table_route: str = table_route_mappings[table_name]
         url = URL(f'https://api.census.gov/data/{year}/acs/acs{estimate}{table_route}')
+        return url
+
+    def build_gazetteer_url(self, year: int, for_geo: Geo) -> URL:
+        """Build a Gazetteer file URL based on the supplied parameters."""
+        base_url = URL(
+            f'https://www2.census.gov/geo/docs/maps-data/data/gazetteer/{year}_Gazetteer'
+        )
+        gazetteer_code = determine_gazetteer_code(year, for_geo.type)
+        url: URL = base_url / f'{year}_Gaz_{gazetteer_code}_national.zip'
         return url
 
     def build_shapefile_url(self, year: int, for_geo: Geo, in_geo: Iterable) -> URL:

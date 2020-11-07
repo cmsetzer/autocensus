@@ -63,22 +63,35 @@ def calculate_congress_number(year: int) -> int:
     return congress
 
 
-def get_geo_codes() -> Dict[str, str]:
-    """Read shapefile naming codes from a local CSV."""
-    geo_codes_csv: bytes = resource_string(__name__, 'resources/geo_codes.csv')
-    csv_reader: Iterable[List[str]] = reader(StringIO(geo_codes_csv.decode('utf-8')))
-    geo_codes = {type_: geo_code for type_, geo_code in csv_reader}
-    return geo_codes
+def get_filename_codes(source: str) -> Dict[str, str]:
+    """Read filename codes from a local CSV."""
+    codes_csv: bytes = resource_string(__name__, f'resources/{source}_codes.csv')
+    csv_reader: Iterable[List[str]] = reader(StringIO(codes_csv.decode('utf-8')))
+    codes = {type_: code for type_, code in csv_reader}
+    return codes
+
+
+def determine_gazetteer_code(year: int, for_geo_type: str) -> str:
+    """Determine the Gazetteer file naming code for a given year/geography."""
+    gazetteer_codes: Dict[str, str] = get_filename_codes('gazetteer')
+    gazetteer_code: str
+    if for_geo_type != 'congressional district':
+        gazetteer_code = gazetteer_codes[for_geo_type]
+    else:
+        congress: int = calculate_congress_number(year)
+        gazetteer_code = gazetteer_codes[for_geo_type].format(congress=congress)
+    return gazetteer_code
 
 
 def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
-    """Determine the shapefile naming code for a given geography."""
-    geo_codes: Dict[str, str] = get_geo_codes()
+    """Determine the shapefile naming code for a given year/geography."""
+    geo_codes: Dict[str, str] = get_filename_codes('geo')
+    geo_code: str
     if for_geo_type != 'congressional district':
-        geo_code: str = geo_codes[for_geo_type].format(state_fips=state_fips)
+        geo_code = geo_codes[for_geo_type].format(state_fips=state_fips)
     else:
         congress: int = calculate_congress_number(year)
-        geo_code: str = geo_codes[for_geo_type].format(congress=congress)  # type: ignore
+        geo_code = geo_codes[for_geo_type].format(congress=congress)
     return geo_code
 
 

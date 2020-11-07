@@ -37,7 +37,7 @@ from .geography import (
     Geo,
     coerce_polygon_to_multipolygon,
     flatten_geometry,
-    get_geo_codes,
+    get_filename_codes,
     identify_affgeoid_field,
     load_geodataframe,
 )
@@ -244,7 +244,7 @@ class Query:
 
     def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
         """Reshape and convert ACS data tables to a dataframe."""
-        geography_types: Iterable[str] = get_geo_codes().keys()
+        geography_types: Iterable[str] = get_filename_codes('geo').keys()
 
         # Melt each subset to adopt common schema
         subsets = []

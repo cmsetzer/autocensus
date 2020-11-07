@@ -1,0 +1,12 @@
+type,gazetteer_code
+urban area,ua
+zip code tabulation area,zcta
+county,counties
+congressional district,{congress}CDs
+metropolitan statistical area/micropolitan statistical area,cbsa
+american indian area/alaska native area/hawaiian home land,aiannh
+county subdivision,cousubs
+tract,tracts
+place,place
+state legislative district (upper chamber),sldu
+state legislative district (lower chamber),sldl
