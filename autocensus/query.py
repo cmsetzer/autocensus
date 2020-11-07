@@ -8,6 +8,7 @@ from csv import reader
 from functools import partial
 from io import StringIO
 from itertools import product
+from operator import is_not
 import os
 from pathlib import Path
 from typing import (
@@ -30,14 +31,17 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_string
+from shapely.geometry.point import Point
+from typing_extensions import Literal
 from yarl import URL
 
 from .api import CensusAPI, Table, look_up_census_api_key
 from .geography import (
     Geo,
     coerce_polygon_to_multipolygon,
+    convert_geo_id_to_14_chars,
     flatten_geometry,
-    get_filename_codes,
+    get_geo_mappings,
     identify_affgeoid_field,
     load_geodataframe,
 )
@@ -56,6 +60,7 @@ from .utilities import (
 # Types
 Tables = List[Table]
 Variables = Dict[Tuple[int, str], dict]
+GazetteerFiles = List[Optional[DataFrame]]
 Shapefiles = List[Optional[Path]]
 
 
@@ -74,7 +79,7 @@ class Query:
         variables: Union[Iterable, str],
         for_geo: Union[Iterable, str],
         in_geo: Iterable = None,
-        join_geography: bool = True,
+        geometry: Optional[Literal["points", "shapes"]] = None,
         census_api_key: str = None,
     ):
         if estimate in [1, 3, 5]:
@@ -87,10 +92,10 @@ class Query:
         self.in_geo: Iterable = [] if in_geo is None else [
             Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)
         ]
-        if join_geography in [True, False]:
-            self.join_geography: bool = join_geography
+        if geometry in ["points", "shapes"] or geometry is None:
+            self.geometry: Optional[Literal["points", "shapes"]] = geometry
         else:
-            raise ValueError('Please specify a True/False value for join_geography')
+            raise ValueError('Please specify a valid geometry value: points, shapes')
         self.census_api_key: str = look_up_census_api_key(census_api_key)
 
         # Validate query parameters to avoid common pitfalls
@@ -212,21 +217,39 @@ class Query:
         tables = list(results)
         return tables
 
-    def get_geography(self) -> Shapefiles:
-        """Get shapefiles for the supplied variables and geography."""
+    def get_gazetteer_files(self) -> GazetteerFiles:
+        """Get Gazetteer files for the supplied years and geographies."""
         # Assemble API calls for concurrent execution
         calls = []
-        years_with_geography = [year for year in self.years if year >= 2013]
+        years_with_gazetteer_files = [year for year in self.years if year >= 2012]
         # Handle multiple for_geo values by year
-        for year, for_geo in product(years_with_geography, self.for_geo):
-            call: Coroutine[Any, Any, Path] = self._census_api.fetch_geography(
-                year, for_geo, self.in_geo
+        for year, for_geo in product(years_with_gazetteer_files, self.for_geo):
+            call: Coroutine[Any, Any, Optional[DataFrame]] = self._census_api.fetch_gazetteer_file(
+                year, for_geo
             )
             calls.append(call)
         # Make concurrent API calls
         results: Future = asyncio.run(self._census_api.gather_calls(calls))
-        geography = list(results)
-        return geography
+        gazetteer_files = list(results)
+        return gazetteer_files
+
+    def get_shapefiles(self) -> Shapefiles:
+        """Get shapefiles for the supplied years and geographies."""
+        # Assemble API calls for concurrent execution
+        calls = []
+        years_with_shapefiles = [year for year in self.years if year >= 2013]
+
+        # Handle multiple for_geo values by year
+        for year, for_geo in product(years_with_shapefiles, self.for_geo):
+            call: Coroutine[Any, Any, Optional[Path]] = self._census_api.fetch_shapefile(
+                year, for_geo, self.in_geo
+            )
+            calls.append(call)
+
+        # Make concurrent API calls
+        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        shapefiles = list(results)
+        return shapefiles
 
     def convert_variables_to_dataframe(self, variables: Variables) -> DataFrame:
         """Convert Census API variable data to a dataframe."""
@@ -244,7 +267,7 @@ class Query:
 
     def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
         """Reshape and convert ACS data tables to a dataframe."""
-        geography_types: Iterable[str] = get_filename_codes('geo').keys()
+        geography_types: Iterable[str] = get_geo_mappings('geo_codes').keys()
 
         # Melt each subset to adopt common schema
         subsets = []
@@ -264,7 +287,33 @@ class Query:
 
         return dataframe
 
-    def convert_geography_to_dataframe(self, geography: Shapefiles) -> DataFrame:
+    def convert_gazetteer_files_to_dataframe(
+        self, gazetteer_files: GazetteerFiles
+    ) -> Optional[DataFrame]:
+        """Convert one or more Gazetteer files to a dataframe.
+
+        Skips over null values produced by invalid responses from the
+        Gazetteer file endpoint.
+        """
+        subsets = []
+        gazetteer_tables: Iterable[DataFrame] = filter(partial(is_not, None), gazetteer_files)
+        for gazetteer_table in gazetteer_tables:
+            subset: DataFrame = gazetteer_table.copy()
+            subset['gazetteer_geo_id'] = subset.apply(
+                lambda row: convert_geo_id_to_14_chars(row['GEOID'], row['gazetteer_geo_type']),
+                axis=1,
+            )
+            subset['geometry'] = subset.apply(
+                lambda row: Point(row['INTPTLONG'], row['INTPTLAT']), axis=1
+            )
+            subsets.append(subset)
+        if subsets:
+            dataframe: DataFrame = pd.concat(subsets)
+            return dataframe
+        else:
+            return None
+
+    def convert_shapefiles_to_dataframe(self, shapefiles: Shapefiles) -> DataFrame:
         """Convert one or more shapefiles to a dataframe.
 
         Skips over null filepaths produced by invalid responses from the
@@ -277,7 +326,7 @@ class Query:
         os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
         subsets = []
         # Drop null values (e.g., for not-yet-released shapefiles) from list of filepaths
-        filepaths: Iterable[Path] = filter(None, geography)
+        filepaths: Iterable[Path] = filter(None, shapefiles)
         for filepath in filepaths:
             try:
                 subset = load_geodataframe(filepath)
@@ -297,15 +346,13 @@ class Query:
         dataframe.crs = f'EPSG:{wgs_84_epsg}'
 
         # Geometry columns
-        dataframe['centroid'] = dataframe.centroid
-        dataframe['internal_point'] = dataframe['geometry'].representative_point()
         dataframe['geometry'] = (
             dataframe['geometry'].map(coerce_polygon_to_multipolygon).map(flatten_geometry)
         )
 
         # Clean up
         affgeoid_field = identify_affgeoid_field(dataframe.columns)
-        columns_to_keep = [affgeoid_field, 'year', 'centroid', 'internal_point', 'geometry']
+        columns_to_keep = [affgeoid_field, 'year', 'geometry']
         dataframe = dataframe.loc[:, columns_to_keep]
         return dataframe
 
@@ -316,7 +363,7 @@ class Query:
         reorders columns.
         """
         # Drop duplicates (some geospatial datasets, like ZCTAs, include redundant rows)
-        geo_names = {'centroid', 'internal_point', 'geometry'}
+        geo_names = {'geometry'}
         non_geo_names: set = set(dataframe.columns) - geo_names
         dataframe = dataframe.drop_duplicates(subset=non_geo_names, ignore_index=True)
 
@@ -332,7 +379,7 @@ class Query:
         csv_reader = reader(StringIO(names_csv.decode('utf-8')))
         next(csv_reader)  # Skip header row
         names: dict = dict(csv_reader)  # type: ignore
-        if self.join_geography is True:
+        if self.geometry in ["points", "shapes"] and (set(dataframe.columns) & geo_names):
             name_order = [*names.values(), *geo_names]
         else:
             name_order = list(names.values())
@@ -341,7 +388,11 @@ class Query:
         return dataframe
 
     def assemble_dataframe(
-        self, variables: Variables, tables: Tables, geography: Shapefiles
+        self,
+        variables: Variables,
+        tables: Tables,
+        gazetteer_files: GazetteerFiles,
+        shapefiles: Shapefiles,
     ) -> DataFrame:
         """Merge and finalize the query dataframe.
 
@@ -360,16 +411,24 @@ class Query:
         dataframe = dataframe.merge(right=annotations_dataframe, how='left', on=['value'])
 
         # Merge geospatial data if included
-        if self.join_geography is True:
-            print('Merging shapefiles...')
-            geography_dataframe: DataFrame = self.convert_geography_to_dataframe(geography)
-            affgeoid_field = identify_affgeoid_field(geography_dataframe.columns)
-            dataframe = dataframe.merge(
-                right=geography_dataframe,
-                how='left',
-                left_on=['GEO_ID', 'year'],
-                right_on=[affgeoid_field, 'year'],
-            )
+        geometry_dataframe: Optional[DataFrame]
+        right_geo_id_field: str
+        if self.geometry in ['points', 'shapes']:
+            if self.geometry == 'points':
+                print('Merging Gazetteer files...')
+                geometry_dataframe = self.convert_gazetteer_files_to_dataframe(gazetteer_files)
+                right_geo_id_field = 'gazetteer_geo_id'
+            else:
+                print('Merging shapefiles...')
+                geometry_dataframe = self.convert_shapefiles_to_dataframe(shapefiles)
+                right_geo_id_field = identify_affgeoid_field(geometry_dataframe.columns)
+            if geometry_dataframe is not None:
+                dataframe = dataframe.merge(
+                    right=geometry_dataframe,
+                    how='left',
+                    left_on=['GEO_ID', 'year'],
+                    right_on=[right_geo_id_field, 'year'],
+                )
 
         # Finalize dataframe
         print('Finalizing data...')
@@ -388,12 +447,17 @@ class Query:
             variables: Variables = self.get_variables()
             print('Retrieving ACS tables...')
             tables: Tables = self.get_tables()
-            if self.join_geography is True:
+
+            # Add geometry
+            gazetteer_files: GazetteerFiles = []
+            shapefiles: Shapefiles = []
+            if self.geometry == 'points':
+                print('Retrieving Gazetteer files...')
+                gazetteer_files.extend(self.get_gazetteer_files())
+            elif self.geometry == 'shapes':
                 print('Retrieving shapefiles...')
-                geography: Shapefiles = self.get_geography()
-            else:
-                geography = None  # type: ignore
-        dataframe = self.assemble_dataframe(variables, tables, geography)
+                shapefiles.extend(self.get_shapefiles())
+        dataframe = self.assemble_dataframe(variables, tables, gazetteer_files, shapefiles)
         return dataframe
 
     def to_socrata(

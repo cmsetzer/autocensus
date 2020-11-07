@@ -1,0 +1,12 @@
+type,template
+urban area,400C100US{geo_id}
+zip code tabulation area,8600000US{geo_id}
+county,0500000US{geo_id}
+congressional district,5001500US{geo_id}
+metropolitan statistical area/micropolitan statistical area,310M300US{geo_id}
+american indian area/alaska native area/hawaiian home land,2500000US{geo_id}
+county subdivision,0600000US{geo_id}
+tract,1400000US{geo_id}
+place,1600000US{geo_id}
+state legislative district (upper chamber),610U500US{geo_id}
+state legislative district (lower chamber),620L500US{geo_id}

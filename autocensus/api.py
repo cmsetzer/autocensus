@@ -2,6 +2,7 @@
 
 from asyncio import Future, gather
 from contextlib import asynccontextmanager
+from io import BytesIO
 from json.decoder import JSONDecodeError
 import os
 from pathlib import Path
@@ -9,6 +10,8 @@ from typing import AsyncGenerator, Dict, Iterable, List, Optional, Union
 from warnings import warn
 
 from httpx import AsyncClient, Limits, Response
+import pandas as pd
+from pandas import DataFrame
 from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
@@ -57,7 +60,7 @@ class CensusAPI:
 
         Closes and deletes the session when we're done with it.
         """
-        async with AsyncClient(timeout=300, limits=Limits(max_connections=10)) as session:
+        async with AsyncClient(timeout=300, limits=Limits(max_keepalive_connections=5)) as session:
             self._session = session
             yield
             await session.aclose()
@@ -75,12 +78,11 @@ class CensusAPI:
         url = URL(f'https://api.census.gov/data/{year}/acs/acs{estimate}{table_route}')
         return url
 
-    def build_gazetteer_url(self, year: int, for_geo: Geo) -> URL:
+    def build_gazetteer_url(self, year: int, gazetteer_code: str) -> URL:
         """Build a Gazetteer file URL based on the supplied parameters."""
         base_url = URL(
             f'https://www2.census.gov/geo/docs/maps-data/data/gazetteer/{year}_Gazetteer'
         )
-        gazetteer_code = determine_gazetteer_code(year, for_geo.type)
         url: URL = base_url / f'{year}_Gaz_{gazetteer_code}_national.zip'
         return url
 
@@ -149,7 +151,37 @@ class CensusAPI:
             row.extend([for_geo.type, year])
         return response_json
 
-    async def fetch_geography(self, year: int, for_geo: Geo, in_geo: Iterable) -> Optional[Path]:
+    async def fetch_gazetteer_file(self, year: int, for_geo: Geo) -> Optional[DataFrame]:
+        """Fetch a given Gazetteer table as a dataframe.
+
+        If the Gazetteer file URL returns a non-200 response, warns the
+        user and returns a null value.
+        """
+        gazetteer_code: Optional[str] = determine_gazetteer_code(year, for_geo.type)
+        if gazetteer_code is None:
+            warn(f'Failed to obtain a Gazetteer file for geography type "{for_geo.type}"')
+            return None
+
+        url: URL = self.build_gazetteer_url(year, gazetteer_code)
+        response: Response = await self._session.get(str(url))
+        if response.status_code != 200:
+            warn(f'Failed to obtain a Gazetteer file from {response.url}')
+            return None
+
+        # Fetch zip file as an in-memory object and read it into a dataframe
+        zip_file = BytesIO(response.content)
+        dataframe: DataFrame = pd.read_table(
+            zip_file, encoding='latin-1', compression='zip', dtype=str
+        ).applymap(str.strip)
+        dataframe.columns = [column.strip() for column in dataframe.columns]
+        dataframe = dataframe.loc[:, ['GEOID', 'INTPTLAT', 'INTPTLONG']]
+        dataframe['INTPTLAT'] = dataframe['INTPTLAT'].astype(float)
+        dataframe['INTPTLONG'] = dataframe['INTPTLONG'].astype(float)
+        dataframe['gazetteer_geo_type'] = for_geo.type
+        dataframe['year'] = year
+        return dataframe
+
+    async def fetch_shapefile(self, year: int, for_geo: Geo, in_geo: Iterable) -> Optional[Path]:
         """Fetch a given shapefile and download it to the local cache.
 
         Returns a path to the cached shapefile. If the shapefile is

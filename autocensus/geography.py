@@ -6,10 +6,11 @@ from shapely.geometry import MultiPolygon, Point, Polygon  # isort:skip
 
 from csv import reader
 from dataclasses import dataclass
+from functools import lru_cache
 from io import StringIO
 import math
 from pathlib import Path
-from typing import Dict, Iterable, List, Union
+from typing import Dict, Iterable, List, Optional, Union
 from zipfile import ZipFile, ZipInfo
 
 from fiona.io import ZipMemoryFile
@@ -63,20 +64,21 @@ def calculate_congress_number(year: int) -> int:
     return congress
 
 
-def get_filename_codes(source: str) -> Dict[str, str]:
+@lru_cache()
+def get_geo_mappings(source: str) -> Dict[str, str]:
     """Read filename codes from a local CSV."""
-    codes_csv: bytes = resource_string(__name__, f'resources/{source}_codes.csv')
+    codes_csv: bytes = resource_string(__name__, f'resources/{source}.csv')
     csv_reader: Iterable[List[str]] = reader(StringIO(codes_csv.decode('utf-8')))
     codes = {type_: code for type_, code in csv_reader}
     return codes
 
 
-def determine_gazetteer_code(year: int, for_geo_type: str) -> str:
+def determine_gazetteer_code(year: int, for_geo_type: str) -> Optional[str]:
     """Determine the Gazetteer file naming code for a given year/geography."""
-    gazetteer_codes: Dict[str, str] = get_filename_codes('gazetteer')
-    gazetteer_code: str
+    gazetteer_codes: Dict[str, str] = get_geo_mappings('gazetteer_codes')
+    gazetteer_code: Optional[str]
     if for_geo_type != 'congressional district':
-        gazetteer_code = gazetteer_codes[for_geo_type]
+        gazetteer_code = gazetteer_codes.get(for_geo_type)
     else:
         congress: int = calculate_congress_number(year)
         gazetteer_code = gazetteer_codes[for_geo_type].format(congress=congress)
@@ -85,7 +87,7 @@ def determine_gazetteer_code(year: int, for_geo_type: str) -> str:
 
 def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
     """Determine the shapefile naming code for a given year/geography."""
-    geo_codes: Dict[str, str] = get_filename_codes('geo')
+    geo_codes: Dict[str, str] = get_geo_mappings('geo_codes')
     geo_code: str
     if for_geo_type != 'congressional district':
         geo_code = geo_codes[for_geo_type].format(state_fips=state_fips)
@@ -161,3 +163,16 @@ def identify_affgeoid_field(fields: Iterable[str]) -> str:
     known_field_names = {'AFFGEOID', 'AFFGEOID10'}
     affgeoid_field: str = (known_field_names & set(fields)).pop()
     return affgeoid_field
+
+
+def convert_geo_id_to_14_chars(geo_id: str, geo_type: str) -> Optional[str]:
+    """Convert a Census geographic identifier to 14-character format.
+
+    This enables joins between entities like Gazetteer tables and ACS
+    tables.
+    """
+    geo_id_mappings: Dict[str, str] = get_geo_mappings('geo_ids')
+    template: Optional[str] = geo_id_mappings.get(geo_type)
+    if template is None:
+        return None
+    return template.format(geo_id=geo_id)
