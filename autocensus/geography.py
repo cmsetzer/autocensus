@@ -15,6 +15,8 @@ from zipfile import ZipFile, ZipInfo
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
+import us
+from us.states import State
 
 from .utilities import forgive
 
@@ -31,6 +33,7 @@ class Geo:
     code: str
 
     def __init__(self, value: str, code: str = None):
+        # Process value, code
         if value == 'us' and code is None:
             self.type = 'us'
             self.code = '*'
@@ -43,6 +46,12 @@ class Geo:
         else:
             self.type = value
             self.code = code
+
+        # Convert state abbreviation to FIPS code as needed
+        if self.type == 'state':
+            state: State = us.states.lookup(self.code)
+            if state is not None:
+                self.code = state.fips
 
     def __str__(self):
         return f'{self.type}:{self.code}'

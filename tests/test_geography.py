@@ -37,6 +37,20 @@ def test_geo_handles_nation():
     assert str(geo) == 'us:*'
 
 
+def test_geo_handles_state_abbreviation():
+    geo = Geo('state:WA')
+    assert geo.type == 'state'
+    assert geo.code == '53'
+    assert str(geo) == 'state:53'
+
+
+def test_geo_handles_invalid_state_abbreviation():
+    geo = Geo('state:XX')
+    assert geo.type == 'state'
+    assert geo.code == 'XX'
+    assert str(geo) == 'state:XX'
+
+
 def test_calculate_congress_number():
     congress_numbers = [
         (2019, 116),
