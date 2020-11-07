@@ -1,6 +1,6 @@
 # autocensus
 
-Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe. Uses asyncio/aiohttp to request data concurrently.
+Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe.
 
 [Census API]: https://www.census.gov/developers
 

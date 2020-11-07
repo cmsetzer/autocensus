@@ -2,12 +2,13 @@
 
 from asyncio import Future, gather
 from contextlib import asynccontextmanager
+from json.decoder import JSONDecodeError
 import os
 from pathlib import Path
 from typing import AsyncGenerator, Dict, Iterable, List, Optional, Union
 from warnings import warn
 
-from aiohttp import ClientResponseError, ClientSession, ClientTimeout, TCPConnector
+from httpx import AsyncClient, Limits, Response
 from tenacity import retry, stop_after_attempt, wait_exponential
 from yarl import URL
 
@@ -47,9 +48,8 @@ def look_up_census_api_key(census_api_key: str = None) -> str:
 class CensusAPI:
     """A class for retrieving data from the Census API via HTTP."""
 
-    def __init__(self, census_api_key: str, verify_ssl: bool = True) -> None:
+    def __init__(self, census_api_key: str) -> None:
         self.census_api_key: str = census_api_key
-        self.verify_ssl: bool = verify_ssl
 
     @asynccontextmanager
     async def create_session(self) -> AsyncGenerator[None, None]:
@@ -57,12 +57,10 @@ class CensusAPI:
 
         Closes and deletes the session when we're done with it.
         """
-        timeout = ClientTimeout(300)
-        connector = TCPConnector(limit=50)
-        async with ClientSession(timeout=timeout, connector=connector) as session:
+        async with AsyncClient(timeout=300, limits=Limits(max_connections=10)) as session:
             self._session = session
             yield
-            await session.close()
+            await session.aclose()
             del self._session
 
     def build_url(self, estimate: int, year: int, table_name: str) -> URL:
@@ -100,14 +98,14 @@ class CensusAPI:
     ) -> dict:
         """Fetch a given variable definition from the Census API."""
         url: URL = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
-        async with self._session.get(url, ssl=self.verify_ssl) as response:
-            try:
-                variable_json: dict = await response.json()
-            except ClientResponseError:
-                # Handle erroneous variable by returning a stub with variable/year
-                variable_json = {'name': variable}
-            variable_json['year'] = year
-            return variable_json
+        response: Response = await self._session.get(str(url))
+        try:
+            variable_json: dict = response.json()
+        except JSONDecodeError:
+            # Handle erroneous variable by returning a stub with variable/year
+            variable_json = {'name': variable}
+        variable_json['year'] = year
+        return variable_json
 
     @retry(
         wait=wait_exponential(multiplier=1, min=3, max=15),
@@ -131,17 +129,16 @@ class CensusAPI:
             *(('in', str(geo)) for geo in in_geo),
             ('key', self.census_api_key),
         ]
-        async with self._session.get(url, params=params, ssl=self.verify_ssl) as response:
-            # Raise informative exception for non-200 response
-            if response.status != 200:
-                text: str = await response.text()
-                raise CensusAPIUnknownError(f'Non-200 response from: {response.url}\n{text}')
-            response_json: Table = await response.json()
-            # Add geo_type
-            response_json[0].extend(['geo_type', 'year'])
-            for row in response_json[1:]:
-                row.extend([for_geo.type, year])
-            return response_json
+        response: Response = await self._session.get(str(url), params=params)  # type: ignore
+        # Raise informative exception for non-200 response
+        if response.status_code != 200:
+            raise CensusAPIUnknownError(f'Non-200 response from: {response.url}\n{response.text}')
+        response_json: Table = response.json()
+        # Add geo_type
+        response_json[0].extend(['geo_type', 'year'])
+        for row in response_json[1:]:
+            row.extend([for_geo.type, year])
+        return response_json
 
     async def fetch_geography(self, year: int, for_geo: Geo, in_geo: Iterable) -> Optional[Path]:
         """Fetch a given shapefile and download it to the local cache.
@@ -155,14 +152,13 @@ class CensusAPI:
         url: URL = self.build_shapefile_url(year, for_geo, in_geo)
         cached_filepath: Path = CACHE_DIRECTORY_PATH / url.name
         if not cached_filepath.exists():
-            async with self._session.get(url, ssl=self.verify_ssl) as response:
-                # Handle bad response or missing shapefile (if, e.g., it hasn't been released yet)
-                if response.status != 200:
-                    warn(f'Failed to obtain a Census boundary shapefile from {response.url}')
-                    return None
-                with open(cached_filepath, 'wb') as cached_file:
-                    content = await response.content.read()
-                    cached_file.write(content)
+            response: Response = await self._session.get(str(url))
+            # Handle bad response or missing shapefile (if, e.g., it hasn't been released yet)
+            if response.status_code != 200:
+                warn(f'Failed to obtain a Census boundary shapefile from {response.url}')
+                return None
+            with open(cached_filepath, 'wb') as cached_file:
+                cached_file.write(response.content)
         return cached_filepath
 
     async def gather_calls(self, calls) -> Future:
