@@ -11,6 +11,7 @@ from pkg_resources import resource_stream
 from socrata import Socrata
 from socrata.authorization import Authorization
 from socrata.output_schema import OutputSchema
+from socrata.revisions import Revision
 from yarl import URL
 
 from .errors import MissingCredentialsError
@@ -73,15 +74,27 @@ def prepare_output_schema(output_schema: OutputSchema):
 
 def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, description: str):
     """Create and publish a dataframe as a new Socrata dataset."""
-    revision, output = client.create(
+    revision: Revision
+    output_schema: OutputSchema
+    revision, output_schema = client.create(
         name=name, description=description, attributionLink='https://api.census.gov'
     ).df(dataframe)
-    output = prepare_output_schema(output)
+    output_schema = prepare_output_schema(output_schema)
+
+    # Handle geometry column type
+    if 'geometry' in dataframe.columns:
+        if len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^POINT')]):
+            output_schema.change_column_transform('geometry').to('to_point(`geometry`)')
+        elif len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^MULTIPOLYGON')]):
+            output_schema.change_column_transform('geometry').to('to_multipolygon(`geometry`)')
+        output_schema.run()
+
     # Handle pre-1.x versions of Socrata-py
-    if isinstance(output, tuple):
-        ok, output = output
-    output.wait_for_finish()
-    revision.apply(output_schema=output)
+    if isinstance(output_schema, tuple):
+        _, output_schema = output_schema
+
+    output_schema.wait_for_finish()
+    revision.apply(output_schema=output_schema)
     return revision
 
 
