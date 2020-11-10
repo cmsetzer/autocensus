@@ -177,6 +177,8 @@ class Query:
 
                 nest_asyncio.apply()
                 results: Future = asyncio.run(gathered_calls)  # type: ignore
+            else:
+                raise error
 
         # Compile invalid variables
         variables = {}
