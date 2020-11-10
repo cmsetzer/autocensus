@@ -68,7 +68,7 @@ class Query:
     """A query for American Community Survey data from the Census API.
 
     A Query instance can be used to fetch ACS variables, tables, and
-    shapefiles for a given ACS estimate (1-, 3-, or 5-year), year(s),
+    geometry for a given ACS estimate (1-, 3-, or 5-year), year(s), and
     and geographic units.
     """
 
@@ -79,7 +79,7 @@ class Query:
         variables: Union[Iterable, str],
         for_geo: Union[Iterable, str],
         in_geo: Iterable = None,
-        geometry: Optional[Literal["points", "shapes"]] = None,
+        geometry: Optional[Literal['points', 'polygons']] = None,
         census_api_key: str = None,
     ):
         if estimate in [1, 3, 5]:
@@ -92,10 +92,10 @@ class Query:
         self.in_geo: Iterable = [] if in_geo is None else [
             Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)
         ]
-        if geometry in ["points", "shapes"] or geometry is None:
-            self.geometry: Optional[Literal["points", "shapes"]] = geometry
+        if geometry in ['points', 'polygons', None]:
+            self.geometry: Optional[Literal['points', 'polygons']] = geometry
         else:
-            raise ValueError('Please specify a valid geometry value: points, shapes')
+            raise ValueError('Please specify a valid geometry value: points, polygons')
         self.census_api_key: str = look_up_census_api_key(census_api_key)
 
         # Validate query parameters to avoid common pitfalls
@@ -379,7 +379,7 @@ class Query:
         csv_reader = reader(StringIO(names_csv.decode('utf-8')))
         next(csv_reader)  # Skip header row
         names: dict = dict(csv_reader)  # type: ignore
-        if self.geometry in ["points", "shapes"] and (set(dataframe.columns) & geo_names):
+        if self.geometry in ['points', 'polygons'] and (set(dataframe.columns) & geo_names):
             name_order = [*names.values(), *geo_names]
         else:
             name_order = list(names.values())
@@ -413,7 +413,7 @@ class Query:
         # Merge geospatial data if included
         geometry_dataframe: Optional[DataFrame]
         right_geo_id_field: str
-        if self.geometry in ['points', 'shapes']:
+        if self.geometry in ['points', 'polygons']:
             if self.geometry == 'points':
                 print('Merging Gazetteer files...')
                 geometry_dataframe = self.convert_gazetteer_files_to_dataframe(gazetteer_files)
@@ -454,7 +454,7 @@ class Query:
             if self.geometry == 'points':
                 print('Retrieving Gazetteer files...')
                 gazetteer_files.extend(self.get_gazetteer_files())
-            elif self.geometry == 'shapes':
+            elif self.geometry == 'polygons':
                 print('Retrieving shapefiles...')
                 shapefiles.extend(self.get_shapefiles())
         dataframe = self.assemble_dataframe(variables, tables, gazetteer_files, shapefiles)
