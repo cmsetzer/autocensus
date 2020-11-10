@@ -1,8 +1,9 @@
 # autocensus
 
-Python package for collecting American Community Survey (ACS) data from the [Census API], along with associated geospatial points and boundaries, in a pandas dataframe.
+A Python package for collecting American Community Survey (ACS) data from the [Census API] in a [pandas] dataframe.
 
 [Census API]: https://www.census.gov/developers
+[pandas]: https://pandas.pydata.org
 
 ## Contents
 
@@ -41,6 +42,7 @@ query = Query(
     variables=['DP03_0025E', 'S0103_C01_104E'],
     for_geo='county:033',
     in_geo=['state:53'],
+    geometry='points',
     # Fill in the following with your actual Census API key
     census_api_key='Your Census API key'
 )
@@ -51,18 +53,61 @@ dataframe = query.run()
 
 Output:
 
-| name                    | geo_id         | geo_type | year | date       | variable_code  | variable_label                                                                             | variable_concept                                  | annotation |  value | centroid  | internal_point | geometry         |
-|-------------------------|----------------|----------|------|------------|----------------|--------------------------------------------------------------------------------------------|---------------------------------------------------|------------|--------|-----------|----------------|------------------|
-| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Mean travel time to work (minutes)                            | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Workers 16 years and over!!Mean travel time to work (minutes) | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.2 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | S0103_C01_104E | Total!!Estimate!!GROSS RENT!!Median gross rent (dollars)                                   | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1555.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
-| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | S0103_C01_104E | Estimate!!Total!!Renter-occupied housing units!!GROSS RENT!!Median gross rent (dollars)    | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1674.0 | POINT (…) | POINT (…)      | MULTIPOLYGON (…) |
+| name                    | geo_id         | geo_type | year | date       | variable_code  | variable_label                                                                             | variable_concept                                  | annotation |  value | geometry  |
+|:------------------------|:---------------|:---------|-----:|:-----------|:---------------|:-------------------------------------------------------------------------------------------|:--------------------------------------------------|-----------:|-------:|:----------|
+| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Mean travel time to work (minutes)                            | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.0 | POINT (…) |
+| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | DP03_0025E     | Estimate!!COMMUTING TO WORK!!Workers 16 years and over!!Mean travel time to work (minutes) | SELECTED ECONOMIC CHARACTERISTICS                 |            |   30.2 | POINT (…) |
+| King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | S0103_C01_104E | Total!!Estimate!!GROSS RENT!!Median gross rent (dollars)                                   | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1555.0 | POINT (…) |
+| King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | S0103_C01_104E | Estimate!!Total!!Renter-occupied housing units!!GROSS RENT!!Median gross rent (dollars)    | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1674.0 | POINT (…) |
 
 [Census API key]: https://api.census.gov/data/key_signup.html
 
-## Joining geospatial data
+## Geometry
 
-autocensus will automatically join geospatial data (centroids, representative points, and geometry) for the following geography types for years 2013 and on:
+autocensus supports point- and polygon-based geometry data for many years and geographies by way of the Census Bureau's [Gazetteer Files] and [Cartographic Boundary Files].
+
+Here's how to add geometry to your data:
+
+[Gazetteer Files]: https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html
+[Cartographic Boundary Files]: https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
+
+### Points
+
+Point data from the Census Bureau's Gazetteer Files is generally available for years from 2012 on in the following geographies:
+
+* Nation-level
+  + `urban area`
+  + `zip code tabulation area`
+  + `county`
+  + `congressional district`
+  + `metropolitan statistical area/micropolitan statistical area`
+  + `american indian area/alaska native area/hawaiian home land`
+* State-level
+  + `county subdivision`
+  + `tract`
+  + `place`
+  + `state legislative district (upper chamber)`
+  + `state legislative district (lower chamber)`
+
+Example:
+
+```python
+from autocensus import Query
+
+query = Query(
+    estimate=5,
+    years=[2018],
+    variables=['DP03_0025E'],
+    for_geo=['county:033'],
+    in_geo=['state:53'],
+    geometry='points'
+)
+dataframe = query.run()
+```
+
+### Polygons
+
+Polygon data from the Census Bureau's Cartographic Boundary Shapefiles is generally available for years from 2013 on in the following geographies:
 
 * Nation-level
   + `nation`
@@ -87,26 +132,25 @@ autocensus will automatically join geospatial data (centroids, representative po
   + `state legislative district (upper chamber)`
   + `state legislative district (lower chamber)`
 
-For queries spanning earlier years, these geometry fields will be populated with null values. (Census boundary shapefiles are not available for years prior to 2013.)
-
-If you don't need geospatial data, set the keyword arg `join_geography` to `False` when initializing your query:
+Example:
 
 ```python
+from autocensus import Query
+
 query = Query(
-    estimate=1,
-    years=[2017, 2018],
-    variables=['DP03_0025E', 'S0103_C01_104E'],
-    for_geo='county:033',
+    estimate=5,
+    years=[2018],
+    variables=['DP03_0025E'],
+    for_geo=['county:033'],
     in_geo=['state:53'],
-    join_geography=False
+    geometry='polygons'
 )
+dataframe = query.run()
 ```
 
-If `join_geography` is `False`, the `centroid`, `internal_point`, and `geometry` columns will not be included in your results.
+#### Shapefile caching
 
-### Caching
-
-To improve performance across queries, autocensus caches shapefiles on disk by default. The cache location varies by platform:
+To improve performance across queries that include polygon-based geometry data, autocensus caches shapefiles on disk by default. The cache location varies by platform:
 
 * Linux: `/home/{username}/.cache/autocensus`
 * Mac: `/Users/{username}/Library/Application Support/Caches/autocensus`

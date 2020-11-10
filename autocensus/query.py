@@ -192,14 +192,8 @@ class Query:
             if not variable_json.get('label', False):
                 invalid_variable = variable_json['name']
                 self._invalid_variables[year].append(invalid_variable)
-                if year == 2009:
-                    message = (
-                        f'{invalid_variable} is not a recognized variable for {year}. Note that '
-                        'the Census API does not contain 1-year estimate data for 2009'
-                    )
-                else:
-                    message = f'{invalid_variable} is not a recognized variable for {year}'
-                warn(message)
+                message = f'Warning: {invalid_variable} is not a recognized variable for {year}'
+                logger.warning(message)
             else:
                 variables[year, variable_json['name']] = variable_json
         return variables
