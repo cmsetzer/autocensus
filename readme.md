@@ -8,9 +8,11 @@ A Python package for collecting American Community Survey (ACS) data from the [C
 ## Contents
 
 * [Installation](#installation)
-* [Example](#example)
-* [Joining geospatial data](#joining-geospatial-data)
-  + [Caching](#caching)
+* [Quickstart](#quickstart)
+* [Geometry](#geometry)
+  + [Points](#points)
+  + [Polygons](#polygons)
+    - [Shapefile caching](#shapefile-caching)
 * [Publishing to Socrata](#publishing-to-socrata)
   + [Credentials](#credentials)
   + [Example: Create a new dataset](#example-create-a-new-dataset)
@@ -30,7 +32,7 @@ pip install autocensus
 
 To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or by setting the environment variable `CENSUS_API_KEY`.
 
-## Example
+## Quickstart
 
 ```python
 from autocensus import Query
@@ -42,6 +44,7 @@ query = Query(
     variables=['DP03_0025E', 'S0103_C01_104E'],
     for_geo='county:033',
     in_geo=['state:53'],
+    # Optional arg to add geometry: 'points', 'polygons', or None (default)
     geometry='points',
     # Fill in the following with your actual Census API key
     census_api_key='Your Census API key'
@@ -257,4 +260,4 @@ import autocensus
 autocensus.clear_cache()
 ```
 
-[cache directory]: #caching
+[cache directory]: #shapefile-caching
