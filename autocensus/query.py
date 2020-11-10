@@ -8,6 +8,8 @@ from csv import reader
 from functools import partial
 from io import StringIO
 from itertools import product
+import logging
+from logging import Logger
 from operator import is_not
 import os
 from pathlib import Path
@@ -24,7 +26,6 @@ from typing import (
     Tuple,
     Union,
 )
-from warnings import warn
 from zipfile import BadZipFile
 
 import numpy as np
@@ -56,6 +57,9 @@ from .utilities import (
     parse_table_name_from_variable,
     wrap_scalar_value_in_list,
 )
+
+# Initialize logger
+logger: Logger = logging.getLogger(__name__)
 
 # Types
 Tables = List[Table]
@@ -331,9 +335,9 @@ class Query:
             try:
                 subset = load_geodataframe(filepath)
             except BadZipFile:
-                warn(
-                    f'Failed to load zip file {filepath}. It may be corrupted. You might try '
-                    'clearing your autocensus cache by calling autocensus.clear_cache() or '
+                logger.warning(
+                    f'Warning: Failed to load zip file {filepath}. It may be corrupted. You might '
+                    'try clearing your autocensus cache by calling autocensus.clear_cache() or '
                     f'manually deleting the cache folder at {CACHE_DIRECTORY_PATH}. Continuing…'
                 )
                 continue
@@ -400,13 +404,13 @@ class Query:
         cleans up and finalizes the combined dataframe.
         """
         # Merge tables with variables, annotations
-        print('Merging ACS tables and variables...')
+        logger.info('Merging ACS tables and variables...')
         tables_dataframe: DataFrame = self.convert_tables_to_dataframe(tables)
         variables_dataframe: DataFrame = self.convert_variables_to_dataframe(variables)
         dataframe = tables_dataframe.merge(
             right=variables_dataframe, how='left', on=['variable', 'year']
         )
-        print('Merging annotations...')
+        logger.info('Merging annotations...')
         annotations_dataframe: DataFrame = load_annotations_dataframe()
         dataframe = dataframe.merge(right=annotations_dataframe, how='left', on=['value'])
 
@@ -415,11 +419,11 @@ class Query:
         right_geo_id_field: str
         if self.geometry in ['points', 'polygons']:
             if self.geometry == 'points':
-                print('Merging Gazetteer files...')
+                logger.info('Merging Gazetteer files...')
                 geometry_dataframe = self.convert_gazetteer_files_to_dataframe(gazetteer_files)
                 right_geo_id_field = 'gazetteer_geo_id'
             else:
-                print('Merging shapefiles...')
+                logger.info('Merging shapefiles...')
                 geometry_dataframe = self.convert_shapefiles_to_dataframe(shapefiles)
                 right_geo_id_field = identify_affgeoid_field(geometry_dataframe.columns)
             if geometry_dataframe is not None:
@@ -431,7 +435,7 @@ class Query:
                 )
 
         # Finalize dataframe
-        print('Finalizing data...')
+        logger.info('Finalizing data...')
         dataframe = self.finalize_dataframe(dataframe)
 
         return dataframe
@@ -443,19 +447,19 @@ class Query:
         a few seconds to several minutes.
         """
         with self.create_census_api_session():
-            print('Retrieving variables...')
+            logger.info('Retrieving variables...')
             variables: Variables = self.get_variables()
-            print('Retrieving ACS tables...')
+            logger.info('Retrieving ACS tables...')
             tables: Tables = self.get_tables()
 
             # Add geometry
             gazetteer_files: GazetteerFiles = []
             shapefiles: Shapefiles = []
             if self.geometry == 'points':
-                print('Retrieving Gazetteer files...')
+                logger.info('Retrieving Gazetteer files...')
                 gazetteer_files.extend(self.get_gazetteer_files())
             elif self.geometry == 'polygons':
-                print('Retrieving shapefiles...')
+                logger.info('Retrieving shapefiles...')
                 shapefiles.extend(self.get_shapefiles())
         dataframe = self.assemble_dataframe(variables, tables, gazetteer_files, shapefiles)
         return dataframe

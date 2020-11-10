@@ -2,6 +2,8 @@
 
 from functools import reduce
 import json
+import logging
+from logging import Logger
 import os
 from typing import Dict, Iterable, Tuple, Union
 
@@ -16,6 +18,9 @@ from yarl import URL
 
 from .errors import MissingCredentialsError
 from .geography import serialize_to_wkt
+
+# Initialize logger
+logger: Logger = logging.getLogger(__name__)
 
 # Types
 Credentials = Tuple[str, str]

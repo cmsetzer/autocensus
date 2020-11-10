@@ -8,6 +8,8 @@ from csv import reader
 from dataclasses import dataclass
 from functools import lru_cache
 from io import StringIO
+import logging
+from logging import Logger
 import math
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Union
@@ -20,6 +22,9 @@ import us
 from us.states import State
 
 from .utilities import forgive
+
+# Initialize logger
+logger: Logger = logging.getLogger(__name__)
 
 # Types
 Geometry = Union[MultiPolygon, Point, Polygon]

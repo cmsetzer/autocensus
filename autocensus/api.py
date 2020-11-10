@@ -4,10 +4,11 @@ from asyncio import Future, gather
 from contextlib import asynccontextmanager
 from io import BytesIO
 from json.decoder import JSONDecodeError
+import logging
+from logging import Logger
 import os
 from pathlib import Path
 from typing import AsyncGenerator, Dict, Iterable, List, Optional, Union
-from warnings import warn
 
 from httpx import AsyncClient, Limits, Response
 import pandas as pd
@@ -18,6 +19,9 @@ from yarl import URL
 from .errors import CensusAPIUnknownError, MissingCredentialsError
 from .geography import Geo, determine_gazetteer_code, determine_geo_code
 from .utilities import CACHE_DIRECTORY_PATH
+
+# Initialize logger
+logger: Logger = logging.getLogger(__name__)
 
 # Types
 Table = List[List[Union[int, str]]]
@@ -159,13 +163,15 @@ class CensusAPI:
         """
         gazetteer_code: Optional[str] = determine_gazetteer_code(year, for_geo.type)
         if gazetteer_code is None:
-            warn(f'Failed to obtain a Gazetteer file for geography type "{for_geo.type}"')
+            logger.warning(
+                f'Warning: Failed to obtain a Gazetteer file for geography type "{for_geo.type}"'
+            )
             return None
 
         url: URL = self.build_gazetteer_url(year, gazetteer_code)
         response: Response = await self._session.get(str(url))
         if response.status_code != 200:
-            warn(f'Failed to obtain a Gazetteer file from {response.url}')
+            logger.warning(f'Warning: Failed to obtain a Gazetteer file from {response.url}')
             return None
 
         # Fetch zip file as an in-memory object and read it into a dataframe
@@ -196,7 +202,9 @@ class CensusAPI:
             response: Response = await self._session.get(str(url))
             # Handle bad response or missing shapefile (if, e.g., it hasn't been released yet)
             if response.status_code != 200:
-                warn(f'Failed to obtain a Census boundary shapefile from {response.url}')
+                logger.warning(
+                    f'Warning: Failed to obtain a Census boundary shapefile from {response.url}'
+                )
                 return None
             with open(cached_filepath, 'wb') as cached_file:
                 cached_file.write(response.content)

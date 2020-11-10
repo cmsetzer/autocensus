@@ -3,6 +3,8 @@
 from datetime import datetime
 from functools import lru_cache, wraps
 from itertools import islice
+import logging
+from logging import Logger
 from pathlib import Path
 from shutil import rmtree
 from typing import Any, Callable, Iterable, Iterator, List, Union
@@ -13,6 +15,9 @@ from pandas import DataFrame
 from pkg_resources import resource_stream
 
 from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
+
+# Initialize logger
+logger: Logger = logging.getLogger(__name__)
 
 # Types
 Chunk = List[str]
