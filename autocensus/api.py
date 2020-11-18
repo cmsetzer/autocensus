@@ -64,7 +64,9 @@ class CensusAPI:
 
         Closes and deletes the session when we're done with it.
         """
-        async with AsyncClient(timeout=300, limits=Limits(max_keepalive_connections=5)) as session:
+        async with AsyncClient(
+            timeout=300, limits=Limits(max_keepalive_connections=10)
+        ) as session:
             self._session = session
             yield
             await session.aclose()
