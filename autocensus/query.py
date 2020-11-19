@@ -13,19 +13,7 @@ from logging import Logger
 from operator import is_not
 import os
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Coroutine,
-    DefaultDict,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from typing import Any, Coroutine, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, Union
 from zipfile import BadZipFile
 
 import numpy as np
@@ -344,9 +332,10 @@ class Query:
         dataframe.crs = f'EPSG:{wgs_84_epsg}'
 
         # Geometry columns
-        dataframe['geometry'] = (
-            dataframe['geometry'].map(coerce_polygon_to_multipolygon).map(flatten_geometry)
-        )
+        if self.geometry == 'polygons':
+            dataframe['geometry'] = (
+                dataframe['geometry'].map(coerce_polygon_to_multipolygon).map(flatten_geometry)
+            )
 
         # Clean up
         affgeoid_field = identify_affgeoid_field(dataframe.columns)
@@ -369,8 +358,9 @@ class Query:
         dataframe.loc[dataframe['annotation'].notnull(), 'value'] = np.NaN
 
         # Create year date column
-        convert_datetime: Callable = partial(pd.to_datetime, format='%Y-%m-%d')
-        dataframe['date'] = dataframe['year'].map('{}-12-31'.format).map(convert_datetime)
+        dataframe['date'] = pd.to_datetime(
+            dataframe['year'].astype('string') + '-12-31', format='%Y-%m-%d'
+        )
 
         # Rename and reorder columns
         names_csv: bytes = resource_string(__name__, 'resources/names.csv')
