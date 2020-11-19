@@ -16,6 +16,9 @@ from pathlib import Path
 from typing import Any, Coroutine, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, Union
 from zipfile import BadZipFile
 
+import geopandas as gpd
+from geopandas import GeoSeries
+from geopandas.geodataframe import GeoDataFrame
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
@@ -283,21 +286,34 @@ class Query:
         """
         subsets = []
         gazetteer_tables: Iterable[DataFrame] = filter(partial(is_not, None), gazetteer_files)
+        nad_83_epsg = 4269
         for gazetteer_table in gazetteer_tables:
-            subset: DataFrame = gazetteer_table.copy()
+            subset = GeoDataFrame(
+                gazetteer_table,
+                geometry=gpd.points_from_xy(
+                    gazetteer_table['INTPTLONG'], gazetteer_table['INTPTLAT']
+                ),
+            )
+            subset.crs = f'EPSG:{nad_83_epsg}'
             subset['gazetteer_geo_id'] = subset.apply(
                 lambda row: convert_geo_id_to_14_chars(row['GEOID'], row['gazetteer_geo_type']),
                 axis=1,
             )
-            subset['geometry'] = subset.apply(
-                lambda row: Point(row['INTPTLONG'], row['INTPTLAT']), axis=1
-            )
             subsets.append(subset)
-        if subsets:
-            dataframe: DataFrame = pd.concat(subsets)
-            return dataframe
-        else:
+
+        # Return null value if no dataframes were obtained
+        if not subsets:
             return None
+
+        # Concatenate dataframes
+        dataframe: GeoDataFrame = pd.concat(subsets)
+
+        # Reproject dataframe from NAD 83 to WGS 84
+        wgs_84_epsg = 4326
+        dataframe['geometry'].to_crs(epsg=wgs_84_epsg)
+        dataframe.crs = f'EPSG:{wgs_84_epsg}'
+
+        return dataframe
 
     def convert_shapefiles_to_dataframe(self, shapefiles: Shapefiles) -> DataFrame:
         """Convert one or more shapefiles to a dataframe.
