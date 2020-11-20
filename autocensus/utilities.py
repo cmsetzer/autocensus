@@ -47,6 +47,9 @@ def forgive(*exceptions) -> Callable:
 
 def clear_cache() -> bool:
     """Clear the autocensus cache."""
+    if not CACHE_DIRECTORY_PATH.exists():
+        logger.warning(f'Warning: Cache directory not found: {CACHE_DIRECTORY_PATH}')
+        return False
     rmtree(CACHE_DIRECTORY_PATH)
     cache_is_cleared: bool = not CACHE_DIRECTORY_PATH.exists()
     return cache_is_cleared

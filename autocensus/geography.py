@@ -69,7 +69,7 @@ def calculate_congress_number(year: int) -> int:
     return congress
 
 
-@lru_cache()
+@lru_cache(maxsize=1024)
 def get_geo_mappings(source: str) -> Dict[str, str]:
     """Read filename codes from a local CSV."""
     codes_csv: bytes = resource_string(__name__, f'resources/{source}.csv')
@@ -170,6 +170,7 @@ def identify_affgeoid_field(fields: Iterable[str]) -> str:
     return affgeoid_field
 
 
+@lru_cache(maxsize=1024)
 def convert_geo_id_to_14_chars(geo_id: str, geo_type: str) -> Optional[str]:
     """Convert a Census geographic identifier to 14-character format.
 
