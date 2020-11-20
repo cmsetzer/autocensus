@@ -1,6 +1,6 @@
 # autocensus
 
-A Python package for collecting American Community Survey (ACS) data from the [Census API] in a [pandas] dataframe.
+A Python package for collecting American Community Survey (ACS) data and associated geometry from the [Census API] in a [pandas] dataframe.
 
 [Census API]: https://www.census.gov/developers
 [pandas]: https://pandas.pydata.org
@@ -20,7 +20,6 @@ A Python package for collecting American Community Survey (ACS) data from the [C
   + [Example: Create a new dataset from multiple queries](#example-create-a-new-dataset-from-multiple-queries)
 * [Troubleshooting](#troubleshooting)
   + [Clearing the cache](#clearing-the-cache)
-  + [SSL errors](#ssl-errors)
 
 ## Installation
 
