@@ -5,7 +5,7 @@ import json
 import logging
 from logging import Logger
 import os
-from typing import Dict, Iterable, Tuple, Union
+from typing import Dict, Iterable, Optional, Tuple, Union
 
 import pandas as pd
 from pandas import DataFrame
@@ -14,6 +14,7 @@ from socrata import Socrata
 from socrata.authorization import Authorization
 from socrata.output_schema import OutputSchema
 from socrata.revisions import Revision
+from typing_extensions import Literal
 from yarl import URL
 
 from .errors import MissingCredentialsError
@@ -65,7 +66,7 @@ def change_column(prev: OutputSchema, record: Dict[str, str]) -> OutputSchema:
 
 
 def prepare_output_schema(output_schema: OutputSchema):
-    """Add column metadata for improved data display on Socrata."""
+    """Add column metadata and transforms to Socrata output schema."""
     columns = pd.read_csv(resource_stream(__name__, 'resources/columns.csv'))
 
     # Filter out fields that aren't part of our output schema (e.g., geospatial fields)
@@ -74,6 +75,28 @@ def prepare_output_schema(output_schema: OutputSchema):
 
     # Reduce output schema with all metadata changes and return
     output_schema = reduce(change_column, columns.to_dict(orient='records'), output_schema)
+    return output_schema.run()
+
+
+def add_geometry_to_output_schema(
+    output_schema: OutputSchema, geometry: Optional[Literal['points', 'polygons']]
+) -> OutputSchema:
+    """Add a transform to Socrata output schema based on geometry type.
+
+    Specifies the geometry type and reprojects the data from NAD 83 to
+    WGS 84.
+    """
+    transform: str
+    if geometry == 'points':
+        base_transform = 'to_point(`geometry`)'
+    elif geometry == 'polygons':
+        base_transform = 'to_multipolygon(`geometry`)'
+    else:
+        return output_schema
+
+    # Reproject geometry from NAD 83 to WGS 84
+    transform = f"reproject_to_wgs84(set_projection({base_transform}, '+init=epsg:4269'))"
+    output_schema.change_column_transform('geometry').to(transform)
     return output_schema.run()
 
 
@@ -88,11 +111,14 @@ def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, descrip
 
     # Handle geometry column type
     if 'geometry' in dataframe.columns:
+        geometry: Optional[Literal['points', 'polygons']]
         if len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^POINT')]):
-            output_schema.change_column_transform('geometry').to('to_point(`geometry`)')
+            geometry = 'points'
         elif len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^MULTIPOLYGON')]):
-            output_schema.change_column_transform('geometry').to('to_multipolygon(`geometry`)')
-        output_schema.run()
+            geometry = 'polygons'
+        else:
+            geometry = None
+        output_schema = add_geometry_to_output_schema(output_schema, geometry)
 
     # Handle pre-1.x versions of Socrata-py
     if isinstance(output_schema, tuple):

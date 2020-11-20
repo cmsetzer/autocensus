@@ -17,13 +17,11 @@ from typing import Any, Coroutine, DefaultDict, Dict, Iterable, List, Optional, 
 from zipfile import BadZipFile
 
 import geopandas as gpd
-from geopandas import GeoSeries
 from geopandas.geodataframe import GeoDataFrame
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_string
-from shapely.geometry.point import Point
 from typing_extensions import Literal
 from yarl import URL
 
@@ -84,9 +82,9 @@ class Query:
         self._years: Iterable = wrap_scalar_value_in_list(years)
         self._variables: Iterable = wrap_scalar_value_in_list(variables)
         self.for_geo: Iterable = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
-        self.in_geo: Iterable = [] if in_geo is None else [
-            Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)
-        ]
+        self.in_geo: Iterable = (
+            [] if in_geo is None else [Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)]
+        )
         if geometry in ['points', 'polygons', None]:
             self.geometry: Optional[Literal['points', 'polygons']] = geometry
         else:
@@ -263,15 +261,17 @@ class Query:
         for header, *rows in tables:
             subset = DataFrame(rows, columns=header)
             # Consolidate geography type in a single column
-            geography_columns: Set[str] = (set(geography_types) & set(subset.columns))
+            geography_columns: Set[str] = set(geography_types) & set(subset.columns)
             id_vars = ['NAME', 'GEO_ID', 'geo_type', *geography_columns, 'year']
             melted: DataFrame = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
 
         # Ensure correct sort order and value dtype
-        dataframe: DataFrame = pd.concat(subsets).sort_values(
-            by=['geo_type', 'variable', 'NAME', 'year']
-        ).reset_index(drop=True)
+        dataframe: DataFrame = (
+            pd.concat(subsets)
+            .sort_values(by=['geo_type', 'variable', 'NAME', 'year'])
+            .reset_index(drop=True)
+        )
         dataframe['value'] = dataframe['value'].astype(float)
 
         return dataframe
@@ -305,14 +305,8 @@ class Query:
         if not subsets:
             return None
 
-        # Concatenate dataframes
+        # Concatenate dataframes and return
         dataframe: GeoDataFrame = pd.concat(subsets)
-
-        # Reproject dataframe from NAD 83 to WGS 84
-        wgs_84_epsg = 4326
-        dataframe['geometry'].to_crs(epsg=wgs_84_epsg)
-        dataframe.crs = f'EPSG:{wgs_84_epsg}'
-
         return dataframe
 
     def convert_shapefiles_to_dataframe(self, shapefiles: Shapefiles) -> DataFrame:
@@ -341,11 +335,6 @@ class Query:
                 continue
             subsets.append(subset)
         dataframe: DataFrame = pd.concat(subsets, ignore_index=True, sort=True)
-
-        # Reproject dataframe from NAD 83 to WGS 84
-        wgs_84_epsg = 4326
-        dataframe['geometry'] = dataframe['geometry'].to_crs(epsg=wgs_84_epsg)
-        dataframe.crs = f'EPSG:{wgs_84_epsg}'
 
         # Geometry columns
         if self.geometry == 'polygons':
