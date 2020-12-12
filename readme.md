@@ -12,6 +12,7 @@ A Python package for collecting American Community Survey (ACS) data and associa
 * [Geometry](#geometry)
   + [Points](#points)
   + [Polygons](#polygons)
+    - [Shapefile resolution](#shapefile-resolution)
     - [Shapefile caching](#shapefile-caching)
 * [Publishing to Socrata](#publishing-to-socrata)
   + [Credentials](#credentials)
@@ -150,13 +151,34 @@ query = Query(
 dataframe = query.run()
 ```
 
+#### Shapefile resolution
+
+By default, autocensus will attempt to fetch almost all shapefiles at a resolution of 1 : 500,000 (`500k`). Some sources among the Cartographic Boundary Shapefiles are also available at the lower resolutions of 1 : 5,000,000 (`5m`) or 1 : 20,000,000 (`20m`). To attempt to download a shapefile at a specific resolution, pass a value to `Query`'s optional `resolution` parameter:
+
+```python
+from autocensus import Query
+
+query = Query(
+    estimate=5,
+    years=[2018],
+    variables=['DP03_0025E'],
+    for_geo=['county:*'],
+    in_geo=['state:53'],
+    geometry='polygons',
+    # Optional arg to set a specific resolution: '500k', '5m', or '20m'
+    resolution='20m'
+)
+```
+
+Setting a specific resolution is only supported for polygon-based geometry.
+
 #### Shapefile caching
 
 To improve performance across queries that include polygon-based geometry data, autocensus caches shapefiles on disk by default. The cache location varies by platform:
 
 * Linux: `/home/{username}/.cache/autocensus`
 * Mac: `/Users/{username}/Library/Application Support/Caches/autocensus`
-* Windows: `C:\\Users\\{username}\\AppData\\Local\\socrata\\autocensus`
+* Windows: `C:\Users\{username}\AppData\Local\socrata\autocensus`
 
 You can clear the cache by manually deleting the cache directory or by executing the `autocensus.clear_cache` function. See the section [Troubleshooting: Clearing the cache] for more details.
 
@@ -164,7 +186,7 @@ You can clear the cache by manually deleting the cache directory or by executing
 
 ## Publishing to Socrata
 
-If [socrata-py] is installed, you can publish query results (or dataframes containing the results of multiple queries) directly to Socrata via the method `Query.to_socrata`.
+If you have publishing permissions on a Socrata domain, you can publish your query results directly to Socrata via the method `Query.to_socrata`. This method uses [socrata-py] to upload your dataframe with the appropriate field types, formatting, and metadata.
 
 [socrata-py]: https://github.com/socrata/socrata-py
 
