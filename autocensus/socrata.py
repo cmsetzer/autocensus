@@ -23,11 +23,8 @@ from .geography import serialize_to_wkt
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
 
-# Types
-Credentials = Tuple[str, str]
 
-
-def look_up_socrata_credentials(credentials: Credentials = None) -> Credentials:
+def look_up_socrata_credentials(credentials: Tuple[str, str] = None) -> Tuple[str, str]:
     """Collect Socrata auth credentials from the local environment.
 
     Looks up credentials under several common Socrata environment
@@ -170,7 +167,7 @@ def to_socrata(
     dataset_id: str = None,
     name: str = None,
     description: str = None,
-    auth: Credentials = None,
+    auth: Tuple[str, str] = None,
     open_in_browser: bool = True,
 ) -> URL:
     """Publish an autocensus dataframe to Socrata."""

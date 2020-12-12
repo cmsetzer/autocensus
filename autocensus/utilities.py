@@ -5,25 +5,18 @@ from functools import lru_cache, wraps
 from itertools import islice
 import logging
 from logging import Logger
-from pathlib import Path
 from shutil import rmtree
 from typing import Any, Callable, Iterable, Iterator, List, Union
 
-from appdirs import user_cache_dir
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_stream
 
+from .constants import CACHE_DIRECTORY_PATH
 from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
 
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
-
-# Types
-Chunk = List[str]
-
-# Constants
-CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus', 'socrata'))
 
 
 def forgive(*exceptions) -> Callable:
@@ -63,7 +56,7 @@ def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable:
         return value
 
 
-def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Chunk]:
+def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[List[str]]:
     """Given a series of variables, yield them in even chunks.
 
     Uses a default maximum size of 48 to avoid exceeding the Census
@@ -72,7 +65,7 @@ def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Ch
     """
     iterator = iter(variables)
     while True:
-        chunk: Chunk = list(islice(iterator, max_size))
+        chunk: List[str] = list(islice(iterator, max_size))
         if chunk:
             yield chunk
         else:

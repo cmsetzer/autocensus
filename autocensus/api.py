@@ -8,7 +8,7 @@ import logging
 from logging import Logger
 import os
 from pathlib import Path
-from typing import AsyncGenerator, Dict, Iterable, List, Optional, Union
+from typing import AsyncGenerator, Dict, Iterable, Optional
 
 from httpx import AsyncClient, Limits, Response
 import pandas as pd
@@ -17,15 +17,13 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from typing_extensions import Literal
 from yarl import URL
 
+from .constants import Table
 from .errors import CensusAPIUnknownError, MissingCredentialsError
 from .geography import Geo, determine_gazetteer_code, determine_geo_code
 from .utilities import CACHE_DIRECTORY_PATH
 
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
-
-# Types
-Table = List[List[Union[int, str]]]
 
 
 def look_up_census_api_key(census_api_key: str = None) -> str:

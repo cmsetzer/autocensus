@@ -13,7 +13,7 @@ from logging import Logger
 from operator import is_not
 import os
 from pathlib import Path
-from typing import Any, Coroutine, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Coroutine, DefaultDict, Iterable, List, Optional, Set, Tuple, Union
 from zipfile import BadZipFile
 
 import geopandas as gpd
@@ -22,10 +22,22 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_string
-from typing_extensions import Literal
 from yarl import URL
 
-from .api import CensusAPI, Table, look_up_census_api_key
+from .api import CensusAPI, look_up_census_api_key
+from .constants import (
+    CACHE_DIRECTORY_PATH,
+    ESTIMATES,
+    GEOMETRIES,
+    RESOLUTIONS,
+    GazetteerFile,
+    QueryEstimate,
+    QueryGeometry,
+    QueryResolution,
+    Shapefile,
+    Table,
+    Variables,
+)
 from .geography import (
     Geo,
     coerce_polygon_to_multipolygon,
@@ -35,9 +47,8 @@ from .geography import (
     identify_affgeoid_field,
     load_geodataframe,
 )
-from .socrata import Credentials, build_dataset_name, to_socrata
+from .socrata import build_dataset_name, to_socrata
 from .utilities import (
-    CACHE_DIRECTORY_PATH,
     check_geo_combinations,
     check_geo_estimates,
     check_years,
@@ -50,12 +61,6 @@ from .utilities import (
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
 
-# Types
-Tables = List[Table]
-Variables = Dict[Tuple[int, str], dict]
-GazetteerFiles = List[Optional[DataFrame]]
-Shapefiles = List[Optional[Path]]
-
 
 class Query:
     """A query for American Community Survey data from the Census API.
@@ -67,19 +72,21 @@ class Query:
 
     def __init__(
         self,
-        estimate: int,
+        estimate: QueryEstimate,
         years: Union[Iterable, int],
         variables: Union[Iterable, str],
         for_geo: Union[Iterable, str],
-        in_geo: Iterable = None,
-        geometry: Optional[Literal['points', 'polygons']] = None,
-        resolution: Optional[Literal['500k', '5m', '20m']] = None,
+        in_geo: Optional[Union[Iterable, str]] = None,
+        geometry: Optional[QueryGeometry] = None,
+        resolution: Optional[QueryResolution] = None,
         census_api_key: str = None,
     ):
-        if estimate in [1, 3, 5]:
+        if estimate in ESTIMATES:
             self.estimate: int = estimate
         else:
-            raise ValueError('Please specify an estimate of 1, 3, or 5 years')
+            raise ValueError(
+                f'Please specify a valid estimate value: {", ".join(map(str, ESTIMATES))}'
+            )
         self._years: Iterable = wrap_scalar_value_in_list(years)
         self._variables: Iterable = wrap_scalar_value_in_list(variables)
         self.for_geo: Iterable = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
@@ -88,16 +95,18 @@ class Query:
         )
 
         # Validate geometry and resolution
-        if geometry in ['points', 'polygons', None]:
-            self.geometry: Optional[Literal['points', 'polygons']] = geometry
+        if geometry is None or geometry in GEOMETRIES:
+            self.geometry: Optional[QueryGeometry] = geometry
         else:
-            raise ValueError('Please specify a valid geometry value: points, polygons')
-        if resolution in ['500k', '5m', '20m', None]:
+            raise ValueError(f'Please specify a valid geometry value: {", ".join(GEOMETRIES)}')
+        if resolution is None or resolution in RESOLUTIONS:
             if resolution is not None and geometry != 'polygons':
-                logger.warning('Warning: Specifying a resolution is only supporte for polygons')
-            self.resolution: Optional[Literal['500k', '5m', '20m']] = resolution
+                logger.warning('Warning: Specifying a resolution is only supported for polygons')
+            self.resolution: Optional[QueryResolution] = resolution
         else:
-            raise ValueError('Please specify a valid resolution value: 500k, 5m, 20m')
+            raise ValueError(
+                f'Please specify a valid resolution value: {(", ").join(RESOLUTIONS)}'
+            )
 
         # Use Census API key if supplied, or fall back to environment variable if not
         self.census_api_key: str = look_up_census_api_key(census_api_key)
@@ -198,7 +207,7 @@ class Query:
                 variables[year, variable_json['name']] = variable_json
         return variables
 
-    def get_tables(self) -> Tables:
+    def get_tables(self) -> List[Table]:
         """Get data tables for the supplied variables."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -215,7 +224,7 @@ class Query:
         tables = list(results)
         return tables
 
-    def get_gazetteer_files(self) -> GazetteerFiles:
+    def get_gazetteer_files(self) -> List[GazetteerFile]:
         """Get Gazetteer files for the supplied years and geographies."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -231,7 +240,7 @@ class Query:
         gazetteer_files = list(results)
         return gazetteer_files
 
-    def get_shapefiles(self) -> Shapefiles:
+    def get_shapefiles(self) -> List[Shapefile]:
         """Get shapefiles for the supplied years and geographies."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -263,7 +272,7 @@ class Query:
 
         return dataframe
 
-    def convert_tables_to_dataframe(self, tables: Tables) -> DataFrame:
+    def convert_tables_to_dataframe(self, tables: List[Table]) -> DataFrame:
         """Reshape and convert ACS data tables to a dataframe."""
         geography_types: Iterable[str] = get_geo_mappings('geo_codes').keys()
 
@@ -288,7 +297,7 @@ class Query:
         return dataframe
 
     def convert_gazetteer_files_to_dataframe(
-        self, gazetteer_files: GazetteerFiles
+        self, gazetteer_files: List[GazetteerFile]
     ) -> Optional[DataFrame]:
         """Convert one or more Gazetteer files to a dataframe.
 
@@ -320,7 +329,7 @@ class Query:
         dataframe: GeoDataFrame = pd.concat(subsets)
         return dataframe
 
-    def convert_shapefiles_to_dataframe(self, shapefiles: Shapefiles) -> DataFrame:
+    def convert_shapefiles_to_dataframe(self, shapefiles: List[Shapefile]) -> DataFrame:
         """Convert one or more shapefiles to a dataframe.
 
         Skips over null filepaths produced by invalid responses from the
@@ -394,9 +403,9 @@ class Query:
     def assemble_dataframe(
         self,
         variables: Variables,
-        tables: Tables,
-        gazetteer_files: GazetteerFiles,
-        shapefiles: Shapefiles,
+        tables: List[Table],
+        gazetteer_files: List[GazetteerFile],
+        shapefiles: List[Shapefile],
     ) -> DataFrame:
         """Merge and finalize the query dataframe.
 
@@ -450,11 +459,11 @@ class Query:
             logger.info('Retrieving variables...')
             variables: Variables = self.get_variables()
             logger.info('Retrieving ACS tables...')
-            tables: Tables = self.get_tables()
+            tables: List[Table] = self.get_tables()
 
             # Add geometry
-            gazetteer_files: GazetteerFiles = []
-            shapefiles: Shapefiles = []
+            gazetteer_files: List[GazetteerFile] = []
+            shapefiles: List[Shapefile] = []
             if self.geometry == 'points':
                 logger.info('Retrieving Gazetteer files...')
                 gazetteer_files.extend(self.get_gazetteer_files())
@@ -472,7 +481,7 @@ class Query:
         dataset_id: str = None,
         name: str = None,
         description: str = None,
-        auth: Credentials = None,
+        auth: Tuple[str, str] = None,
         open_in_browser: bool = True,
     ) -> URL:
         """Run query and publish the resulting dataframe to Socrata."""

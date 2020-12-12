@@ -16,6 +16,7 @@ from autocensus.geography import (
     serialize_to_wkt,
 )
 
+
 def test_geo():
     geo = Geo('state', '08')
     assert geo.type == 'state'
