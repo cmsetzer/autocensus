@@ -62,7 +62,7 @@ class Query:
 
     A Query instance can be used to fetch ACS variables, tables, and
     geometry for a given ACS estimate (1-, 3-, or 5-year), year(s), and
-    and geographic units.
+    geographic units.
     """
 
     def __init__(
@@ -73,6 +73,7 @@ class Query:
         for_geo: Union[Iterable, str],
         in_geo: Iterable = None,
         geometry: Optional[Literal['points', 'polygons']] = None,
+        resolution: Optional[Literal['500k', '5m', '20m']] = None,
         census_api_key: str = None,
     ):
         if estimate in [1, 3, 5]:
@@ -85,10 +86,20 @@ class Query:
         self.in_geo: Iterable = (
             [] if in_geo is None else [Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)]
         )
+
+        # Validate geometry and resolution
         if geometry in ['points', 'polygons', None]:
             self.geometry: Optional[Literal['points', 'polygons']] = geometry
         else:
             raise ValueError('Please specify a valid geometry value: points, polygons')
+        if resolution in ['500k', '5m', '20m', None]:
+            if resolution is not None and geometry != 'polygons':
+                logger.warning('Warning: Specifying a resolution is only supporte for polygons')
+            self.resolution: Optional[Literal['500k', '5m', '20m']] = resolution
+        else:
+            raise ValueError('Please specify a valid resolution value: 500k, 5m, 20m')
+
+        # Use Census API key if supplied, or fall back to environment variable if not
         self.census_api_key: str = look_up_census_api_key(census_api_key)
 
         # Validate query parameters to avoid common pitfalls
@@ -229,7 +240,7 @@ class Query:
         # Handle multiple for_geo values by year
         for year, for_geo in product(years_with_shapefiles, self.for_geo):
             call: Coroutine[Any, Any, Optional[Path]] = self._census_api.fetch_shapefile(
-                year, for_geo, self.in_geo
+                year, for_geo, self.in_geo, self.resolution
             )
             calls.append(call)
 

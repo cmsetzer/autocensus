@@ -14,6 +14,7 @@ from httpx import AsyncClient, Limits, Response
 import pandas as pd
 from pandas import DataFrame
 from tenacity import retry, stop_after_attempt, wait_exponential
+from typing_extensions import Literal
 from yarl import URL
 
 from .errors import CensusAPIUnknownError, MissingCredentialsError
@@ -92,7 +93,13 @@ class CensusAPI:
         url: URL = base_url / f'{year}_Gaz_{gazetteer_code}_national.zip'
         return url
 
-    def build_shapefile_url(self, year: int, for_geo: Geo, in_geo: Iterable) -> URL:
+    def build_shapefile_url(
+        self,
+        year: int,
+        for_geo: Geo,
+        in_geo: Iterable,
+        resolution: Optional[Literal['500k', '5m', '20m']] = None,
+    ) -> URL:
         """Build a Census shapefile URL based on the supplied parameters."""
         in_geo_dict: Dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
         state_fips = in_geo_dict.get('state', '')
@@ -101,7 +108,10 @@ class CensusAPI:
         else:
             base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{year}')
         geo_code: str = determine_geo_code(year, for_geo.type, state_fips)
-        resolution = '500k' if not for_geo.type == 'us' else '5m'
+
+        # Determine shapefile resolution (defaults to 1 : 500,000, except for U.S. outline)
+        if resolution is None:
+            resolution = '500k' if not for_geo.type == 'us' else '5m'
         url: URL = base_url / f'cb_{year}_{geo_code}_{resolution}.zip'
         return url
 
@@ -189,7 +199,13 @@ class CensusAPI:
         dataframe['year'] = year
         return dataframe
 
-    async def fetch_shapefile(self, year: int, for_geo: Geo, in_geo: Iterable) -> Optional[Path]:
+    async def fetch_shapefile(
+        self,
+        year: int,
+        for_geo: Geo,
+        in_geo: Iterable,
+        resolution: Optional[Literal['500k', '5m', '20m']],
+    ) -> Optional[Path]:
         """Fetch a given shapefile and download it to the local cache.
 
         Returns a path to the cached shapefile. If the shapefile is
@@ -198,7 +214,7 @@ class CensusAPI:
         If the shapefile URL returns a non-200 response, warns the user
         and returns a null value.
         """
-        url: URL = self.build_shapefile_url(year, for_geo, in_geo)
+        url: URL = self.build_shapefile_url(year, for_geo, in_geo, resolution)
         cached_filepath: Path = CACHE_DIRECTORY_PATH / url.name
         if not cached_filepath.exists():
             response: Response = await self._session.get(str(url))
