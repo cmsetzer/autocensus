@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.0.1]
+
+* Added support for multiple Cartographic Boundary Shapefile resolutions (`500k`, `5m`, `20m`) via the optional `Query` parameter `resolution`.
+* Consolidated package constants and types in the `constants` module.
+
 ## [v2.0.0]
 
 * Adopted Census Gazetteer files as source for point geometry.
@@ -59,6 +64,7 @@
 
 * First major release.
 
+[v2.0.1]: https://github.com/socrata/autocensus/releases/tag/v2.0.1
 [v2.0.0]: https://github.com/socrata/autocensus/releases/tag/v2.0.0
 [v1.1.1]: https://github.com/socrata/autocensus/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/socrata/autocensus/releases/tag/v1.1.0
