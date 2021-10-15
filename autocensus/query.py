@@ -41,16 +41,16 @@ from .constants import (
 from .geography import (
     Geo,
     coerce_polygon_to_multipolygon,
-    convert_geo_id_to_14_chars,
     flatten_geometry,
     get_geo_mappings,
     identify_affgeoid_field,
     load_geodataframe,
+    normalize_geo_id,
 )
 from .socrata import build_dataset_name, to_socrata
 from .utilities import (
-    check_geo_combinations,
     check_geo_estimates,
+    check_geo_hierarchy,
     check_years,
     chunk_variables,
     load_annotations_dataframe,
@@ -120,7 +120,7 @@ class Query:
         # Create cache directory if it doesn't exist
         CACHE_DIRECTORY_PATH.mkdir(exist_ok=True)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         attributes = ['estimate', 'years', 'variables', 'for_geo', 'in_geo']
         attribute_representations = [repr(getattr(self, attribute)) for attribute in attributes]
         representation = '<Query estimate={} years={} variables={} for_geo={} in_geo={}>'.format(
@@ -151,7 +151,7 @@ class Query:
     def _validate_query_parameters(self) -> bool:
         """Validate query parameters to avoid common pitfalls."""
         check_years(self._years)
-        check_geo_combinations(self.for_geo, self.in_geo)
+        check_geo_hierarchy(self.for_geo, self.in_geo)
         check_geo_estimates(self.estimate, self.for_geo)
         return True
 
@@ -316,7 +316,7 @@ class Query:
             )
             subset.crs = f'EPSG:{nad_83_epsg}'
             subset['gazetteer_geo_id'] = subset.apply(
-                lambda row: convert_geo_id_to_14_chars(row['GEOID'], row['gazetteer_geo_type']),
+                lambda row: normalize_geo_id(row['GEOID'], row['gazetteer_geo_type']),
                 axis=1,
             )
             subsets.append(subset)
@@ -483,6 +483,7 @@ class Query:
         description: str = None,
         auth: Tuple[str, str] = None,
         open_in_browser: bool = True,
+        wait_for_finish: bool = False,
     ) -> URL:
         """Run query and publish the resulting dataframe to Socrata."""
         if dataframe is None:
@@ -495,5 +496,6 @@ class Query:
             description=description,
             auth=auth,
             open_in_browser=open_in_browser,
+            wait_for_finish=wait_for_finish,
         )
         return revision_url

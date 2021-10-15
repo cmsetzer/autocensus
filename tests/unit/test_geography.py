@@ -14,6 +14,7 @@ from autocensus.geography import (
     identify_affgeoid_field,
     is_shp_file,
     load_geodataframe,
+    normalize_geo_id,
     serialize_to_wkt,
 )
 
@@ -51,6 +52,11 @@ def test_geo_handles_invalid_state_abbreviation():
     assert geo.type == 'state'
     assert geo.code == 'XX'
     assert str(geo) == 'state:XX'
+
+
+def test_geo_raises_on_invalid_value():
+    with pytest.raises(ValueError, match='Please specify a valid geography value'):
+        Geo('08012')
 
 
 def test_calculate_congress_number():
@@ -190,3 +196,25 @@ def test_serialize_to_wkt():
 def test_identify_affgeoid_field(field):
     fields = ['STATEFP', field]
     assert identify_affgeoid_field(fields) == field
+
+
+def test_normalize_geo_id():
+    expected_values = [
+        ('urban area', '83116', '400C100US83116'),
+        ('zip code tabulation area', '02564', '8600000US02564'),
+        ('county', '08012', '0500000US08012'),
+        ('congressional district', '0902', '5001500US0902'),
+        ('metropolitan statistical area/micropolitan statistical area', '48007', '310M300US48007'),
+        ('american indian area/alaska native area/hawaiian home land', '9515', '2500000US9515'),
+        ('county subdivision', '92975', '0600000US92975'),
+        ('tract', '08001009326', '1400000US08001009326'),
+        ('place', '4835000', '1600000US4835000'),
+        ('state legislative district (upper chamber)', '09033', '610U500US09033'),
+        ('state legislative district (lower chamber)', '09147', '620L500US09147'),
+    ]
+    for geo_type, geo_id, expected_value in expected_values:
+        assert normalize_geo_id(geo_id, geo_type) == expected_value
+
+
+def test_normalize_geo_id_with_unknown_geo_type():
+    assert normalize_geo_id('12345', 'unknown type') is None

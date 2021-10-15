@@ -1,41 +1,23 @@
 """Utility functions for processing Census API data."""
 
 from datetime import datetime
-from functools import lru_cache, wraps
+from functools import lru_cache
 from itertools import islice
 import logging
 from logging import Logger
-from shutil import rmtree
-from typing import Any, Callable, Iterable, Iterator, List, Union
+import shutil
+from typing import Iterable, Iterator, List, Union
 
 import pandas as pd
 from pandas import DataFrame
-from pkg_resources import resource_stream
+import pkg_resources
 
 from .constants import CACHE_DIRECTORY_PATH
 from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
+from .geography import Geo
 
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
-
-
-def forgive(*exceptions) -> Callable:
-    """Gracefully ignore the specified exceptions when calling function.
-
-    This is especially useful for skipping NA values in columns.
-    """
-
-    def decorator(func: Callable) -> Callable:
-        @wraps(func)
-        def wrapped(value: Any) -> Any:
-            try:
-                return func(value)
-            except tuple(exceptions):
-                return value
-
-        return wrapped
-
-    return decorator
 
 
 def clear_cache() -> bool:
@@ -43,7 +25,7 @@ def clear_cache() -> bool:
     if not CACHE_DIRECTORY_PATH.exists():
         logger.warning(f'Warning: Cache directory not found: {CACHE_DIRECTORY_PATH}')
         return False
-    rmtree(CACHE_DIRECTORY_PATH)
+    shutil.rmtree(CACHE_DIRECTORY_PATH)
     cache_is_cleared: bool = not CACHE_DIRECTORY_PATH.exists()
     return cache_is_cleared
 
@@ -91,7 +73,7 @@ def parse_table_name_from_variable(variable: str) -> str:
 
 def load_annotations_dataframe() -> DataFrame:
     """Load the included annotations.csv resource as a dataframe."""
-    annotations_csv = resource_stream(__name__, 'resources/annotations.csv')
+    annotations_csv = pkg_resources.resource_stream(__name__, 'resources/annotations.csv')
     dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
     return dataframe
 
@@ -103,8 +85,8 @@ def check_years(years: Iterable) -> bool:
     expected window of data available from the Census API.
     """
     current_year: int = datetime.today().year
-    if min(years) < 2009:
-        raise InvalidYearError('The Census API does not contain data from before 2009')
+    if min(years) < 2005:
+        raise InvalidYearError('The Census API does not contain ACS data from before 2005')
     elif max(years) >= current_year:
         raise InvalidYearError(
             f'The Census API does not yet contain data from {current_year} or later'
@@ -113,25 +95,25 @@ def check_years(years: Iterable) -> bool:
         return True
 
 
-def check_geo_combinations(for_geo: Iterable, in_geo: Iterable) -> bool:
-    """Validate a given combination of for_geo and in_geo values.
+def check_geo_hierarchy(for_geo: Iterable[Geo], in_geo: Iterable[Geo]) -> bool:
+    """Validate a given hierarchy of for_geo and in_geo values.
 
-    Raises an InvalidGeographyError for invalid combinations that come
-    up often.
+    Raises an InvalidGeographyError for invalid hierarchies that come up
+    often.
     """
     for_geo_types = {geo.type for geo in for_geo}
     in_geo_types = {geo.type for geo in in_geo}
 
     geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
-    if 'tract' in for_geo_types and not ({'state', 'county'} & in_geo_types):
+    if ('tract' in for_geo_types) and ('place' in in_geo_types):
+        raise InvalidGeographyError(f'Queries by tract cannot have place in in_geo. See {geo_url}')
+    elif ('tract' in for_geo_types) and not {'state', 'county'}.issubset(in_geo_types):
         raise InvalidGeographyError(
             f'Queries by tract must include state and county. See {geo_url}'
         )
-    elif 'tract' in for_geo_types and 'place' in in_geo_types:
-        raise InvalidGeographyError(f'Queries by tract cannot have place in in_geo. See {geo_url}')
-    elif 'place' in for_geo_types and 'state' not in in_geo_types:
+    elif ('place' in for_geo_types) and ('state' not in in_geo_types):
         raise InvalidGeographyError(f'Queries by place must have state in in_geo. See {geo_url}')
-    elif 'county' in for_geo_types and 'state' not in in_geo_types:
+    elif ('county' in for_geo_types) and ('state' not in in_geo_types):
         raise InvalidGeographyError(
             f'Queries by county must also have state in in_geo. See {geo_url}'
         )

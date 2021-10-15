@@ -14,11 +14,10 @@ from zipfile import ZipFile, ZipInfo
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
+from shapely import wkt
 from shapely.geometry import MultiPolygon, Point, Polygon
 import us
 from us.states import State
-
-from .utilities import forgive
 
 # Initialize logger
 logger: Logger = logging.getLogger(__name__)
@@ -132,11 +131,15 @@ def coerce_polygon_to_multipolygon(shape: Union[MultiPolygon, Polygon]) -> Multi
         return shape
 
 
-@forgive(AttributeError)
 def flatten_geometry(multipolygon: MultiPolygon) -> MultiPolygon:
     """Flatten a three-dimensional multipolygon to two dimensions."""
-    if not multipolygon.has_z:
+    try:
+        has_z: bool = multipolygon.has_z
+    except AttributeError:
         return multipolygon
+    else:
+        if has_z is not True:
+            return multipolygon
     polygons = []
     for polygon in multipolygon:
         new_coordinates = [(x, y) for (x, y, *_) in polygon.exterior.coords]
@@ -145,10 +148,12 @@ def flatten_geometry(multipolygon: MultiPolygon) -> MultiPolygon:
     return flattened_multipolygon
 
 
-@forgive(AttributeError)
 def serialize_to_wkt(value: Union[MultiPolygon, Point, Polygon]) -> str:
     """Serialize a geometry value to well-known text (WKT)."""
-    return value.to_wkt()
+    try:
+        return wkt.dumps(value)
+    except ValueError:
+        return value
 
 
 def identify_affgeoid_field(fields: Iterable[str]) -> str:
@@ -164,8 +169,8 @@ def identify_affgeoid_field(fields: Iterable[str]) -> str:
 
 
 @lru_cache(maxsize=1024)
-def convert_geo_id_to_14_chars(geo_id: str, geo_type: str) -> Optional[str]:
-    """Convert a Census geographic identifier to 14-character format.
+def normalize_geo_id(geo_id: str, geo_type: str) -> Optional[str]:
+    """Convert a Census geographic identifier to a common format.
 
     This enables joins between entities like Gazetteer tables and ACS
     tables.

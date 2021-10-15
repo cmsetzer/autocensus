@@ -12,6 +12,7 @@ from pandas import DataFrame
 from pkg_resources import resource_stream
 from socrata import Socrata
 from socrata.authorization import Authorization
+from socrata.job import Job
 from socrata.output_schema import OutputSchema
 from socrata.revisions import Revision
 from typing_extensions import Literal
@@ -24,15 +25,13 @@ from .geography import serialize_to_wkt
 logger: Logger = logging.getLogger(__name__)
 
 
-def look_up_socrata_credentials(credentials: Tuple[str, str] = None) -> Tuple[str, str]:
+def look_up_socrata_credentials() -> Tuple[str, str]:
     """Collect Socrata auth credentials from the local environment.
 
     Looks up credentials under several common Socrata environment
     variable names, and returns the first complete pair it finds. Raises
     a MissingCredentialsError if no complete pair is found.
     """
-    if credentials is not None:
-        return credentials
     environment_variable_pairs = [
         ('SOCRATA_KEY_ID', 'SOCRATA_KEY_SECRET'),
         ('SOCRATA_USERNAME', 'SOCRATA_PASSWORD'),
@@ -97,7 +96,14 @@ def add_geometry_to_output_schema(
     return output_schema.run()
 
 
-def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, description: str):
+def create_new_dataset(
+    client: Socrata,
+    dataframe: DataFrame,
+    name: str,
+    description: str,
+    *,
+    wait_for_finish: bool = False,
+):
     """Create and publish a dataframe as a new Socrata dataset."""
     revision: Revision
     output_schema: OutputSchema
@@ -122,11 +128,15 @@ def create_new_dataset(client: Socrata, dataframe: DataFrame, name: str, descrip
         _, output_schema = output_schema
 
     output_schema.wait_for_finish()
-    revision.apply(output_schema=output_schema)
+    job: Job = revision.apply(output_schema=output_schema)
+    if wait_for_finish is True:
+        job.wait_for_finish()
     return revision
 
 
-def update_existing_dataset(client: Socrata, dataframe, dataset_id):
+def update_existing_dataset(
+    client: Socrata, dataframe: DataFrame, dataset_id: str, *, wait_for_finish: bool = False
+):
     """Use a dataframe to update an existing Socrata dataset."""
     view = client.views.lookup(dataset_id)
     # Handle pre-1.x versions of Socrata-py
@@ -138,7 +148,7 @@ def update_existing_dataset(client: Socrata, dataframe, dataset_id):
         source.wait_for_finish()
         output = source.get_latest_input_schema().get_latest_output_schema()
         output.wait_for_finish()
-        revision.apply(output_schema=output)
+        job = revision.apply(output_schema=output)
     else:
         revision = view.revisions.create_replace_revision()
         upload = revision.create_upload('autocensus-update')
@@ -146,7 +156,9 @@ def update_existing_dataset(client: Socrata, dataframe, dataset_id):
         source.wait_for_finish()
         output = source.get_latest_input_schema().get_latest_output_schema()
         output.wait_for_finish()
-        revision.apply(output_schema=output)
+        job = revision.apply(output_schema=output)
+    if wait_for_finish is True:
+        job.wait_for_finish()
     return revision
 
 
@@ -164,11 +176,12 @@ def build_dataset_name(estimate: int, years: Iterable) -> str:
 def to_socrata(
     domain: Union[URL, str],
     dataframe: DataFrame,
-    dataset_id: str = None,
-    name: str = None,
-    description: str = None,
-    auth: Tuple[str, str] = None,
+    dataset_id: Optional[str] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    auth: Optional[Tuple[str, str]] = None,
     open_in_browser: bool = True,
+    wait_for_finish: bool = False,
 ) -> URL:
     """Publish an autocensus dataframe to Socrata."""
     # Serialize geometry to WKT
@@ -178,15 +191,21 @@ def to_socrata(
         pass
 
     # Initialize client
-    client = Socrata(Authorization(str(domain), *look_up_socrata_credentials(auth)))
+    if auth is None:
+        auth = look_up_socrata_credentials()
+    client = Socrata(Authorization(str(domain), *auth))
 
     # If no 4x4 was supplied, create a new dataset
     if dataset_id is None:
         name = name if name is not None else 'American Community Survey Data'
         description = description if description is not None else ''
-        revision = create_new_dataset(client, dataframe, name, description)
+        revision = create_new_dataset(
+            client, dataframe, name, description, wait_for_finish=wait_for_finish
+        )
     else:
-        revision = update_existing_dataset(client, dataframe, dataset_id)
+        revision = update_existing_dataset(
+            client, dataframe, dataset_id, wait_for_finish=wait_for_finish
+        )
 
     # Return URL
     if open_in_browser is True:
