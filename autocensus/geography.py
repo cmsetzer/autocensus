@@ -1,9 +1,5 @@
 """Utility functions for working with geospatial data."""
 
-# Must import shapely before fiona to prevent GEOS race condition (see
-# https://github.com/Toblerity/Shapely/issues/553 for more information)
-from shapely.geometry import MultiPolygon, Polygon  # isort:skip
-
 from csv import reader
 from dataclasses import dataclass
 from functools import lru_cache
@@ -12,16 +8,16 @@ import logging
 from logging import Logger
 import math
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Union
 from zipfile import ZipFile, ZipInfo
 
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
+from shapely.geometry import MultiPolygon, Point, Polygon
 import us
 from us.states import State
 
-from .constants import AnyGeometry, AnyPolygon
 from .utilities import forgive
 
 # Initialize logger
@@ -128,7 +124,7 @@ def load_geodataframe(filepath: Path) -> GeoDataFrame:
     return geodataframe
 
 
-def coerce_polygon_to_multipolygon(shape: AnyPolygon) -> MultiPolygon:
+def coerce_polygon_to_multipolygon(shape: Union[MultiPolygon, Polygon]) -> MultiPolygon:
     """Convert a polygon into a MultiPolygon if it's not one already."""
     if not isinstance(shape, MultiPolygon):
         return MultiPolygon([shape])
@@ -150,7 +146,7 @@ def flatten_geometry(multipolygon: MultiPolygon) -> MultiPolygon:
 
 
 @forgive(AttributeError)
-def serialize_to_wkt(value: AnyGeometry) -> str:
+def serialize_to_wkt(value: Union[MultiPolygon, Point, Polygon]) -> str:
     """Serialize a geometry value to well-known text (WKT)."""
     return value.to_wkt()
 

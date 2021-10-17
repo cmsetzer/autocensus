@@ -1,5 +1,6 @@
 from unittest.mock import Mock
 
+import fiona  # noqa
 import pytest
 from shapely.geometry import MultiPolygon, Polygon
 
