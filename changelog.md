@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.0.2]
+
+* Added optional `wait_for_finish` parameter to `Query.to_socrata`.
+* Expanded test coverage and made various internal tweaks/fixes.
+
 ## [v2.0.1]
 
 * Added support for multiple Cartographic Boundary Shapefile resolutions (`500k`, `5m`, `20m`) via the optional `Query` parameter `resolution`.
