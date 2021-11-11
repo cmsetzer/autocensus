@@ -18,7 +18,6 @@ from zipfile import BadZipFile
 
 import geopandas as gpd
 from geopandas.geodataframe import GeoDataFrame
-import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pkg_resources import resource_string
@@ -379,8 +378,9 @@ class Query:
         non_geo_names: set = set(dataframe.columns) - geo_names
         dataframe = dataframe.drop_duplicates(subset=non_geo_names, ignore_index=True)
 
-        # Insert NAs for annotated rows to avoid outlier values like -999,999,999
-        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = np.NaN
+        # Insert NAs for annotated row values to avoid outlier values like -999,999,999
+        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = ''
+        dataframe['value'] = pd.to_numeric(dataframe['value'], errors='coerce')
 
         # Create year date column
         dataframe['date'] = pd.to_datetime(
