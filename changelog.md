@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.0.3]
+
+* Refreshed dependencies and removed unnecessary NumPy import.
+
 ## [v2.0.2]
 
 * Added optional `wait_for_finish` parameter to `Query.to_socrata`.
@@ -69,6 +73,7 @@
 
 * First major release.
 
+[v2.0.3]: https://github.com/socrata/autocensus/releases/tag/v2.0.3
 [v2.0.2]: https://github.com/socrata/autocensus/releases/tag/v2.0.2
 [v2.0.1]: https://github.com/socrata/autocensus/releases/tag/v2.0.1
 [v2.0.0]: https://github.com/socrata/autocensus/releases/tag/v2.0.0
