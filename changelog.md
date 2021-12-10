@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.0.4]
+
+* Updated deprecated `MultiPolygon` iteration logic to quiet Shapely warnings.
+
 ## [v2.0.3]
 
 * Refreshed dependencies and removed unnecessary NumPy import.
@@ -73,6 +77,7 @@
 
 * First major release.
 
+[v2.0.4]: https://github.com/socrata/autocensus/releases/tag/v2.0.4
 [v2.0.3]: https://github.com/socrata/autocensus/releases/tag/v2.0.3
 [v2.0.2]: https://github.com/socrata/autocensus/releases/tag/v2.0.2
 [v2.0.1]: https://github.com/socrata/autocensus/releases/tag/v2.0.1
