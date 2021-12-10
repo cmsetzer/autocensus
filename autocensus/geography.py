@@ -141,7 +141,7 @@ def flatten_geometry(multipolygon: MultiPolygon) -> MultiPolygon:
         if has_z is not True:
             return multipolygon
     polygons = []
-    for polygon in multipolygon:
+    for polygon in multipolygon.geoms:
         new_coordinates = [(x, y) for (x, y, *_) in polygon.exterior.coords]
         polygons.append(Polygon(new_coordinates))
     flattened_multipolygon = MultiPolygon(polygons)
