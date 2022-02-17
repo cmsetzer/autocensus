@@ -116,8 +116,8 @@ class Query:
         # Initialize invalid variables defaultdict
         self._invalid_variables: DefaultDict[int, list] = defaultdict(list)
 
-        # Create cache directory if it doesn't exist
-        CACHE_DIRECTORY_PATH.mkdir(exist_ok=True)
+        # Create cache directory, plus any enclosing directories, as needed
+        CACHE_DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
 
     def __repr__(self) -> str:  # pragma: no cover
         attributes = ['estimate', 'years', 'variables', 'for_geo', 'in_geo']
