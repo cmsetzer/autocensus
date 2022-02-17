@@ -31,6 +31,10 @@
 * Streamlined logging for `Query` output and warnings.
 * Refreshed minimum versions for all dependencies.
 
+## [v1.1.3]
+
+* Fixed a bug affecting environments where an expected system cache directory does not exist.
+
 ## [v1.1.2]
 
 * Refreshed dependencies and loosened some version restrictions.
@@ -86,6 +90,7 @@
 [v2.0.2]: https://github.com/socrata/autocensus/releases/tag/v2.0.2
 [v2.0.1]: https://github.com/socrata/autocensus/releases/tag/v2.0.1
 [v2.0.0]: https://github.com/socrata/autocensus/releases/tag/v2.0.0
+[v1.1.3]: https://github.com/socrata/autocensus/releases/tag/v1.1.3
 [v1.1.2]: https://github.com/socrata/autocensus/releases/tag/v1.1.2
 [v1.1.1]: https://github.com/socrata/autocensus/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/socrata/autocensus/releases/tag/v1.1.0
