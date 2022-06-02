@@ -40,7 +40,7 @@ pytest-cov = "^3.0.0"
 
 [tool.black]
 line-length = 99
-target-version = ["py37", "py38", "py39", "py310"]
+target-version = ["py38", "py39", "py310"]
 skip-string-normalization = true
 
 [tool.isort]
