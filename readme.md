@@ -24,7 +24,7 @@ A Python package for collecting American Community Survey (ACS) data and associa
 
 ## Installation
 
-autocensus requires Python 3.7 or higher. Install as follows:
+autocensus requires Python 3.8 or higher. Install as follows:
 
 ```sh
 pip install autocensus
