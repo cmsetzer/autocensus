@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.1.0]
+
+* Increased minimum Python version to 3.8 and refreshed dependencies.
+
 ## [v2.0.5]
 
 * Fixed a bug affecting environments where an expected system cache directory does not exist.
@@ -89,6 +93,7 @@
 
 * First major release.
 
+[v2.1.0]: https://github.com/socrata/autocensus/releases/tag/v2.1.0
 [v2.0.5]: https://github.com/socrata/autocensus/releases/tag/v2.0.5
 [v2.0.4]: https://github.com/socrata/autocensus/releases/tag/v2.0.4
 [v2.0.3]: https://github.com/socrata/autocensus/releases/tag/v2.0.3
