@@ -46,7 +46,7 @@ class Geo:
             self.code = code
 
         # Convert state abbreviation to FIPS code as needed
-        if self.type == 'state':
+        if (self.type == 'state') and (code != '*'):
             state: State = us.states.lookup(self.code)
             if state is not None:
                 self.code = state.fips
