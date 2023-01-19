@@ -104,7 +104,7 @@ def check_geo_hierarchy(for_geo: Iterable[Geo], in_geo: Iterable[Geo]) -> bool:
     for_geo_types = {geo.type for geo in for_geo}
     in_geo_types = {geo.type for geo in in_geo}
 
-    geo_url = 'https://api.census.gov/data/2017/acs/acs5/geography.html'
+    geo_url = 'https://api.census.gov/data/2021/acs/acs5/geography.html'
     if ('tract' in for_geo_types) and ('place' in in_geo_types):
         raise InvalidGeographyError(f'Queries by tract cannot have place in in_geo. See {geo_url}')
     elif ('tract' in for_geo_types) and not {'state', 'county'}.issubset(in_geo_types):
