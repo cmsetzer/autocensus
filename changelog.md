@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.1.1]
+
+* Fixed a bug affecting certain queries with `in_geo=['state:*']`.
+* Added `to_socrata` deprecation warning.
+* Consolidated dev tooling under Ruff and refreshed dependencies.
+
 ## [v2.1.0]
 
 * Increased minimum Python version to 3.8 and refreshed dependencies.
@@ -93,6 +99,7 @@
 
 * First major release.
 
+[v2.1.1]: https://github.com/socrata/autocensus/releases/tag/v2.1.1
 [v2.1.0]: https://github.com/socrata/autocensus/releases/tag/v2.1.0
 [v2.0.5]: https://github.com/socrata/autocensus/releases/tag/v2.0.5
 [v2.0.4]: https://github.com/socrata/autocensus/releases/tag/v2.0.4
