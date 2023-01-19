@@ -188,6 +188,8 @@ You can clear the cache by manually deleting the cache directory or by executing
 
 If you have publishing permissions on a Socrata domain, you can publish your query results directly to Socrata via the method `Query.to_socrata`. This method uses [socrata-py] to upload your dataframe with the appropriate field types, formatting, and metadata.
 
+**Note:** autocensus will drop built-in support for Socrata uploads in a future version. Please see the [socrata-py] docs for guidance on dataframe ingress.
+
 [socrata-py]: https://github.com/socrata/socrata-py
 
 ### Credentials
@@ -227,45 +229,6 @@ query.to_socrata(
 query.to_socrata(
     'some-domain.data.socrata.com',
     dataset_id='xxxx-xxxx'
-)
-```
-
-### Example: Create a new dataset from multiple queries
-
-```python
-from autocensus import Query
-from autocensus.socrata import to_socrata
-import pandas as pd
-
-# County-level query
-county_query = Query(
-    estimate=1,
-    years=range(2013, 2018),
-    variables=['DP03_0025E'],
-    for_geo='county:*',
-    in_geo='state:08'
-)
-county_dataframe = county_query.run()
-
-# State-level query
-state_query = Query(
-    estimate=1,
-    years=range(2013, 2018),
-    variables=['DP03_0025E'],
-    for_geo='state:08'
-)
-state_dataframe = state_query.run()
-
-# Concatenate dataframes and upload to Socrata
-combined_dataframe = pd.concat([
-    county_dataframe,
-    state_dataframe
-])
-to_socrata(
-    'some-domain.data.socrata.com',
-    dataframe=combined_dataframe,
-    name='Median Commute Time for Colorado State and Counties, 2013–2017',  # Optional
-    description='1-year estimates from the American Community Survey'  # Optional
 )
 ```
 

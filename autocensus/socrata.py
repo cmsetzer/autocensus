@@ -6,6 +6,7 @@ import logging
 from logging import Logger
 import os
 from typing import Dict, Iterable, Optional, Tuple, Union
+import warnings
 
 import pandas as pd
 from pandas import DataFrame
@@ -184,6 +185,13 @@ def to_socrata(
     wait_for_finish: bool = False,
 ) -> URL:
     """Publish an autocensus dataframe to Socrata."""
+    warnings.warn(
+        'autocensus will drop built-in support for Socrata uploads in a future version. See the '
+        'socrata-py docs for guidance on dataframe ingress: https://github.com/socrata/socrata-py',
+        category=DeprecationWarning,
+        stacklevel=2
+    )
+
     # Serialize geometry to WKT
     try:
         dataframe['geometry'] = dataframe['geometry'].map(serialize_to_wkt)
