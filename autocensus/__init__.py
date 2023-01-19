@@ -2,7 +2,7 @@
 
 from importlib.metadata import version
 import logging
-from logging import Logger, StreamHandler
+from logging import StreamHandler
 
 from . import api, constants, errors, geography, query, socrata, utilities  # noqa
 from .query import Query  # noqa
@@ -12,6 +12,6 @@ from .utilities import clear_cache  # noqa
 __version__ = version(__name__)
 
 # Initialize logger
-logger: Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 logger.addHandler(StreamHandler())
 logger.setLevel(logging.INFO)

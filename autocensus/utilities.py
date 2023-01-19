@@ -4,12 +4,10 @@ from datetime import datetime
 from functools import lru_cache
 from itertools import islice
 import logging
-from logging import Logger
 import shutil
-from typing import Iterable, Iterator, List, Union
+from typing import Iterable, Union
 
 import pandas as pd
-from pandas import DataFrame
 import pkg_resources
 
 from .constants import CACHE_DIRECTORY_PATH
@@ -17,20 +15,20 @@ from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearErro
 from .geography import Geo
 
 # Initialize logger
-logger: Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
-def clear_cache() -> bool:
+def clear_cache():
     """Clear the autocensus cache."""
     if not CACHE_DIRECTORY_PATH.exists():
         logger.warning(f'Warning: Cache directory not found: {CACHE_DIRECTORY_PATH}')
         return False
     shutil.rmtree(CACHE_DIRECTORY_PATH)
-    cache_is_cleared: bool = not CACHE_DIRECTORY_PATH.exists()
+    cache_is_cleared = not CACHE_DIRECTORY_PATH.exists()
     return cache_is_cleared
 
 
-def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable:
+def wrap_scalar_value_in_list(value: Union[Iterable, int, str]):
     """If a string or integer is passed, wrap it in a list."""
     if isinstance(value, (int, str)):
         return [value]
@@ -38,7 +36,7 @@ def wrap_scalar_value_in_list(value: Union[Iterable, int, str]) -> Iterable:
         return value
 
 
-def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[List[str]]:
+def chunk_variables(variables: Iterable[str], max_size: int = 48):
     """Given a series of variables, yield them in even chunks.
 
     Uses a default maximum size of 48 to avoid exceeding the Census
@@ -47,7 +45,7 @@ def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Li
     """
     iterator = iter(variables)
     while True:
-        chunk: List[str] = list(islice(iterator, max_size))
+        chunk = list(islice(iterator, max_size))
         if chunk:
             yield chunk
         else:
@@ -55,15 +53,15 @@ def chunk_variables(variables: Iterable[str], max_size: int = 48) -> Iterator[Li
 
 
 @lru_cache(maxsize=1024)
-def parse_table_name_from_variable(variable: str) -> str:
+def parse_table_name_from_variable(variable: str):
     """Given an ACS variable name, determine its associated table."""
     # Extract table code from variable name
-    end_of_table_code: int = [character.isdigit() for character in variable].index(True)
-    table_code: str = variable[:end_of_table_code]
+    end_of_table_code = [character.isdigit() for character in variable].index(True)
+    table_code = variable[:end_of_table_code]
     # Map table code to table name
     mappings = {'B': 'detail', 'C': 'detail', 'CP': 'cprofile', 'DP': 'profile', 'S': 'subject'}
     try:
-        table_name: str = mappings[table_code]
+        table_name = mappings[table_code]
     except KeyError as error:
         message = f'Variable cannot be associated with an ACS table: {variable}'
         raise InvalidVariableError(message) from error
@@ -71,20 +69,20 @@ def parse_table_name_from_variable(variable: str) -> str:
         return table_name
 
 
-def load_annotations_dataframe() -> DataFrame:
+def load_annotations_dataframe():
     """Load the included annotations.csv resource as a dataframe."""
     annotations_csv = pkg_resources.resource_stream(__name__, 'resources/annotations.csv')
     dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
     return dataframe
 
 
-def check_years(years: Iterable) -> bool:
+def check_years(years: Iterable):
     """Validate a range of query years.
 
     Raises an InvalidYearError if a given year falls outside the
     expected window of data available from the Census API.
     """
-    current_year: int = datetime.today().year
+    current_year = datetime.today().year
     if min(years) < 2005:
         raise InvalidYearError('The Census API does not contain ACS data from before 2005')
     elif max(years) >= current_year:
@@ -95,7 +93,7 @@ def check_years(years: Iterable) -> bool:
         return True
 
 
-def check_geo_hierarchy(for_geo: Iterable[Geo], in_geo: Iterable[Geo]) -> bool:
+def check_geo_hierarchy(for_geo: Iterable[Geo], in_geo: Iterable[Geo]):
     """Validate a given hierarchy of for_geo and in_geo values.
 
     Raises an InvalidGeographyError for invalid hierarchies that come up
@@ -121,7 +119,7 @@ def check_geo_hierarchy(for_geo: Iterable[Geo], in_geo: Iterable[Geo]) -> bool:
         return True
 
 
-def check_geo_estimates(estimate: int, for_geo: Iterable) -> bool:
+def check_geo_estimates(estimate: int, for_geo: Iterable):
     """Validate a given estimate in combination with for_geo values.
 
     Raises an InvalidGeographyError for invalid combinations that come

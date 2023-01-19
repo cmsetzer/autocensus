@@ -1,7 +1,6 @@
 """A class and methods for performing Census API queries."""
 
 import asyncio
-from asyncio import Future
 from collections import defaultdict
 from contextlib import contextmanager
 from csv import reader
@@ -9,11 +8,9 @@ from functools import partial
 from io import StringIO
 from itertools import product
 import logging
-from logging import Logger
 from operator import is_not
 import os
-from pathlib import Path
-from typing import Any, Coroutine, DefaultDict, Iterable, List, Optional, Set, Tuple, Union
+from typing import DefaultDict, Iterable, List, Optional, Tuple, Union
 from zipfile import BadZipFile
 
 import geopandas as gpd
@@ -58,7 +55,7 @@ from .utilities import (
 )
 
 # Initialize logger
-logger: Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Query:
@@ -78,7 +75,7 @@ class Query:
         in_geo: Optional[Union[Iterable, str]] = None,
         geometry: Optional[QueryGeometry] = None,
         resolution: Optional[QueryResolution] = None,
-        census_api_key: str = None,
+        census_api_key: Optional[str] = None,
     ):
         if estimate in ESTIMATES:
             self.estimate: int = estimate
@@ -86,29 +83,29 @@ class Query:
             raise ValueError(
                 f'Please specify a valid estimate value: {", ".join(map(str, ESTIMATES))}'
             )
-        self._years: Iterable = wrap_scalar_value_in_list(years)
-        self._variables: Iterable = wrap_scalar_value_in_list(variables)
-        self.for_geo: Iterable = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
-        self.in_geo: Iterable = (
+        self._years = wrap_scalar_value_in_list(years)
+        self._variables = wrap_scalar_value_in_list(variables)
+        self.for_geo = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
+        self.in_geo = (
             [] if in_geo is None else [Geo(geo) for geo in wrap_scalar_value_in_list(in_geo)]
         )
 
         # Validate geometry and resolution
         if geometry is None or geometry in GEOMETRIES:
-            self.geometry: Optional[QueryGeometry] = geometry
+            self.geometry = geometry
         else:
             raise ValueError(f'Please specify a valid geometry value: {", ".join(GEOMETRIES)}')
         if resolution is None or resolution in RESOLUTIONS:
             if resolution is not None and geometry != 'polygons':
                 logger.warning('Warning: Specifying a resolution is only supported for polygons')
-            self.resolution: Optional[QueryResolution] = resolution
+            self.resolution = resolution
         else:
             raise ValueError(
                 f'Please specify a valid resolution value: {(", ").join(RESOLUTIONS)}'
             )
 
         # Use Census API key if supplied, or fall back to environment variable if not
-        self.census_api_key: str = look_up_census_api_key(census_api_key)
+        self.census_api_key = look_up_census_api_key(census_api_key)
 
         # Validate query parameters to avoid common pitfalls
         self._validate_query_parameters()
@@ -119,7 +116,7 @@ class Query:
         # Create cache directory, plus any enclosing directories, as needed
         CACHE_DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
 
-    def __repr__(self) -> str:  # pragma: no cover
+    def __repr__(self):  # pragma: no cover
         attributes = ['estimate', 'years', 'variables', 'for_geo', 'in_geo']
         attribute_representations = [repr(getattr(self, attribute)) for attribute in attributes]
         representation = '<Query estimate={} years={} variables={} for_geo={} in_geo={}>'.format(
@@ -128,26 +125,26 @@ class Query:
         return representation
 
     @property
-    def years(self) -> List[int]:
+    def years(self):
         """Return the supplied years as a sorted, unique list."""
         return sorted(set(self._years))
 
     @property
-    def variables(self) -> List[str]:
+    def variables(self):
         """Return the supplied variables as a sorted, unique list."""
         return sorted(set(self._variables))
 
-    def get_variables_by_year_and_table_name(self) -> DefaultDict[Tuple[int, str], List[str]]:
+    def get_variables_by_year_and_table_name(self):
         """Group the supplied variables by year and table name."""
         variables: DefaultDict[Tuple[int, str], List[str]] = defaultdict(list)
         for year, variable in product(self.years, self.variables):
             if variable in self._invalid_variables[year]:
                 continue
-            table_name: str = parse_table_name_from_variable(variable)
+            table_name = parse_table_name_from_variable(variable)
             variables[year, table_name].append(variable)
         return variables
 
-    def _validate_query_parameters(self) -> bool:
+    def _validate_query_parameters(self):
         """Validate query parameters to avoid common pitfalls."""
         check_years(self._years)
         check_geo_hierarchy(self.for_geo, self.in_geo)
@@ -174,22 +171,20 @@ class Query:
         calls = []
         for (year, table_name), group in self.get_variables_by_year_and_table_name().items():
             for variable in group:
-                call: Coroutine[Any, Any, dict] = self._census_api.fetch_variable(
-                    self.estimate, year, table_name, variable
-                )
+                call = self._census_api.fetch_variable(self.estimate, year, table_name, variable)
                 calls.append(call)
 
         # Make concurrent API calls
-        gathered_calls: Future = self._census_api.gather_calls(calls)
+        gathered_calls = self._census_api.gather_calls(calls)
         try:
-            results: Future = asyncio.run(gathered_calls)
+            results = asyncio.run(gathered_calls)
         except RuntimeError as error:
             # Handle Jupyter issue with multiple running event loops by importing nest_asyncio
             if error.args[0] == 'asyncio.run() cannot be called from a running event loop':
                 import nest_asyncio
 
                 nest_asyncio.apply()
-                results: Future = asyncio.run(gathered_calls)  # type: ignore
+                results = asyncio.run(gathered_calls)  # type: ignore
             else:
                 raise error
 
@@ -214,12 +209,12 @@ class Query:
             # Handle multiple for_geo values by year
             chunked_variables_by_for_geo = product(self.for_geo, chunk_variables(variables))
             for for_geo, chunk in chunked_variables_by_for_geo:
-                call: Coroutine[Any, Any, Table] = self._census_api.fetch_table(
+                call = self._census_api.fetch_table(
                     self.estimate, year, table_name, chunk, for_geo, self.in_geo
                 )
                 calls.append(call)
         # Make concurrent API calls
-        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        results = asyncio.run(self._census_api.gather_calls(calls))
         tables = list(results)
         return tables
 
@@ -230,12 +225,10 @@ class Query:
         years_with_gazetteer_files = [year for year in self.years if year >= 2012]
         # Handle multiple for_geo values by year
         for year, for_geo in product(years_with_gazetteer_files, self.for_geo):
-            call: Coroutine[Any, Any, Optional[DataFrame]] = self._census_api.fetch_gazetteer_file(
-                year, for_geo
-            )
+            call = self._census_api.fetch_gazetteer_file(year, for_geo)
             calls.append(call)
         # Make concurrent API calls
-        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        results = asyncio.run(self._census_api.gather_calls(calls))
         gazetteer_files = list(results)
         return gazetteer_files
 
@@ -247,17 +240,15 @@ class Query:
 
         # Handle multiple for_geo values by year
         for year, for_geo in product(years_with_shapefiles, self.for_geo):
-            call: Coroutine[Any, Any, Optional[Path]] = self._census_api.fetch_shapefile(
-                year, for_geo, self.in_geo, self.resolution
-            )
+            call = self._census_api.fetch_shapefile(year, for_geo, self.in_geo, self.resolution)
             calls.append(call)
 
         # Make concurrent API calls
-        results: Future = asyncio.run(self._census_api.gather_calls(calls))
+        results = asyncio.run(self._census_api.gather_calls(calls))
         shapefiles = list(results)
         return shapefiles
 
-    def convert_variables_to_dataframe(self, variables: Variables) -> DataFrame:
+    def convert_variables_to_dataframe(self, variables: Variables):
         """Convert Census API variable data to a dataframe."""
         records = []
         for (year, variable_name), variable in variables.items():
@@ -271,22 +262,22 @@ class Query:
 
         return dataframe
 
-    def convert_tables_to_dataframe(self, tables: List[Table]) -> DataFrame:
+    def convert_tables_to_dataframe(self, tables: List[Table]):
         """Reshape and convert ACS data tables to a dataframe."""
-        geography_types: Iterable[str] = get_geo_mappings('geo_codes').keys()
+        geography_types = get_geo_mappings('geo_codes').keys()
 
         # Melt each subset to adopt common schema
         subsets = []
         for header, *rows in tables:
             subset = DataFrame(rows, columns=header)
             # Consolidate geography type in a single column
-            geography_columns: Set[str] = set(geography_types) & set(subset.columns)
+            geography_columns = set(geography_types) & set(subset.columns)
             id_vars = ['NAME', 'GEO_ID', 'geo_type', *geography_columns, 'year']
-            melted: DataFrame = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
+            melted = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
 
         # Ensure correct sort order and value dtype
-        dataframe: DataFrame = (
+        dataframe = (
             pd.concat(subsets)
             .sort_values(by=['geo_type', 'variable', 'NAME', 'year'])
             .reset_index(drop=True)
@@ -295,16 +286,14 @@ class Query:
 
         return dataframe
 
-    def convert_gazetteer_files_to_dataframe(
-        self, gazetteer_files: List[GazetteerFile]
-    ) -> Optional[DataFrame]:
+    def convert_gazetteer_files_to_dataframe(self, gazetteer_files: List[GazetteerFile]):
         """Convert one or more Gazetteer files to a dataframe.
 
         Skips over null values produced by invalid responses from the
         Gazetteer file endpoint.
         """
         subsets = []
-        gazetteer_tables: Iterable[DataFrame] = filter(partial(is_not, None), gazetteer_files)
+        gazetteer_tables = filter(partial(is_not, None), gazetteer_files)
         nad_83_epsg = 4269
         for gazetteer_table in gazetteer_tables:
             subset = GeoDataFrame(
@@ -325,10 +314,10 @@ class Query:
             return None
 
         # Concatenate dataframes and return
-        dataframe: GeoDataFrame = pd.concat(subsets)
+        dataframe = pd.concat(subsets)
         return dataframe
 
-    def convert_shapefiles_to_dataframe(self, shapefiles: List[Shapefile]) -> DataFrame:
+    def convert_shapefiles_to_dataframe(self, shapefiles: List[Shapefile]):
         """Convert one or more shapefiles to a dataframe.
 
         Skips over null filepaths produced by invalid responses from the
@@ -341,7 +330,7 @@ class Query:
         os.environ['CPL_ZIP_ENCODING'] = 'UTF-8'
         subsets = []
         # Drop null values (e.g., for not-yet-released shapefiles) from list of filepaths
-        filepaths: Iterable[Path] = filter(None, shapefiles)
+        filepaths = filter(None, shapefiles)
         for filepath in filepaths:
             try:
                 subset = load_geodataframe(filepath)
@@ -353,7 +342,7 @@ class Query:
                 )
                 continue
             subsets.append(subset)
-        dataframe: DataFrame = pd.concat(subsets, ignore_index=True, sort=True)
+        dataframe = pd.concat(subsets, ignore_index=True, sort=True)
 
         # Geometry columns
         if self.geometry == 'polygons':
@@ -367,7 +356,7 @@ class Query:
         dataframe = dataframe.loc[:, columns_to_keep]
         return dataframe
 
-    def finalize_dataframe(self, dataframe: DataFrame) -> DataFrame:
+    def finalize_dataframe(self, dataframe: DataFrame):
         """Clean up and finalize a dataframe.
 
         Drops duplicates, adds columns, normalizes column names, and
@@ -375,7 +364,7 @@ class Query:
         """
         # Drop duplicates (some geospatial datasets, like ZCTAs, include redundant rows)
         geo_names = {'geometry'}
-        non_geo_names: set = set(dataframe.columns) - geo_names
+        non_geo_names = set(dataframe.columns) - geo_names
         dataframe = dataframe.drop_duplicates(subset=non_geo_names, ignore_index=True)
 
         # Insert NAs for annotated row values to avoid outlier values like -999,999,999
@@ -388,10 +377,10 @@ class Query:
         )
 
         # Rename and reorder columns
-        names_csv: bytes = resource_string(__name__, 'resources/names.csv')
+        names_csv = resource_string(__name__, 'resources/names.csv')
         csv_reader = reader(StringIO(names_csv.decode('utf-8')))
         next(csv_reader)  # Skip header row
-        names: dict = dict(csv_reader)  # type: ignore
+        names = dict(csv_reader)  # type: ignore
         if self.geometry in ['points', 'polygons'] and (set(dataframe.columns) & geo_names):
             name_order = [*names.values(), *geo_names]
         else:
@@ -406,7 +395,7 @@ class Query:
         tables: List[Table],
         gazetteer_files: List[GazetteerFile],
         shapefiles: List[Shapefile],
-    ) -> DataFrame:
+    ):
         """Merge and finalize the query dataframe.
 
         Joins tables, variables, annotations, and geospatial data, then
@@ -414,17 +403,17 @@ class Query:
         """
         # Merge tables with variables, annotations
         logger.info('Merging ACS tables and variables...')
-        tables_dataframe: DataFrame = self.convert_tables_to_dataframe(tables)
-        variables_dataframe: DataFrame = self.convert_variables_to_dataframe(variables)
+        tables_dataframe = self.convert_tables_to_dataframe(tables)
+        variables_dataframe = self.convert_variables_to_dataframe(variables)
         dataframe = tables_dataframe.merge(
             right=variables_dataframe, how='left', on=['variable', 'year']
         )
         logger.info('Merging annotations...')
-        annotations_dataframe: DataFrame = load_annotations_dataframe()
+        annotations_dataframe = load_annotations_dataframe()
         dataframe = dataframe.merge(right=annotations_dataframe, how='left', on=['value'])
 
         # Merge geospatial data if included
-        geometry_dataframe: Optional[DataFrame]
+        geometry_dataframe: Union[DataFrame, None]
         right_geo_id_field: str
         if self.geometry in ['points', 'polygons']:
             if self.geometry == 'points':
@@ -459,7 +448,7 @@ class Query:
             logger.info('Retrieving variables...')
             variables: Variables = self.get_variables()
             logger.info('Retrieving ACS tables...')
-            tables: List[Table] = self.get_tables()
+            tables = self.get_tables()
 
             # Add geometry
             gazetteer_files: List[GazetteerFile] = []
@@ -484,7 +473,7 @@ class Query:
         auth: Tuple[str, str] = None,
         open_in_browser: bool = True,
         wait_for_finish: bool = False,
-    ) -> URL:
+    ):
         """Run query and publish the resulting dataframe to Socrata."""
         if dataframe is None:
             dataframe = self.run()

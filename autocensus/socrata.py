@@ -3,7 +3,6 @@
 from functools import reduce
 import json
 import logging
-from logging import Logger
 import os
 from typing import Dict, Iterable, Optional, Tuple, Union
 import warnings
@@ -23,10 +22,10 @@ from .errors import MissingCredentialsError
 from .geography import serialize_to_wkt
 
 # Initialize logger
-logger: Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
-def look_up_socrata_credentials() -> Tuple[str, str]:
+def look_up_socrata_credentials():
     """Collect Socrata auth credentials from the local environment.
 
     Looks up credentials under several common Socrata environment
@@ -50,7 +49,7 @@ def look_up_socrata_credentials() -> Tuple[str, str]:
         raise MissingCredentialsError('No Socrata credentials found in local environment')
 
 
-def change_column(prev: OutputSchema, record: Dict[str, str]) -> OutputSchema:
+def change_column(prev: OutputSchema, record: Dict[str, str]):
     """Add a column change to a Socrata revision object.
 
     To be used in reducing a series of such changes.
@@ -77,7 +76,7 @@ def prepare_output_schema(output_schema: OutputSchema):
 
 def add_geometry_to_output_schema(
     output_schema: OutputSchema, geometry: Optional[Literal['points', 'polygons']]
-) -> OutputSchema:
+):
     """Add a transform to Socrata output schema based on geometry type.
 
     Specifies the geometry type and reprojects the data from NAD 83 to
@@ -163,7 +162,7 @@ def update_existing_dataset(
     return revision
 
 
-def build_dataset_name(estimate: int, years: Iterable) -> str:
+def build_dataset_name(estimate: int, years: Iterable):
     """Produce a nicely formatted dataset name."""
     unique_years = sorted(set(years))
     if len(unique_years) > 1:
@@ -183,13 +182,13 @@ def to_socrata(
     auth: Optional[Tuple[str, str]] = None,
     open_in_browser: bool = True,
     wait_for_finish: bool = False,
-) -> URL:
+):
     """Publish an autocensus dataframe to Socrata."""
     warnings.warn(
         'autocensus will drop built-in support for Socrata uploads in a future version. See the '
         'socrata-py docs for guidance on dataframe ingress: https://github.com/socrata/socrata-py',
         category=DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
 
     # Serialize geometry to WKT
