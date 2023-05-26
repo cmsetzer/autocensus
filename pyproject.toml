@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "autocensus"
-version = "2.1.1"
+version = "2.1.2"
 description = "A tool for collecting ACS and geospatial data from the Census API"
 license = "MIT"
-authors = ["Christopher Setzer <chris.setzer@socrata.com>"]
+authors = ["Christopher Setzer <cmsetzer.github@gmail.com>"]
 readme = "readme.md"
 homepage = "https://github.com/socrata/autocensus"
-keywords = ["census", "acs", "api", "data", "socrata"]
+keywords = ["census", "acs", "api", "data"]
 classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research"

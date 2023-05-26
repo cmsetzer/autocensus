@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.1.2]
+
+* Improved documentation on shapefile caching.
+* Pruned documentation on deprecated `to_socrata` method.
+* Refreshed dependencies.
+
 ## [v2.1.1]
 
 * Fixed a bug affecting certain queries with `in_geo=['state:*']`.
@@ -99,6 +105,7 @@
 
 * First major release.
 
+[v2.1.2]: https://github.com/socrata/autocensus/releases/tag/v2.1.2
 [v2.1.1]: https://github.com/socrata/autocensus/releases/tag/v2.1.1
 [v2.1.0]: https://github.com/socrata/autocensus/releases/tag/v2.1.0
 [v2.0.5]: https://github.com/socrata/autocensus/releases/tag/v2.0.5
