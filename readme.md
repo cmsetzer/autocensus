@@ -2,7 +2,7 @@
 
 A Python package for collecting American Community Survey (ACS) data and associated geometry from the [Census API] in a [pandas] dataframe.
 
-[census api]: https://www.census.gov/developers
+[Census API]: https://www.census.gov/developers
 [pandas]: https://pandas.pydata.org
 
 ## Contents
@@ -14,10 +14,6 @@ A Python package for collecting American Community Survey (ACS) data and associa
   - [Polygons](#polygons)
     - [Shapefile resolution](#shapefile-resolution)
     - [Shapefile caching](#shapefile-caching)
-- [Publishing to Socrata](#publishing-to-socrata)
-  - [Credentials](#credentials)
-  - [Example: Create a new dataset](#example-create-a-new-dataset)
-  - [Example: Replace rows in an existing dataset](#example-replace-rows-in-an-existing-dataset)
 - [Troubleshooting](#troubleshooting)
   - [Clearing the cache](#clearing-the-cache)
 
@@ -30,6 +26,8 @@ pip install autocensus
 ```
 
 To run autocensus, you must specify a [Census API key] via either the `census_api_key` keyword argument (as shown in the example below) or by setting the environment variable `CENSUS_API_KEY`.
+
+[Census API key]: https://api.census.gov/data/key_signup.html
 
 ## Quickstart
 
@@ -62,16 +60,14 @@ Output:
 | King County, Washington | 0500000US53033 | county   | 2017 | 2017-12-31 | S0103_C01_104E | Total!!Estimate!!GROSS RENT!!Median gross rent (dollars)                                   | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1555.0 | POINT (…) |
 | King County, Washington | 0500000US53033 | county   | 2018 | 2018-12-31 | S0103_C01_104E | Estimate!!Total!!Renter-occupied housing units!!GROSS RENT!!Median gross rent (dollars)    | POPULATION 65 YEARS AND OVER IN THE UNITED STATES |            | 1674.0 | POINT (…) |
 
-[census api key]: https://api.census.gov/data/key_signup.html
-
 ## Geometry
 
 autocensus supports point- and polygon-based geometry data for many years and geographies by way of the Census Bureau's [Gazetteer Files] and [Cartographic Boundary Files].
 
 Here's how to add geometry to your data:
 
-[gazetteer files]: https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html
-[cartographic boundary files]: https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
+[Gazetteer Files]: https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html
+[Cartographic Boundary Files]: https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 
 ### Points
 
@@ -181,55 +177,7 @@ To improve performance across queries that include polygon-based geometry data, 
 
 You can clear the cache by manually deleting the cache directory or by executing the `autocensus.clear_cache` function. See the section [Troubleshooting: Clearing the cache] for more details.
 
-[troubleshooting: clearing the cache]: #clearing-the-cache
-
-## Publishing to Socrata
-
-If you have publishing permissions on a Socrata domain, you can publish your query results directly to Socrata via the method `Query.to_socrata`. This method uses [socrata-py] to upload your dataframe with the appropriate field types, formatting, and metadata.
-
-**Note:** autocensus will drop built-in support for Socrata uploads in a future version. Please see the [socrata-py] docs for guidance on dataframe ingress.
-
-[socrata-py]: https://github.com/socrata/socrata-py
-
-### Credentials
-
-You must have a Socrata account with appropriate permissions on the domain to which you are publishing. By default, autocensus will look up your Socrata account credentials under the following pairs of common environment variables:
-
-- `SOCRATA_KEY_ID`, `SOCRATA_KEY_SECRET`
-- `SOCRATA_USERNAME`, `SOCRATA_PASSWORD`
-- `MY_SOCRATA_USERNAME`, `MY_SOCRATA_PASSWORD`
-- `SODA_USERNAME`, `SODA_PASSWORD`
-
-Alternatively, you can supply credentials explicitly by way of the `auth` keyword argument:
-
-```python
-auth = (os.environ['MY_SOCRATA_KEY'], os.environ['MY_SOCRATA_KEY_SECRET'])
-query.to_socrata(
-    'some-domain.data.socrata.com',
-    auth=auth
-)
-```
-
-### Example: Create a new dataset
-
-```python
-# Run query and publish results as a new dataset on Socrata domain
-query.to_socrata(
-    'some-domain.data.socrata.com',
-    name='Median Commute Time by Colorado County, 2013–2017',  # Optional
-    description='1-year estimates from the American Community Survey'  # Optional
-)
-```
-
-### Example: Replace rows in an existing dataset
-
-```python
-# Run query and publish results to an existing dataset on Socrata domain
-query.to_socrata(
-    'some-domain.data.socrata.com',
-    dataset_id='xxxx-xxxx'
-)
-```
+[Troubleshooting: Clearing the cache]: #clearing-the-cache
 
 ## Troubleshooting
 
