@@ -14,8 +14,6 @@ A Python package for collecting American Community Survey (ACS) data and associa
   - [Polygons](#polygons)
     - [Shapefile resolution](#shapefile-resolution)
     - [Shapefile caching](#shapefile-caching)
-- [Troubleshooting](#troubleshooting)
-  - [Clearing the cache](#clearing-the-cache)
 
 ## Installation
 
@@ -169,26 +167,14 @@ Setting a specific resolution is only supported for polygon-based geometry.
 
 #### Shapefile caching
 
-To improve performance across queries that include polygon-based geometry data, autocensus caches shapefiles on disk by default. The cache location varies by platform:
+To improve performance across queries that include polygon-based geometry data, autocensus will cache Census shapefiles on disk by default. The cache directory location depends on your OS; you can look it up from `autocensus.constants.CACHE_DIRECTORY_PATH` like so:
 
-- Linux: `/home/{username}/.cache/autocensus`
-- Mac: `/Users/{username}/Library/Application Support/Caches/autocensus`
-- Windows: `C:\Users\{username}\AppData\Local\socrata\autocensus`
-
-You can clear the cache by manually deleting the cache directory or by executing the `autocensus.clear_cache` function. See the section [Troubleshooting: Clearing the cache] for more details.
-
-[Troubleshooting: Clearing the cache]: #clearing-the-cache
-
-## Troubleshooting
-
-### Clearing the cache
-
-Sometimes it is useful to clear the [cache directory] that autocensus uses to store downloaded shapefiles for future queries, especially if you're running into `BadZipFile: File is not a zip file` errors or other shapefile-related problems. Clear your cache like so:
-
-```python
-import autocensus
-
-autocensus.clear_cache()
+```shell
+python -c "import autocensus; print(autocensus.constants.CACHE_DIRECTORY_PATH)"
 ```
 
-[cache directory]: #shapefile-caching
+Sometimes it is useful to clear this cache directory, especially if you're running into persistent shapefile-related problems. You can clear the cache by manually deleting the cache directory or by executing the `autocensus.clear_cache` function:
+
+```shell
+python -c "import autocensus; autocensus.clear_cache()"
+```

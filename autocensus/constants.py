@@ -8,7 +8,7 @@ from pandas import DataFrame
 from typing_extensions import Literal
 
 # Cache directory path
-CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus', 'socrata'))
+CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus'))
 
 # Query parameters
 ESTIMATES = [1, 3, 5]
