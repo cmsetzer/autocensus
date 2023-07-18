@@ -15,6 +15,8 @@ from zipfile import ZipFile, ZipInfo
 from fiona.io import ZipMemoryFile
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
+import shapely
+from shapely.errors import InvalidGeometryError
 
 from .utilities import forgive
 
@@ -123,10 +125,10 @@ def flatten_geometry(multipolygon: MultiPolygon) -> MultiPolygon:
     return flattened_multipolygon
 
 
-@forgive(AttributeError)
+@forgive(AttributeError, InvalidGeometryError)
 def serialize_to_wkt(value: Geometry) -> str:
     """Serialize a geometry value to well-known text (WKT)."""
-    return value.to_wkt()
+    return shapely.wkt.dumps(value)
 
 
 def identify_affgeoid_field(fields: Iterable[str]) -> str:
