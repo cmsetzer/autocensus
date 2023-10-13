@@ -77,15 +77,7 @@ def test_parse_table_name_from_variable_with_invalid_variable():
 def test_load_annotations_dataframe():
     dataframe = load_annotations_dataframe()
     expected_annotations = pd.Series(
-        [
-            -999999999,
-            -888888888,
-            -666666666,
-            -555555555,
-            -333333333,
-            -222222222,
-        ],
-        dtype='float64',
+        [-999999999, -888888888, -666666666, -555555555, -333333333, -222222222], dtype='float64'
     )
     assert dataframe['value'].equals(expected_annotations)
     assert dataframe['annotation'].all()

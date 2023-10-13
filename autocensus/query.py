@@ -304,8 +304,7 @@ class Query:
             )
             subset.crs = f'EPSG:{nad_83_epsg}'
             subset['gazetteer_geo_id'] = subset.apply(
-                lambda row: normalize_geo_id(row['GEOID'], row['gazetteer_geo_type']),
-                axis=1,
+                lambda row: normalize_geo_id(row['GEOID'], row['gazetteer_geo_type']), axis=1
             )
             subsets.append(subset)
 
