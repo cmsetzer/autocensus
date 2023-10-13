@@ -1,11 +1,8 @@
-import os
-from typing import Optional
-
-from autocensus import Query
-import fiona  # noqa
 from pandas import DataFrame
 import pytest
 from shapely import wkt
+
+from autocensus import Query
 
 
 @pytest.fixture(scope='function')
@@ -22,11 +19,6 @@ def query_params() -> dict:
         'for_geo': ['county:*'],
         'in_geo': ['state:08'],
     }
-
-
-@pytest.fixture(scope='session')
-def domain() -> str:
-    return os.environ['AUTOCENSUS_TEST_DOMAIN']
 
 
 def test_query_instantiation(query_params: dict):
@@ -82,24 +74,3 @@ def test_query_run_with_polygons_geometry(query_params: dict, counties_polygons:
         lambda geo: wkt.dumps(geo, rounding_precision=1)
     )
     assert dataframe.equals(counties_polygons)
-
-
-@pytest.mark.parametrize('geometry', [None, 'points', 'polygons'])
-def test_query_to_socrata(query_params: dict, domain: str, geometry: Optional[str]):
-    query_params['variables'] = ['DP03_0025E']
-    query_params['years'] = [2019]
-    query_params['geometry'] = geometry
-    query = Query(**query_params)
-    revision_url = query.to_socrata(domain, open_in_browser=False)
-    assert revision_url
-
-
-def test_query_to_socrata_update_existing_dataset(query_params: dict, domain: str):
-    query = Query(**query_params)
-    revision_url = query.to_socrata(domain, open_in_browser=False, wait_for_finish=True)
-
-    dataset_id: str = revision_url.parts[2]
-    query_params['years'] = [2017]
-    query_2 = Query(**query_params)
-    revision_url_2 = query_2.to_socrata(domain, open_in_browser=False, dataset_id=dataset_id)
-    assert revision_url_2
