@@ -4,7 +4,6 @@ from importlib.metadata import version
 import logging
 from logging import StreamHandler
 
-from . import api, constants, errors, geography, query, socrata, utilities  # noqa
 from .query import Query  # noqa
 from .utilities import clear_cache  # noqa
 
