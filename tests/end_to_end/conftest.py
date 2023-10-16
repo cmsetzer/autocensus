@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import fiona  # noqa
 from geopandas import GeoDataFrame
 import pandas as pd
 from pandas import DataFrame

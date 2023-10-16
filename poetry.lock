@@ -765,8 +765,8 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.20.3", markers = "python_version < \"3.10\""},
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
     {version = ">=1.23.2", markers = "python_version >= \"3.11\""},
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -885,6 +885,46 @@ docs = ["furo (==2021.6.18b36)", "myst-parser (==0.15.1)", "sphinx (==4.2.0)", "
 examples = ["django", "numpy"]
 test = ["flaky", "greenlet (>=3.0.0a1)", "ipython", "pytest", "pytest-asyncio (==0.12.0)", "sphinx-autobuild (==2021.3.14)", "trio"]
 types = ["typing-extensions"]
+
+[[package]]
+name = "pyogrio"
+version = "0.6.0"
+description = "Vectorized spatial vector file format I/O using GDAL/OGR"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyogrio-0.6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:bfaa34854bc5c5d736a92413a9edf3fa396b84dd47a6a85f08fe607fb0f76688"},
+    {file = "pyogrio-0.6.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:cb6ea736e886456ae343856bc49c3a57d19f35b4383c9c06966f74f55670987a"},
+    {file = "pyogrio-0.6.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:535d202f37c812f1f5870790e68b4454d26ef563a3579df4a4f804140904029d"},
+    {file = "pyogrio-0.6.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:a170247e964b1848700f221a65019316639861d553e2bb4f85cb7ea1fb7c7a82"},
+    {file = "pyogrio-0.6.0-cp310-cp310-win_amd64.whl", hash = "sha256:5970d3f537e4336ac779b8339255898ac5c48bd7697a88a29e6b9454030b9edb"},
+    {file = "pyogrio-0.6.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:dc42d365b82d6b34b3e38fa4822719df151ad68bd20c09c942760c0114b42d29"},
+    {file = "pyogrio-0.6.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:be39bae3b527cc0f60843aa6b33aac461d934d04200f1c16d70f0606344bd821"},
+    {file = "pyogrio-0.6.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:26d228f04e7a91d6d55c37d25a26365580d2971c06ab5a0dae3608be49a978a0"},
+    {file = "pyogrio-0.6.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:358adfeb96e51c43a4db8b68e883fb02032daf0bfa9b202352dfad4ef9c18f23"},
+    {file = "pyogrio-0.6.0-cp311-cp311-win_amd64.whl", hash = "sha256:cb74d98dbd28a29cb22448ef9ba76fd5c27e8a30047ab8b627036e3d6ce16977"},
+    {file = "pyogrio-0.6.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:cc919162424b25eac9c662fa726ae8b8e23d6afad4e4a719d241edcfda08905c"},
+    {file = "pyogrio-0.6.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:d9e9895603a55c91656f7304a54058e1cce9122e8a4cef0c19a2aca13e0809f3"},
+    {file = "pyogrio-0.6.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fd507637fb1bdeb7733304a12c5c629404c5d90e50ad42eb339804f21c3ae9c8"},
+    {file = "pyogrio-0.6.0-cp38-cp38-manylinux_2_28_aarch64.whl", hash = "sha256:2bfa422ccadd561245e753b67c0e5dddb700a69ec1362ee45d2f2c242ffd72a1"},
+    {file = "pyogrio-0.6.0-cp38-cp38-win_amd64.whl", hash = "sha256:fadc6b9dbd59971ad0fe80d35b61a9c60bd0e2e55510ee146b7d48b6e4c8d101"},
+    {file = "pyogrio-0.6.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:565aba138791032370a5174864db3b078e2b10e66e4e180e9271d69e47dd5d49"},
+    {file = "pyogrio-0.6.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:8dbc3bf0592ab2ea23cdc8497812dabdbce515068c74bc8eb9cb00500e6bf2e4"},
+    {file = "pyogrio-0.6.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:da58587968d48d545ef0441d44576959a09edb34e71db82c56135673e1e92038"},
+    {file = "pyogrio-0.6.0-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:924d3c041277f1082eb398d4576a89de76fd2fa9b1fc2403211d0c93c588cf3d"},
+    {file = "pyogrio-0.6.0-cp39-cp39-win_amd64.whl", hash = "sha256:a10acbf6e65bdb74095c6f0cbf89c1016ec900fa81a6795aeec42e3131a39990"},
+    {file = "pyogrio-0.6.0.tar.gz", hash = "sha256:4b8f0666701766a7ac3774b6f1c5f8dd5d72f1ed18cb319790835d8f8d073ce5"},
+]
+
+[package.dependencies]
+certifi = "*"
+numpy = "*"
+
+[package.extras]
+benchmark = ["pytest-benchmark"]
+dev = ["Cython"]
+geopandas = ["geopandas"]
+test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "pyproj"
@@ -1335,4 +1375,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "287f5451219f170d69339fbabedc4e482506bbea0d591ffaa50ad4e40609e01d"
+content-hash = "f3c644ec812ea313a2754bbc8a99b9ddc44cc50bb98bd9fa7d3156a3518158d9"

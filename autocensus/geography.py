@@ -8,9 +8,8 @@ import logging
 import math
 from pathlib import Path
 from typing import Dict, Iterable, Union
-from zipfile import ZipFile, ZipInfo
 
-from fiona.io import ZipMemoryFile
+import geopandas as gpd
 from geopandas import GeoDataFrame
 from pkg_resources import resource_string
 from shapely import wkt
@@ -95,32 +94,12 @@ def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
     return geo_code
 
 
-def is_shp_file(zipped_file: ZipInfo) -> bool:
-    """Determine whether a zipped file's filename ends with .shp."""
-    return zipped_file.filename.casefold().endswith('.shp')
-
-
 def load_geodataframe(filepath: Path) -> GeoDataFrame:
-    """Given a filepath for a cached shapefile, load it as a dataframe.
-
-    This function takes a roundabout approach to reading the zipped
-    shapefile due to cryptic and unpredictable errors that occur when
-    opening zip files on disk with Fiona/GDAL.
-    """
-    # Get .shp filename from within zipped shapefile
-    with ZipFile(filepath, 'r') as zip_file:
-        shp_filename = next(filter(is_shp_file, zip_file.filelist)).filename
-
-    # Use default Python opener to prevent cryptic GDAL filepath errors
-    with open(filepath, 'rb') as bytes_file:
-        with ZipMemoryFile(bytes_file.read()) as zip_memory_file:
-            with zip_memory_file.open(shp_filename) as collection:
-                # Load GeoDataFrame using NAD83 projection (EPSG 4269)
-                geodataframe = GeoDataFrame.from_features(collection, crs='EPSG:4269')
+    """Given a filepath for a cached shapefile, load it as a dataframe."""
+    geodataframe = gpd.read_file(filepath, engine='pyogrio')
 
     # Add year column
-    geodataframe['year'] = int(shp_filename[3:7])
-
+    geodataframe['year'] = int(filepath.name[3:7])
     return geodataframe
 
 

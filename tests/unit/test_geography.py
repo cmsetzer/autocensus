@@ -1,6 +1,3 @@
-from unittest.mock import Mock
-
-import fiona  # noqa
 import pytest
 from shapely.geometry import MultiPolygon, Polygon
 
@@ -12,7 +9,6 @@ from autocensus.geography import (
     determine_geo_code,
     flatten_geometry,
     identify_affgeoid_field,
-    is_shp_file,
     load_geodataframe,
     normalize_geo_id,
     serialize_to_wkt,
@@ -123,21 +119,6 @@ def test_determine_geo_code(geo_type, expected):
 )
 def test_determine_gazetteer_code(geo_type, expected):
     assert determine_gazetteer_code(2019, geo_type) == expected
-
-
-def test_is_shp_file():
-    shp_file = Mock()
-    shp_file.filename = 'shapefile.shp'
-
-    shp_file_upper = Mock()
-    shp_file_upper.filename = 'SHAPEFILE.SHP'
-
-    not_shp_file = Mock()
-    not_shp_file.filename = 'shapefile.proj'
-
-    assert is_shp_file(shp_file) is True
-    assert is_shp_file(shp_file_upper) is True
-    assert is_shp_file(not_shp_file) is False
 
 
 def test_load_geodataframe(shapefile_path):
