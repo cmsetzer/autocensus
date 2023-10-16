@@ -84,11 +84,14 @@ def determine_geo_code(year: int, for_geo_type: str, state_fips: str) -> str:
     """Determine the shapefile naming code for a given year/geography."""
     geo_codes = get_geo_mappings('geo_codes')
     geo_code: str
-    if for_geo_type != 'congressional district':
-        geo_code = geo_codes[for_geo_type].format(state_fips=state_fips)
-    else:
+    if for_geo_type == 'congressional district':
         congress = calculate_congress_number(year)
         geo_code = geo_codes[for_geo_type].format(congress=congress)
+    elif for_geo_type in ['urban area', 'zip code tabulation area']:
+        decade = ((year // 10) % 10) * 10
+        geo_code = geo_codes[for_geo_type].format(decade=decade)
+    else:
+        geo_code = geo_codes[for_geo_type].format(state_fips=state_fips)
     return geo_code
 
 
@@ -161,7 +164,7 @@ def identify_affgeoid_field(fields: Iterable[str]) -> str:
     AFFGEOID field, it's necessary to build in some extra handling when
     merging geospatial data with table data.
     """
-    known_field_names = {'AFFGEOID', 'AFFGEOID10'}
+    known_field_names = {'AFFGEOID', *(f'AFFGEOID{decade:02}' for decade in range(0, 99, 10))}
     affgeoid_field = (known_field_names & set(fields)).pop()
     return affgeoid_field
 

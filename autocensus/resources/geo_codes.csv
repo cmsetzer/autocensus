@@ -3,8 +3,8 @@ us,us_nation
 region,us_region
 division,us_division
 state,us_state
-urban area,us_ua10
-zip code tabulation area,us_zcta510
+urban area,us_ua{decade}
+zip code tabulation area,us_zcta5{decade}
 county,us_county
 congressional district,us_cd{congress}
 metropolitan statistical area/micropolitan statistical area,us_cbsa

@@ -100,16 +100,20 @@ class CensusAPI:
         """Build a Census shapefile URL based on the supplied parameters."""
         in_geo_dict: Dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
         state_fips = in_geo_dict.get('state', '')
-        if year > 2013:
-            base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{year}/shp')
-        else:
-            base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{year}')
-        geo_code = determine_geo_code(year, for_geo.type, state_fips)
+        decade_geos = ['urban area', 'zip code tabulation area']
+        base_decade = year - (year % 10)
+        shapefile_year = base_decade if year >= 2020 and (for_geo.type in decade_geos) else year
 
         # Determine shapefile resolution (defaults to 1 : 500,000, except for U.S. outline)
         if resolution is None:
             resolution = '500k' if for_geo.type != 'us' else '5m'
-        url = base_url / f'cb_{year}_{geo_code}_{resolution}.zip'
+
+        # Build URL
+        base_url = URL(f'https://www2.census.gov/geo/tiger/GENZ{shapefile_year}')
+        if year > 2013:
+            base_url = base_url / 'shp'
+        geo_code = determine_geo_code(year, for_geo.type, state_fips)
+        url = base_url / f'cb_{shapefile_year}_{geo_code}_{resolution}.zip'
         return url
 
     @retry(
