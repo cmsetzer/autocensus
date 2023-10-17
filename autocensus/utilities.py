@@ -10,9 +10,9 @@ from typing import Iterable, Union
 import pandas as pd
 import pkg_resources
 
-from .constants import CACHE_DIRECTORY_PATH
-from .errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
-from .geography import Geo
+from autocensus.constants import CACHE_DIRECTORY_PATH
+from autocensus.errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
+from autocensus.geography import Geo
 
 # Initialize logger
 logger = logging.getLogger(__name__)

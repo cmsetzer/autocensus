@@ -20,8 +20,8 @@ from pandas import DataFrame
 from pkg_resources import resource_string
 from yarl import URL
 
-from .api import CensusAPI, look_up_census_api_key
-from .constants import (
+from autocensus.api import CensusAPI, look_up_census_api_key
+from autocensus.constants import (
     CACHE_DIRECTORY_PATH,
     ESTIMATES,
     GEOMETRIES,
@@ -34,7 +34,7 @@ from .constants import (
     Table,
     Variables,
 )
-from .geography import (
+from autocensus.geography import (
     Geo,
     coerce_polygon_to_multipolygon,
     flatten_geometry,
@@ -43,8 +43,8 @@ from .geography import (
     load_geodataframe,
     normalize_geo_id,
 )
-from .socrata import build_dataset_name, to_socrata
-from .utilities import (
+from autocensus.socrata import build_dataset_name, to_socrata
+from autocensus.utilities import (
     check_geo_estimates,
     check_geo_hierarchy,
     check_years,

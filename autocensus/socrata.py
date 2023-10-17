@@ -18,8 +18,8 @@ from socrata.revisions import Revision
 from typing_extensions import Literal
 from yarl import URL
 
-from .errors import MissingCredentialsError
-from .geography import serialize_to_wkt
+from autocensus.errors import MissingCredentialsError
+from autocensus.geography import serialize_to_wkt
 
 # Initialize logger
 logger = logging.getLogger(__name__)

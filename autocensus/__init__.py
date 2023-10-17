@@ -4,8 +4,8 @@ from importlib.metadata import version
 import logging
 from logging import StreamHandler
 
-from .query import Query  # noqa
-from .utilities import clear_cache  # noqa
+from autocensus.query import Query  # noqa
+from autocensus.utilities import clear_cache  # noqa
 
 # Initialize version string from package metadata
 __version__ = version(__name__)

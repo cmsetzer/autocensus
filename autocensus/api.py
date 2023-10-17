@@ -16,10 +16,10 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from typing_extensions import Literal
 from yarl import URL
 
-from .constants import Table
-from .errors import CensusAPIUnknownError, MissingCredentialsError
-from .geography import Geo, determine_gazetteer_code, determine_geo_code
-from .utilities import CACHE_DIRECTORY_PATH
+from autocensus.constants import Table
+from autocensus.errors import CensusAPIUnknownError, MissingCredentialsError
+from autocensus.geography import Geo, determine_gazetteer_code, determine_geo_code
+from autocensus.utilities import CACHE_DIRECTORY_PATH
 
 # Initialize logger
 logger = logging.getLogger(__name__)
