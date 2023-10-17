@@ -126,12 +126,15 @@ class CensusAPI:
     ) -> dict:
         """Fetch a given variable definition from the Census API."""
         url = self.build_url(estimate, year, table_name) / f'variables/{variable}.json'
+        logger.debug(f'Fetching variable: {url}')
         response = await self._session.get(str(url))
         try:
             variable_json: dict = response.json()
         except JSONDecodeError:
             # Handle erroneous variable by returning a stub with variable/year
             variable_json = {'name': variable}
+
+        logger.debug(f'Successfully fetched variable: {url}')
         variable_json['year'] = year
         return variable_json
 
@@ -157,11 +160,15 @@ class CensusAPI:
             *(('in', str(geo)) for geo in in_geo),
             ('key', self.census_api_key),
         ]
+        logger.debug(f'Fetching table: {url.with_query(params)}')
         response = await self._session.get(str(url), params=params)  # type: ignore
+
         # Raise informative exception for non-200 response
         if response.status_code != 200:
             raise CensusAPIUnknownError(f'Non-200 response from: {response.url}\n{response.text}')
         response_json: Table = response.json()
+        logger.debug(f'Successfully fetched table: {url.with_query(params)}')
+
         # Add geo_type
         response_json[0].extend(['geo_type', 'year'])
         for row in response_json[1:]:
@@ -182,10 +189,12 @@ class CensusAPI:
             return None
 
         url = self.build_gazetteer_url(year, gazetteer_code)
+        logger.debug(f'Fetching Gazetteer file: {url}')
         response = await self._session.get(str(url))
         if response.status_code != 200:
             logger.warning(f'Warning: Failed to obtain a Gazetteer file from {response.url}')
             return None
+        logger.debug(f'Successfully fetched Gazetteer file: {url}')
 
         # Fetch zip file as an in-memory object and read it into a dataframe
         zip_file = BytesIO(response.content)
@@ -217,7 +226,10 @@ class CensusAPI:
         """
         url = self.build_shapefile_url(year, for_geo, in_geo, resolution)
         cached_filepath = CACHE_DIRECTORY_PATH / url.name
-        if not cached_filepath.exists():
+        if cached_filepath.exists():
+            logger.debug(f'Looking up cached shapefile: {cached_filepath}')
+        else:
+            logger.debug(f'Fetching shapefile: {url}')
             response = await self._session.get(str(url))
             # Handle bad response or missing shapefile (if, e.g., it hasn't been released yet)
             if response.status_code != 200:
@@ -227,6 +239,7 @@ class CensusAPI:
                 return None
             with open(cached_filepath, 'wb') as cached_file:
                 cached_file.write(response.content)
+
         return cached_filepath
 
     async def gather_calls(self, calls):
