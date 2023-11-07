@@ -15,9 +15,9 @@ from socrata.authorization import Authorization
 from socrata.job import Job
 from socrata.output_schema import OutputSchema
 from socrata.revisions import Revision
-from typing_extensions import Literal
 from yarl import URL
 
+from autocensus.constants import QueryGeometry
 from autocensus.errors import MissingCredentialsError
 from autocensus.geography import serialize_to_wkt
 
@@ -74,9 +74,7 @@ def prepare_output_schema(output_schema: OutputSchema):
     return output_schema.run()
 
 
-def add_geometry_to_output_schema(
-    output_schema: OutputSchema, geometry: Optional[Literal['points', 'polygons']]
-):
+def add_geometry_to_output_schema(output_schema: OutputSchema, geometry: Optional[QueryGeometry]):
     """Add a transform to Socrata output schema based on geometry type.
 
     Specifies the geometry type and reprojects the data from NAD 83 to
@@ -114,7 +112,7 @@ def create_new_dataset(
 
     # Handle geometry column type
     if 'geometry' in dataframe.columns:
-        geometry: Optional[Literal['points', 'polygons']]
+        geometry: Optional[QueryGeometry]
         if len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^POINT')]):
             geometry = 'points'
         elif len(dataframe.loc[dataframe['geometry'].fillna('').str.match('^MULTIPOLYGON')]):

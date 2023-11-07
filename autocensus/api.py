@@ -13,10 +13,9 @@ from httpx import AsyncClient, Limits
 import pandas as pd
 from pandas import DataFrame
 from tenacity import retry, stop_after_attempt, wait_exponential
-from typing_extensions import Literal
 from yarl import URL
 
-from autocensus.constants import Table
+from autocensus.constants import QueryResolution, Table
 from autocensus.errors import CensusAPIUnknownError, MissingCredentialsError
 from autocensus.geography import Geo, determine_gazetteer_code, determine_geo_code
 from autocensus.utilities import CACHE_DIRECTORY_PATH
@@ -95,7 +94,7 @@ class CensusAPI:
         year: int,
         for_geo: Geo,
         in_geo: Iterable,
-        resolution: Optional[Literal['500k', '5m', '20m']] = None,
+        resolution: Optional[QueryResolution] = None,
     ) -> URL:
         """Build a Census shapefile URL based on the supplied parameters."""
         in_geo_dict: Dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
@@ -210,11 +209,7 @@ class CensusAPI:
         return dataframe
 
     async def fetch_shapefile(
-        self,
-        year: int,
-        for_geo: Geo,
-        in_geo: Iterable,
-        resolution: Optional[Literal['500k', '5m', '20m']],
+        self, year: int, for_geo: Geo, in_geo: Iterable, resolution: Optional[QueryResolution]
     ) -> Optional[Path]:
         """Fetch a given shapefile and download it to the local cache.
 
