@@ -11,11 +11,8 @@ from typing_extensions import Literal
 CACHE_DIRECTORY_PATH = Path(user_cache_dir('autocensus'))
 
 # Query parameters
-ESTIMATES = [1, 3, 5]
 QueryEstimate = Literal[1, 3, 5]
-GEOMETRIES = ['points', 'polygons']
 QueryGeometry = Literal['points', 'polygons']
-RESOLUTIONS = ['500k', '5m', '20m']
 QueryResolution = Literal['500k', '5m', '20m']
 
 # Types representing data tables, variables, and geometry files returned from from Census API

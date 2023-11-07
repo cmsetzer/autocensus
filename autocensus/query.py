@@ -10,7 +10,7 @@ from itertools import product
 import logging
 from operator import is_not
 import os
-from typing import DefaultDict, Iterable, List, Optional, Tuple, Union
+from typing import DefaultDict, Iterable, List, Optional, Tuple, Union, get_args
 from zipfile import BadZipFile
 
 import geopandas as gpd
@@ -23,9 +23,6 @@ from yarl import URL
 from autocensus.api import CensusAPI, look_up_census_api_key
 from autocensus.constants import (
     CACHE_DIRECTORY_PATH,
-    ESTIMATES,
-    GEOMETRIES,
-    RESOLUTIONS,
     GazetteerFile,
     QueryEstimate,
     QueryGeometry,
@@ -77,12 +74,10 @@ class Query:
         resolution: Optional[QueryResolution] = None,
         census_api_key: Optional[str] = None,
     ):
-        if estimate in ESTIMATES:
+        if estimate in get_args(QueryEstimate):
             self.estimate: int = estimate
         else:
-            raise ValueError(
-                f'Please specify a valid estimate value: {", ".join(map(str, ESTIMATES))}'
-            )
+            raise ValueError(f'Please specify a valid estimate: {get_args(QueryEstimate)}')
         self._years = wrap_scalar_value_in_list(years)
         self._variables = wrap_scalar_value_in_list(variables)
         self.for_geo = [Geo(geo) for geo in wrap_scalar_value_in_list(for_geo)]
@@ -91,18 +86,16 @@ class Query:
         )
 
         # Validate geometry and resolution
-        if geometry is None or geometry in GEOMETRIES:
+        if (geometry is None) or (geometry in get_args(QueryGeometry)):
             self.geometry = geometry
         else:
-            raise ValueError(f'Please specify a valid geometry value: {", ".join(GEOMETRIES)}')
-        if resolution is None or resolution in RESOLUTIONS:
+            raise ValueError(f'Please specify a valid geometry: {get_args(QueryGeometry)}')
+        if resolution is None or resolution in get_args(QueryResolution):
             if resolution is not None and geometry != 'polygons':
                 logger.warning('Warning: Specifying a resolution is only supported for polygons')
             self.resolution = resolution
         else:
-            raise ValueError(
-                f'Please specify a valid resolution value: {(", ").join(RESOLUTIONS)}'
-            )
+            raise ValueError(f'Please specify a valid resolution: {get_args(QueryResolution)}')
 
         # Use Census API key if supplied, or fall back to environment variable if not
         self.census_api_key = look_up_census_api_key(census_api_key)
