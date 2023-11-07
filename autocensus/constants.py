@@ -3,8 +3,8 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
-from appdirs import user_cache_dir
 from pandas import DataFrame
+from platformdirs import user_cache_dir
 from typing_extensions import Literal
 
 # Cache directory path
