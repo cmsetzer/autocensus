@@ -7,7 +7,7 @@ from io import StringIO
 import logging
 import math
 from pathlib import Path
-from typing import Dict, Iterable, Union
+from typing import Dict, Iterable, Optional, Union
 
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -27,7 +27,7 @@ class Geo:
     type: str
     code: str
 
-    def __init__(self, value: str, code: str = None):
+    def __init__(self, value: str, code: Optional[str] = None):
         # Process value, code
         if value == 'us' and code is None:
             self.type = 'us'

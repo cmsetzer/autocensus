@@ -24,7 +24,7 @@ from autocensus.utilities import CACHE_DIRECTORY_PATH
 logger = logging.getLogger(__name__)
 
 
-def look_up_census_api_key(census_api_key: str = None) -> str:
+def look_up_census_api_key(census_api_key: Optional[str] = None) -> str:
     """Look up a Census API key from the local environment.
 
     If a key is passed as an argument, confirms that it was not copied

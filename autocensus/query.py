@@ -360,7 +360,7 @@ class Query:
         dataframe = dataframe.drop_duplicates(subset=non_geo_names, ignore_index=True)
 
         # Insert NAs for annotated row values to avoid outlier values like -999,999,999
-        dataframe.loc[dataframe['annotation'].notnull(), 'value'] = ''
+        dataframe.loc[dataframe['annotation'].notna(), 'value'] = ''
         dataframe['value'] = pd.to_numeric(dataframe['value'], errors='coerce')
 
         # Create year date column
@@ -459,10 +459,10 @@ class Query:
         domain: Union[URL, str],
         *,
         dataframe: DataFrame = None,
-        dataset_id: str = None,
-        name: str = None,
-        description: str = None,
-        auth: Tuple[str, str] = None,
+        dataset_id: Optional[str] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        auth: Optional[Tuple[str, str]] = None,
         open_in_browser: bool = True,
         wait_for_finish: bool = False,
     ):
