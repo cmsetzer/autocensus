@@ -269,14 +269,12 @@ class Query:
             melted = subset.melt(id_vars=id_vars).drop(columns=geography_columns)
             subsets.append(melted)
 
-        # Ensure correct sort order and value dtype
+        # Ensure correct sort order
         dataframe = (
             pd.concat(subsets)
             .sort_values(by=['geo_type', 'variable', 'NAME', 'year'])
             .reset_index(drop=True)
         )
-        dataframe['value'] = dataframe['value'].astype(float)
-
         return dataframe
 
     def convert_gazetteer_files_to_dataframe(self, gazetteer_files: List[GazetteerFile]):
