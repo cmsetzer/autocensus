@@ -72,7 +72,7 @@ def parse_table_name_from_variable(variable: str):
 def load_annotations_dataframe():
     """Load the included annotations.csv resource as a dataframe."""
     annotations_csv = pkg_resources.resource_stream(__name__, 'resources/annotations.csv')
-    dataframe = pd.read_csv(annotations_csv, dtype={'value': float})
+    dataframe = pd.read_csv(annotations_csv)
     return dataframe
 
 
