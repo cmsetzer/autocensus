@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.1.3]
+
+* Adopted pyogrio for faster shapefile reads.
+* Improved handling of decade-based shapefiles (urban areas, ZCTAs).
+* Implemented a fix for a bug wherein certain annotation values for `EA`/`MA` variables triggered an error.
+* Refreshed dependencies.
+
 ## [v2.1.2]
 
 * Improved documentation on shapefile caching.
@@ -110,6 +117,7 @@
 
 * First major release.
 
+[v2.1.3]: https://github.com/socrata/autocensus/releases/tag/v2.1.3
 [v2.1.2]: https://github.com/socrata/autocensus/releases/tag/v2.1.2
 [v2.1.1]: https://github.com/socrata/autocensus/releases/tag/v2.1.1
 [v2.1.0]: https://github.com/socrata/autocensus/releases/tag/v2.1.0
