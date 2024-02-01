@@ -29,13 +29,13 @@ def test_query_instantiation(query_params: dict):
 
 def test_query_instantiation_with_invalid_estimate(query_params: dict):
     query_params['estimate'] = 7
-    with pytest.raises(ValueError, match='Please specify a valid estimate value'):
+    with pytest.raises(ValueError, match='Please specify a valid estimate'):
         Query(**query_params)
 
 
 def test_query_instantiation_with_invalid_geometry(query_params: dict):
     query_params['geometry'] = 'invalid value'
-    with pytest.raises(ValueError, match='Please specify a valid geometry value'):
+    with pytest.raises(ValueError, match='Please specify a valid geometry'):
         Query(**query_params)
 
 
@@ -49,7 +49,7 @@ def test_query_instantiation_with_resolution_but_not_polygons(query_params: dict
 def test_query_instantiation_with_invalid_resolution(query_params: dict):
     query_params['geometry'] = 'polygons'
     query_params['resolution'] = 'invalid value'
-    with pytest.raises(ValueError, match='Please specify a valid resolution value'):
+    with pytest.raises(ValueError, match='Please specify a valid resolution'):
         Query(**query_params)
 
 
