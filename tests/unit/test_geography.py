@@ -1,6 +1,3 @@
-import pytest
-from shapely.geometry import MultiPolygon, Polygon
-
 from autocensus.geography import (
     Geo,
     calculate_congress_number,
@@ -13,6 +10,8 @@ from autocensus.geography import (
     normalize_geo_id,
     serialize_to_wkt,
 )
+import pytest
+from shapely.geometry import MultiPolygon, Polygon
 
 
 def test_geo():
