@@ -15,23 +15,23 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 geopandas = "0.13.2"
-httpx = "^0.25.0"
-nest-asyncio = "^1.5.8"
-pandas = "^2.0.3"
-platformdirs = "^3.11.0"
-pyogrio = "^0.6.0"
+httpx = "^0.26.0"
+nest-asyncio = "^1.6.0"
+pandas = "2.0.3"
+platformdirs = "^4.2.0"
+pyogrio = "^0.7.2"
 shapely = "^2.0.2"
 socrata-py = "^1.1.13"
 tenacity = "^8.2.3"
-typing-extensions = "^4.8.0"
+typing-extensions = "^4.9.0"
 us = "^3.1.1"
-yarl = "^1.9.2"
+yarl = "^1.9.4"
 
 [tool.poetry.group.dev.dependencies]
-pyinstrument = "^4.4.0"
-pytest = "^7.3.1"
+pyinstrument = "^4.6.2"
+pytest = "^8.0.0"
 pytest-cov = "^4.1.0"
-ruff = "^0.1.6"
+ruff = "^0.1.15"
 
 [tool.coverage.run]
 omit = ["tests/*"]
