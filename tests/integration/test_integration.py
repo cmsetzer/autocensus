@@ -1,8 +1,7 @@
+from autocensus import Query
 from pandas import DataFrame
 import pytest
 from shapely import wkt
-
-from autocensus import Query
 
 
 @pytest.fixture(scope='function')
@@ -57,6 +56,13 @@ def test_query_run(query_params: dict, counties: DataFrame):
     query = Query(**query_params)
     dataframe: DataFrame = query.run()
     assert dataframe.equals(counties)
+
+
+def test_query_run_with_annotation_variables(query_params: dict, counties_annotations: DataFrame):
+    query_params['variables'] = ['B01001_001E', 'B01001_001EA', 'B01001_001M', 'B01001_001MA']
+    query = Query(**query_params)
+    dataframe = query.run()
+    assert dataframe.equals(counties_annotations)
 
 
 def test_query_run_with_points_geometry(query_params: dict, counties_points: DataFrame):

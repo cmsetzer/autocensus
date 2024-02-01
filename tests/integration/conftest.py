@@ -20,6 +20,13 @@ def counties(fixtures_path: Path) -> DataFrame:
 
 
 @pytest.fixture(scope='session')
+def counties_annotations(fixtures_path: Path) -> DataFrame:
+    dataframe = pd.read_csv(fixtures_path / 'counties_annotations.csv', parse_dates=['date'])
+    dataframe['annotation'] = dataframe['annotation'].astype('object')
+    return dataframe
+
+
+@pytest.fixture(scope='session')
 def counties_points(fixtures_path: Path) -> DataFrame:
     dataframe = pd.read_csv(fixtures_path / 'counties_points.csv', parse_dates=['date'])
     dataframe['annotation'] = dataframe['annotation'].astype('object')

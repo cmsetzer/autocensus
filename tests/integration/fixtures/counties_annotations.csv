@@ -1,0 +1,513 @@
+name,geo_id,geo_type,year,date,variable_code,variable_label,variable_concept,annotation,value
+"Adams County, Colorado",0500000US08001,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,461558.0
+"Adams County, Colorado",0500000US08001,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,504108.0
+"Alamosa County, Colorado",0500000US08003,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,16111.0
+"Alamosa County, Colorado",0500000US08003,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,16107.0
+"Arapahoe County, Colorado",0500000US08005,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,596684.0
+"Arapahoe County, Colorado",0500000US08005,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,644560.0
+"Archuleta County, Colorado",0500000US08007,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,12132.0
+"Archuleta County, Colorado",0500000US08007,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,13253.0
+"Baca County, Colorado",0500000US08009,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,3735.0
+"Baca County, Colorado",0500000US08009,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,3561.0
+"Bent County, Colorado",0500000US08011,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,6000.0
+"Bent County, Colorado",0500000US08011,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,5787.0
+"Boulder County, Colorado",0500000US08013,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,305166.0
+"Boulder County, Colorado",0500000US08013,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,322510.0
+"Broomfield County, Colorado",0500000US08014,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,59027.0
+"Broomfield County, Colorado",0500000US08014,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,67886.0
+"Chaffee County, Colorado",0500000US08015,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,18121.0
+"Chaffee County, Colorado",0500000US08015,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,19557.0
+"Cheyenne County, Colorado",0500000US08017,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,2153.0
+"Cheyenne County, Colorado",0500000US08017,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,2026.0
+"Clear Creek County, Colorado",0500000US08019,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,9114.0
+"Clear Creek County, Colorado",0500000US08019,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,9495.0
+"Conejos County, Colorado",0500000US08021,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,8276.0
+"Conejos County, Colorado",0500000US08021,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,8128.0
+"Costilla County, Colorado",0500000US08023,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,3578.0
+"Costilla County, Colorado",0500000US08023,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,3745.0
+"Crowley County, Colorado",0500000US08025,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,5558.0
+"Crowley County, Colorado",0500000US08025,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,5754.0
+"Custer County, Colorado",0500000US08027,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,4274.0
+"Custer County, Colorado",0500000US08027,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,4776.0
+"Delta County, Colorado",0500000US08029,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,30378.0
+"Delta County, Colorado",0500000US08029,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,30565.0
+"Denver County, Colorado",0500000US08031,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,633777.0
+"Denver County, Colorado",0500000US08031,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,705576.0
+"Dolores County, Colorado",0500000US08033,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,1736.0
+"Dolores County, Colorado",0500000US08033,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,1857.0
+"Douglas County, Colorado",0500000US08035,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,299794.0
+"Douglas County, Colorado",0500000US08035,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,336041.0
+"Eagle County, Colorado",0500000US08037,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,52233.0
+"Eagle County, Colorado",0500000US08037,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,54681.0
+"El Paso County, Colorado",0500000US08041,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,645707.0
+"El Paso County, Colorado",0500000US08041,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,698974.0
+"Elbert County, Colorado",0500000US08039,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,23545.0
+"Elbert County, Colorado",0500000US08039,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,25717.0
+"Fremont County, Colorado",0500000US08043,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,46879.0
+"Fremont County, Colorado",0500000US08043,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,47321.0
+"Garfield County, Colorado",0500000US08045,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,56684.0
+"Garfield County, Colorado",0500000US08045,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,59055.0
+"Gilpin County, Colorado",0500000US08047,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,5557.0
+"Gilpin County, Colorado",0500000US08047,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,6018.0
+"Grand County, Colorado",0500000US08049,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,14478.0
+"Grand County, Colorado",0500000US08049,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,15303.0
+"Gunnison County, Colorado",0500000US08051,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,15503.0
+"Gunnison County, Colorado",0500000US08051,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,16802.0
+"Hinsdale County, Colorado",0500000US08053,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,871.0
+"Hinsdale County, Colorado",0500000US08053,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,857.0
+"Huerfano County, Colorado",0500000US08055,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,6550.0
+"Huerfano County, Colorado",0500000US08055,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,6679.0
+"Jackson County, Colorado",0500000US08057,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,1389.0
+"Jackson County, Colorado",0500000US08057,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,1261.0
+"Jefferson County, Colorado",0500000US08059,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,546162.0
+"Jefferson County, Colorado",0500000US08059,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,574798.0
+"Kiowa County, Colorado",0500000US08061,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,1407.0
+"Kiowa County, Colorado",0500000US08061,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,1489.0
+"Kit Carson County, Colorado",0500000US08063,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,8122.0
+"Kit Carson County, Colorado",0500000US08063,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,7447.0
+"La Plata County, Colorado",0500000US08067,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,52547.0
+"La Plata County, Colorado",0500000US08067,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,55617.0
+"Lake County, Colorado",0500000US08065,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,7311.0
+"Lake County, Colorado",0500000US08065,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,7751.0
+"Larimer County, Colorado",0500000US08069,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,311435.0
+"Larimer County, Colorado",0500000US08069,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,344786.0
+"Las Animas County, Colorado",0500000US08071,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,14789.0
+"Las Animas County, Colorado",0500000US08071,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,14266.0
+"Lincoln County, Colorado",0500000US08073,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,5462.0
+"Lincoln County, Colorado",0500000US08073,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,5585.0
+"Logan County, Colorado",0500000US08075,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,22604.0
+"Logan County, Colorado",0500000US08075,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,22380.0
+"Mesa County, Colorado",0500000US08077,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,147509.0
+"Mesa County, Colorado",0500000US08077,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,151218.0
+"Mineral County, Colorado",0500000US08079,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,704.0
+"Mineral County, Colorado",0500000US08079,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,824.0
+"Moffat County, Colorado",0500000US08081,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,13286.0
+"Moffat County, Colorado",0500000US08081,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,13127.0
+"Montezuma County, Colorado",0500000US08083,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,25569.0
+"Montezuma County, Colorado",0500000US08083,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,26031.0
+"Montrose County, Colorado",0500000US08085,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,40885.0
+"Montrose County, Colorado",0500000US08085,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,41686.0
+"Morgan County, Colorado",0500000US08087,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,28342.0
+"Morgan County, Colorado",0500000US08087,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,28517.0
+"Otero County, Colorado",0500000US08089,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,18712.0
+"Otero County, Colorado",0500000US08089,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,18282.0
+"Ouray County, Colorado",0500000US08091,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,4532.0
+"Ouray County, Colorado",0500000US08091,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,4796.0
+"Park County, Colorado",0500000US08093,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,16174.0
+"Park County, Colorado",0500000US08093,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,17867.0
+"Phillips County, Colorado",0500000US08095,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,4385.0
+"Phillips County, Colorado",0500000US08095,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,4290.0
+"Pitkin County, Colorado",0500000US08097,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,17303.0
+"Pitkin County, Colorado",0500000US08097,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,17926.0
+"Prowers County, Colorado",0500000US08099,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,12359.0
+"Prowers County, Colorado",0500000US08099,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,12022.0
+"Pueblo County, Colorado",0500000US08101,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,160757.0
+"Pueblo County, Colorado",0500000US08101,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,165982.0
+"Rio Blanco County, Colorado",0500000US08103,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,6739.0
+"Rio Blanco County, Colorado",0500000US08103,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,6384.0
+"Rio Grande County, Colorado",0500000US08105,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,11840.0
+"Rio Grande County, Colorado",0500000US08105,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,11305.0
+"Routt County, Colorado",0500000US08107,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,23428.0
+"Routt County, Colorado",0500000US08107,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,25072.0
+"Saguache County, Colorado",0500000US08109,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,6211.0
+"Saguache County, Colorado",0500000US08109,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,6592.0
+"San Juan County, Colorado",0500000US08111,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,653.0
+"San Juan County, Colorado",0500000US08111,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,589.0
+"San Miguel County, Colorado",0500000US08113,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,7597.0
+"San Miguel County, Colorado",0500000US08113,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,8049.0
+"Sedgwick County, Colorado",0500000US08115,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,2365.0
+"Sedgwick County, Colorado",0500000US08115,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,2322.0
+"Summit County, Colorado",0500000US08117,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,28482.0
+"Summit County, Colorado",0500000US08117,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,30649.0
+"Teller County, Colorado",0500000US08119,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,23363.0
+"Teller County, Colorado",0500000US08119,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,24524.0
+"Washington County, Colorado",0500000US08121,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,4781.0
+"Washington County, Colorado",0500000US08121,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,4868.0
+"Weld County, Colorado",0500000US08123,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,265066.0
+"Weld County, Colorado",0500000US08123,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,305345.0
+"Yuma County, Colorado",0500000US08125,county,2014,2014-12-31,B01001_001E,Estimate!!Total,SEX BY AGE,,10131.0
+"Yuma County, Colorado",0500000US08125,county,2019,2019-12-31,B01001_001E,Estimate!!Total:,SEX BY AGE,,10003.0
+"Adams County, Colorado",0500000US08001,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Adams County, Colorado",0500000US08001,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Alamosa County, Colorado",0500000US08003,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Alamosa County, Colorado",0500000US08003,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Arapahoe County, Colorado",0500000US08005,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Arapahoe County, Colorado",0500000US08005,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Archuleta County, Colorado",0500000US08007,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Archuleta County, Colorado",0500000US08007,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Baca County, Colorado",0500000US08009,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Baca County, Colorado",0500000US08009,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Bent County, Colorado",0500000US08011,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Bent County, Colorado",0500000US08011,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Boulder County, Colorado",0500000US08013,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Boulder County, Colorado",0500000US08013,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Broomfield County, Colorado",0500000US08014,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Broomfield County, Colorado",0500000US08014,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Chaffee County, Colorado",0500000US08015,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Chaffee County, Colorado",0500000US08015,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Cheyenne County, Colorado",0500000US08017,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Cheyenne County, Colorado",0500000US08017,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Clear Creek County, Colorado",0500000US08019,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Clear Creek County, Colorado",0500000US08019,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Conejos County, Colorado",0500000US08021,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Conejos County, Colorado",0500000US08021,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Costilla County, Colorado",0500000US08023,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Costilla County, Colorado",0500000US08023,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Crowley County, Colorado",0500000US08025,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Crowley County, Colorado",0500000US08025,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Custer County, Colorado",0500000US08027,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Custer County, Colorado",0500000US08027,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Delta County, Colorado",0500000US08029,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Delta County, Colorado",0500000US08029,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Denver County, Colorado",0500000US08031,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Denver County, Colorado",0500000US08031,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Dolores County, Colorado",0500000US08033,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Dolores County, Colorado",0500000US08033,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Douglas County, Colorado",0500000US08035,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Douglas County, Colorado",0500000US08035,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Eagle County, Colorado",0500000US08037,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Eagle County, Colorado",0500000US08037,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"El Paso County, Colorado",0500000US08041,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"El Paso County, Colorado",0500000US08041,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Elbert County, Colorado",0500000US08039,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Elbert County, Colorado",0500000US08039,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Fremont County, Colorado",0500000US08043,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Fremont County, Colorado",0500000US08043,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Garfield County, Colorado",0500000US08045,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Garfield County, Colorado",0500000US08045,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Gilpin County, Colorado",0500000US08047,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Gilpin County, Colorado",0500000US08047,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Grand County, Colorado",0500000US08049,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Grand County, Colorado",0500000US08049,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Gunnison County, Colorado",0500000US08051,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Gunnison County, Colorado",0500000US08051,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Hinsdale County, Colorado",0500000US08053,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Hinsdale County, Colorado",0500000US08053,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Huerfano County, Colorado",0500000US08055,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Huerfano County, Colorado",0500000US08055,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Jackson County, Colorado",0500000US08057,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Jackson County, Colorado",0500000US08057,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Jefferson County, Colorado",0500000US08059,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Jefferson County, Colorado",0500000US08059,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Kiowa County, Colorado",0500000US08061,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Kiowa County, Colorado",0500000US08061,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Kit Carson County, Colorado",0500000US08063,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Kit Carson County, Colorado",0500000US08063,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"La Plata County, Colorado",0500000US08067,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"La Plata County, Colorado",0500000US08067,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Lake County, Colorado",0500000US08065,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Lake County, Colorado",0500000US08065,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Larimer County, Colorado",0500000US08069,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Larimer County, Colorado",0500000US08069,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Las Animas County, Colorado",0500000US08071,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Las Animas County, Colorado",0500000US08071,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Lincoln County, Colorado",0500000US08073,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Lincoln County, Colorado",0500000US08073,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Logan County, Colorado",0500000US08075,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Logan County, Colorado",0500000US08075,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Mesa County, Colorado",0500000US08077,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Mesa County, Colorado",0500000US08077,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Mineral County, Colorado",0500000US08079,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Mineral County, Colorado",0500000US08079,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Moffat County, Colorado",0500000US08081,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Moffat County, Colorado",0500000US08081,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Montezuma County, Colorado",0500000US08083,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Montezuma County, Colorado",0500000US08083,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Montrose County, Colorado",0500000US08085,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Montrose County, Colorado",0500000US08085,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Morgan County, Colorado",0500000US08087,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Morgan County, Colorado",0500000US08087,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Otero County, Colorado",0500000US08089,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Otero County, Colorado",0500000US08089,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Ouray County, Colorado",0500000US08091,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Ouray County, Colorado",0500000US08091,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Park County, Colorado",0500000US08093,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Park County, Colorado",0500000US08093,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Phillips County, Colorado",0500000US08095,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Phillips County, Colorado",0500000US08095,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Pitkin County, Colorado",0500000US08097,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Pitkin County, Colorado",0500000US08097,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Prowers County, Colorado",0500000US08099,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Prowers County, Colorado",0500000US08099,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Pueblo County, Colorado",0500000US08101,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Pueblo County, Colorado",0500000US08101,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Rio Blanco County, Colorado",0500000US08103,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Rio Blanco County, Colorado",0500000US08103,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Rio Grande County, Colorado",0500000US08105,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Rio Grande County, Colorado",0500000US08105,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Routt County, Colorado",0500000US08107,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Routt County, Colorado",0500000US08107,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Saguache County, Colorado",0500000US08109,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Saguache County, Colorado",0500000US08109,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"San Juan County, Colorado",0500000US08111,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"San Juan County, Colorado",0500000US08111,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"San Miguel County, Colorado",0500000US08113,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"San Miguel County, Colorado",0500000US08113,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Sedgwick County, Colorado",0500000US08115,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Sedgwick County, Colorado",0500000US08115,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Summit County, Colorado",0500000US08117,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Summit County, Colorado",0500000US08117,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Teller County, Colorado",0500000US08119,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Teller County, Colorado",0500000US08119,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Washington County, Colorado",0500000US08121,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Washington County, Colorado",0500000US08121,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Weld County, Colorado",0500000US08123,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Weld County, Colorado",0500000US08123,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Yuma County, Colorado",0500000US08125,county,2014,2014-12-31,B01001_001EA,Annotation of Estimate!!Total,SEX BY AGE,,
+"Yuma County, Colorado",0500000US08125,county,2019,2019-12-31,B01001_001EA,Annotation of Estimate!!Total:,SEX BY AGE,,
+"Adams County, Colorado",0500000US08001,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Adams County, Colorado",0500000US08001,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Alamosa County, Colorado",0500000US08003,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Alamosa County, Colorado",0500000US08003,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Arapahoe County, Colorado",0500000US08005,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Arapahoe County, Colorado",0500000US08005,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Archuleta County, Colorado",0500000US08007,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Archuleta County, Colorado",0500000US08007,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Baca County, Colorado",0500000US08009,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Baca County, Colorado",0500000US08009,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Bent County, Colorado",0500000US08011,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Bent County, Colorado",0500000US08011,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Boulder County, Colorado",0500000US08013,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Boulder County, Colorado",0500000US08013,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Broomfield County, Colorado",0500000US08014,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Broomfield County, Colorado",0500000US08014,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Chaffee County, Colorado",0500000US08015,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Chaffee County, Colorado",0500000US08015,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Cheyenne County, Colorado",0500000US08017,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,160.0
+"Cheyenne County, Colorado",0500000US08017,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,186.0
+"Clear Creek County, Colorado",0500000US08019,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Clear Creek County, Colorado",0500000US08019,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Conejos County, Colorado",0500000US08021,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Conejos County, Colorado",0500000US08021,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Costilla County, Colorado",0500000US08023,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Costilla County, Colorado",0500000US08023,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Crowley County, Colorado",0500000US08025,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Crowley County, Colorado",0500000US08025,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Custer County, Colorado",0500000US08027,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Custer County, Colorado",0500000US08027,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Delta County, Colorado",0500000US08029,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Delta County, Colorado",0500000US08029,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Denver County, Colorado",0500000US08031,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Denver County, Colorado",0500000US08031,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Dolores County, Colorado",0500000US08033,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,160.0
+"Dolores County, Colorado",0500000US08033,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,186.0
+"Douglas County, Colorado",0500000US08035,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Douglas County, Colorado",0500000US08035,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Eagle County, Colorado",0500000US08037,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Eagle County, Colorado",0500000US08037,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"El Paso County, Colorado",0500000US08041,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"El Paso County, Colorado",0500000US08041,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Elbert County, Colorado",0500000US08039,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Elbert County, Colorado",0500000US08039,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Fremont County, Colorado",0500000US08043,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Fremont County, Colorado",0500000US08043,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Garfield County, Colorado",0500000US08045,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Garfield County, Colorado",0500000US08045,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Gilpin County, Colorado",0500000US08047,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Gilpin County, Colorado",0500000US08047,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Grand County, Colorado",0500000US08049,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Grand County, Colorado",0500000US08049,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Gunnison County, Colorado",0500000US08051,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Gunnison County, Colorado",0500000US08051,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Hinsdale County, Colorado",0500000US08053,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,116.0
+"Hinsdale County, Colorado",0500000US08053,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,111.0
+"Huerfano County, Colorado",0500000US08055,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Huerfano County, Colorado",0500000US08055,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Jackson County, Colorado",0500000US08057,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,114.0
+"Jackson County, Colorado",0500000US08057,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,128.0
+"Jefferson County, Colorado",0500000US08059,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Jefferson County, Colorado",0500000US08059,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Kiowa County, Colorado",0500000US08061,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,114.0
+"Kiowa County, Colorado",0500000US08061,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,128.0
+"Kit Carson County, Colorado",0500000US08063,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Kit Carson County, Colorado",0500000US08063,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"La Plata County, Colorado",0500000US08067,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"La Plata County, Colorado",0500000US08067,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Lake County, Colorado",0500000US08065,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Lake County, Colorado",0500000US08065,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Larimer County, Colorado",0500000US08069,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Larimer County, Colorado",0500000US08069,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Las Animas County, Colorado",0500000US08071,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Las Animas County, Colorado",0500000US08071,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Lincoln County, Colorado",0500000US08073,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Lincoln County, Colorado",0500000US08073,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Logan County, Colorado",0500000US08075,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Logan County, Colorado",0500000US08075,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Mesa County, Colorado",0500000US08077,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Mesa County, Colorado",0500000US08077,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Mineral County, Colorado",0500000US08079,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,100.0
+"Mineral County, Colorado",0500000US08079,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,112.0
+"Moffat County, Colorado",0500000US08081,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Moffat County, Colorado",0500000US08081,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Montezuma County, Colorado",0500000US08083,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Montezuma County, Colorado",0500000US08083,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Montrose County, Colorado",0500000US08085,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Montrose County, Colorado",0500000US08085,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Morgan County, Colorado",0500000US08087,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Morgan County, Colorado",0500000US08087,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Otero County, Colorado",0500000US08089,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Otero County, Colorado",0500000US08089,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Ouray County, Colorado",0500000US08091,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Ouray County, Colorado",0500000US08091,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Park County, Colorado",0500000US08093,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Park County, Colorado",0500000US08093,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Phillips County, Colorado",0500000US08095,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Phillips County, Colorado",0500000US08095,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Pitkin County, Colorado",0500000US08097,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Pitkin County, Colorado",0500000US08097,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Prowers County, Colorado",0500000US08099,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Prowers County, Colorado",0500000US08099,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Pueblo County, Colorado",0500000US08101,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Pueblo County, Colorado",0500000US08101,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Rio Blanco County, Colorado",0500000US08103,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Rio Blanco County, Colorado",0500000US08103,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Rio Grande County, Colorado",0500000US08105,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Rio Grande County, Colorado",0500000US08105,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Routt County, Colorado",0500000US08107,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Routt County, Colorado",0500000US08107,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Saguache County, Colorado",0500000US08109,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Saguache County, Colorado",0500000US08109,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"San Juan County, Colorado",0500000US08111,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,,111.0
+"San Juan County, Colorado",0500000US08111,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,,102.0
+"San Miguel County, Colorado",0500000US08113,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"San Miguel County, Colorado",0500000US08113,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Sedgwick County, Colorado",0500000US08115,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Sedgwick County, Colorado",0500000US08115,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Summit County, Colorado",0500000US08117,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Summit County, Colorado",0500000US08117,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Teller County, Colorado",0500000US08119,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Teller County, Colorado",0500000US08119,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Washington County, Colorado",0500000US08121,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Washington County, Colorado",0500000US08121,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Weld County, Colorado",0500000US08123,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Weld County, Colorado",0500000US08123,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Yuma County, Colorado",0500000US08125,county,2014,2014-12-31,B01001_001M,Margin of Error!!Total,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Yuma County, Colorado",0500000US08125,county,2019,2019-12-31,B01001_001M,Margin of Error!!Total:,SEX BY AGE,The estimate is controlled. A statistical test for sampling variability is not appropriate.,
+"Adams County, Colorado",0500000US08001,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Adams County, Colorado",0500000US08001,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Alamosa County, Colorado",0500000US08003,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Alamosa County, Colorado",0500000US08003,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Arapahoe County, Colorado",0500000US08005,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Arapahoe County, Colorado",0500000US08005,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Archuleta County, Colorado",0500000US08007,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Archuleta County, Colorado",0500000US08007,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Baca County, Colorado",0500000US08009,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Baca County, Colorado",0500000US08009,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Bent County, Colorado",0500000US08011,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Bent County, Colorado",0500000US08011,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Boulder County, Colorado",0500000US08013,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Boulder County, Colorado",0500000US08013,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Broomfield County, Colorado",0500000US08014,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Broomfield County, Colorado",0500000US08014,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Chaffee County, Colorado",0500000US08015,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Chaffee County, Colorado",0500000US08015,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Cheyenne County, Colorado",0500000US08017,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Cheyenne County, Colorado",0500000US08017,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Clear Creek County, Colorado",0500000US08019,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Clear Creek County, Colorado",0500000US08019,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Conejos County, Colorado",0500000US08021,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Conejos County, Colorado",0500000US08021,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Costilla County, Colorado",0500000US08023,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Costilla County, Colorado",0500000US08023,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Crowley County, Colorado",0500000US08025,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Crowley County, Colorado",0500000US08025,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Custer County, Colorado",0500000US08027,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Custer County, Colorado",0500000US08027,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Delta County, Colorado",0500000US08029,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Delta County, Colorado",0500000US08029,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Denver County, Colorado",0500000US08031,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Denver County, Colorado",0500000US08031,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Dolores County, Colorado",0500000US08033,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Dolores County, Colorado",0500000US08033,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Douglas County, Colorado",0500000US08035,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Douglas County, Colorado",0500000US08035,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Eagle County, Colorado",0500000US08037,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Eagle County, Colorado",0500000US08037,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"El Paso County, Colorado",0500000US08041,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"El Paso County, Colorado",0500000US08041,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Elbert County, Colorado",0500000US08039,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Elbert County, Colorado",0500000US08039,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Fremont County, Colorado",0500000US08043,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Fremont County, Colorado",0500000US08043,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Garfield County, Colorado",0500000US08045,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Garfield County, Colorado",0500000US08045,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Gilpin County, Colorado",0500000US08047,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Gilpin County, Colorado",0500000US08047,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Grand County, Colorado",0500000US08049,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Grand County, Colorado",0500000US08049,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Gunnison County, Colorado",0500000US08051,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Gunnison County, Colorado",0500000US08051,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Hinsdale County, Colorado",0500000US08053,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Hinsdale County, Colorado",0500000US08053,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Huerfano County, Colorado",0500000US08055,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Huerfano County, Colorado",0500000US08055,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Jackson County, Colorado",0500000US08057,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Jackson County, Colorado",0500000US08057,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Jefferson County, Colorado",0500000US08059,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Jefferson County, Colorado",0500000US08059,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Kiowa County, Colorado",0500000US08061,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Kiowa County, Colorado",0500000US08061,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Kit Carson County, Colorado",0500000US08063,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Kit Carson County, Colorado",0500000US08063,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"La Plata County, Colorado",0500000US08067,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"La Plata County, Colorado",0500000US08067,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Lake County, Colorado",0500000US08065,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Lake County, Colorado",0500000US08065,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Larimer County, Colorado",0500000US08069,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Larimer County, Colorado",0500000US08069,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Las Animas County, Colorado",0500000US08071,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Las Animas County, Colorado",0500000US08071,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Lincoln County, Colorado",0500000US08073,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Lincoln County, Colorado",0500000US08073,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Logan County, Colorado",0500000US08075,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Logan County, Colorado",0500000US08075,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Mesa County, Colorado",0500000US08077,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Mesa County, Colorado",0500000US08077,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Mineral County, Colorado",0500000US08079,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"Mineral County, Colorado",0500000US08079,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"Moffat County, Colorado",0500000US08081,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Moffat County, Colorado",0500000US08081,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Montezuma County, Colorado",0500000US08083,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Montezuma County, Colorado",0500000US08083,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Montrose County, Colorado",0500000US08085,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Montrose County, Colorado",0500000US08085,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Morgan County, Colorado",0500000US08087,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Morgan County, Colorado",0500000US08087,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Otero County, Colorado",0500000US08089,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Otero County, Colorado",0500000US08089,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Ouray County, Colorado",0500000US08091,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Ouray County, Colorado",0500000US08091,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Park County, Colorado",0500000US08093,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Park County, Colorado",0500000US08093,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Phillips County, Colorado",0500000US08095,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Phillips County, Colorado",0500000US08095,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Pitkin County, Colorado",0500000US08097,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Pitkin County, Colorado",0500000US08097,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Prowers County, Colorado",0500000US08099,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Prowers County, Colorado",0500000US08099,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Pueblo County, Colorado",0500000US08101,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Pueblo County, Colorado",0500000US08101,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Rio Blanco County, Colorado",0500000US08103,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Rio Blanco County, Colorado",0500000US08103,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Rio Grande County, Colorado",0500000US08105,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Rio Grande County, Colorado",0500000US08105,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Routt County, Colorado",0500000US08107,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Routt County, Colorado",0500000US08107,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Saguache County, Colorado",0500000US08109,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Saguache County, Colorado",0500000US08109,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"San Juan County, Colorado",0500000US08111,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,,
+"San Juan County, Colorado",0500000US08111,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,,
+"San Miguel County, Colorado",0500000US08113,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"San Miguel County, Colorado",0500000US08113,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Sedgwick County, Colorado",0500000US08115,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Sedgwick County, Colorado",0500000US08115,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Summit County, Colorado",0500000US08117,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Summit County, Colorado",0500000US08117,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Teller County, Colorado",0500000US08119,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Teller County, Colorado",0500000US08119,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Washington County, Colorado",0500000US08121,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Washington County, Colorado",0500000US08121,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Weld County, Colorado",0500000US08123,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Weld County, Colorado",0500000US08123,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Yuma County, Colorado",0500000US08125,county,2014,2014-12-31,B01001_001MA,Annotation of Margin of Error!!Total,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
+"Yuma County, Colorado",0500000US08125,county,2019,2019-12-31,B01001_001MA,Annotation of Margin of Error!!Total:,SEX BY AGE,"A margin of error is not appropriate because the corresponding estimate is controlled to an independent population or housing estimate. Effectively, the corresponding estimate has no sampling error and the margin of error may be treated as zero.",
