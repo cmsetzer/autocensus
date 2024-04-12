@@ -5,7 +5,7 @@ description = "A tool for collecting ACS and geospatial data from the Census API
 license = "MIT"
 authors = ["Christopher Setzer <cmsetzer.github@gmail.com>"]
 readme = "readme.md"
-homepage = "https://github.com/socrata/autocensus"
+homepage = "https://github.com/cmsetzer/autocensus"
 keywords = ["census", "acs", "api", "data"]
 classifiers = [
     "Intended Audience :: Developers",
