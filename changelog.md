@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.2.0]
+
+* Increased minimum Python version to 3.9 and refreshed dependencies.
+* Adopted `importlib.resources` in place of `pkg_resources`.
+* Removed deprecated `to_socrata` method and associated resources.
+* Performed miscellaneous internal cleanup tasks.
+
 ## [v2.1.3]
 
 * Adopted pyogrio for faster shapefile reads.
@@ -117,6 +124,7 @@
 
 * First major release.
 
+[v2.2.0]: https://github.com/socrata/autocensus/releases/tag/v2.2.0
 [v2.1.3]: https://github.com/socrata/autocensus/releases/tag/v2.1.3
 [v2.1.2]: https://github.com/socrata/autocensus/releases/tag/v2.1.2
 [v2.1.1]: https://github.com/socrata/autocensus/releases/tag/v2.1.1
