@@ -17,7 +17,6 @@ import geopandas as gpd
 from geopandas.geodataframe import GeoDataFrame
 import pandas as pd
 from pandas import DataFrame
-from yarl import URL
 
 from autocensus.api import CensusAPI, look_up_census_api_key
 from autocensus.constants import (
@@ -39,7 +38,6 @@ from autocensus.geography import (
     load_geodataframe,
     normalize_geo_id,
 )
-from autocensus.socrata import build_dataset_name, to_socrata
 from autocensus.utilities import (
     check_geo_estimates,
     check_geo_hierarchy,
@@ -451,30 +449,3 @@ class Query:
                 shapefiles.extend(self.get_shapefiles())
         dataframe = self.assemble_dataframe(variables, tables, gazetteer_files, shapefiles)
         return dataframe
-
-    def to_socrata(
-        self,
-        domain: Union[URL, str],
-        *,
-        dataframe: DataFrame = None,
-        dataset_id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        auth: Optional[tuple[str, str]] = None,
-        open_in_browser: bool = True,
-        wait_for_finish: bool = False,
-    ):
-        """Run query and publish the resulting dataframe to Socrata."""
-        if dataframe is None:
-            dataframe = self.run()
-        revision_url: URL = to_socrata(
-            domain,
-            dataframe=dataframe,
-            dataset_id=dataset_id,
-            name=build_dataset_name(self.estimate, self.years) if name is None else name,
-            description=description,
-            auth=auth,
-            open_in_browser=open_in_browser,
-            wait_for_finish=wait_for_finish,
-        )
-        return revision_url
