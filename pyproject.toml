@@ -13,25 +13,25 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-geopandas = "0.13.2"
-httpx = "^0.26.0"
+python = ">=3.9,<4.0"
+geopandas = "1.0.0"
+httpx = "^0.27.0"
 nest-asyncio = "^1.6.0"
-pandas = "2.0.3"
-platformdirs = "^4.2.0"
-pyogrio = "^0.7.2"
-shapely = "^2.0.2"
+pandas = "2.2.2"
+platformdirs = "^4.2.2"
+pyogrio = "^0.9.0"
+shapely = "^2.0.5"
 socrata-py = "^1.1.13"
-tenacity = "^8.2.3"
-typing-extensions = "^4.9.0"
-us = "^3.1.1"
+tenacity = "^9.0.0"
+typing-extensions = "^4.12.2"
+us = "^3.2.0"
 yarl = "^1.9.4"
 
 [tool.poetry.group.dev.dependencies]
-pyinstrument = "^4.6.2"
-pytest = "^8.0.0"
-pytest-cov = "^4.1.0"
-ruff = "^0.1.15"
+pyinstrument = "^4.7.1"
+pytest = "^8.3.2"
+pytest-cov = "^5.0.0"
+ruff = "^0.5.6"
 
 [tool.coverage.run]
 omit = ["tests/*"]
