@@ -42,6 +42,8 @@ filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning"]
 
 [tool.ruff]
 line-length = 99
+
+[tool.ruff.lint]
 select = ["C90", "D", "E", "F", "I", "PD", "RUF"]
 ignore = ["D105", "D107", "D203", "D213", "RUF001"]
 
@@ -49,10 +51,10 @@ ignore = ["D105", "D107", "D203", "D213", "RUF001"]
 quote-style = "single"
 skip-magic-trailing-comma = true
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 force-sort-within-sections = true
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
 [build-system]
