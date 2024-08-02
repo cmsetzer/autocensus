@@ -2,13 +2,13 @@
 
 from datetime import datetime
 from functools import lru_cache
+import importlib
 from itertools import islice
 import logging
 import shutil
 from typing import Iterable, Union
 
 import pandas as pd
-import pkg_resources
 
 from autocensus.constants import CACHE_DIRECTORY_PATH
 from autocensus.errors import InvalidGeographyError, InvalidVariableError, InvalidYearError
@@ -71,8 +71,9 @@ def parse_table_name_from_variable(variable: str):
 
 def load_annotations_dataframe():
     """Load the included annotations.csv resource as a dataframe."""
-    annotations_csv = pkg_resources.resource_stream(__name__, 'resources/annotations.csv')
-    dataframe = pd.read_csv(annotations_csv)
+    annotations_csv = importlib.resources.files(__name__).joinpath('resources/annotations.csv')
+    with annotations_csv.open() as file:
+        dataframe = pd.read_csv(file)
     return dataframe
 
 

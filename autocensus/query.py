@@ -3,9 +3,9 @@
 import asyncio
 from collections import defaultdict
 from contextlib import contextmanager
-from csv import reader
+import csv
 from functools import partial
-from io import StringIO
+import importlib
 from itertools import product
 import logging
 from operator import is_not
@@ -17,7 +17,6 @@ import geopandas as gpd
 from geopandas.geodataframe import GeoDataFrame
 import pandas as pd
 from pandas import DataFrame
-from pkg_resources import resource_string
 from yarl import URL
 
 from autocensus.api import CensusAPI, look_up_census_api_key
@@ -367,10 +366,11 @@ class Query:
         )
 
         # Rename and reorder columns
-        names_csv = resource_string(__name__, 'resources/names.csv')
-        csv_reader = reader(StringIO(names_csv.decode('utf-8')))
-        next(csv_reader)  # Skip header row
-        names = dict(csv_reader)  # type: ignore
+        names_csv = importlib.resources.files(__name__).joinpath('resources/names.csv')
+        with names_csv.open() as file:
+            csv_reader = csv.reader(file)
+            next(csv_reader)  # Skip header row
+            names = dict(csv_reader)  # type: ignore
         if self.geometry in ['points', 'polygons'] and (set(dataframe.columns) & geo_names):
             name_order = [*names.values(), *geo_names]
         else:

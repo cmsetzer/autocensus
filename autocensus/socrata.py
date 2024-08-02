@@ -1,6 +1,7 @@
 """Functions for publishing autocensus data to Socrata."""
 
 from functools import reduce
+import importlib
 import json
 import logging
 import os
@@ -9,7 +10,6 @@ import warnings
 
 import pandas as pd
 from pandas import DataFrame
-from pkg_resources import resource_stream
 from socrata import Socrata
 from socrata.authorization import Authorization
 from socrata.job import Job
@@ -63,7 +63,9 @@ def change_column(prev: OutputSchema, record: Dict[str, str]):
 
 def prepare_output_schema(output_schema: OutputSchema):
     """Add column metadata and transforms to Socrata output schema."""
-    columns = pd.read_csv(resource_stream(__name__, 'resources/columns.csv'))
+    columns_csv = importlib.resources.files(__name__).joinpath('resources/columns.csv')
+    with columns_csv.open() as file:
+        columns = pd.read_csv(file)
 
     # Filter out fields that aren't part of our output schema (e.g., geospatial fields)
     field_names = [column['field_name'] for column in output_schema.attributes['output_columns']]

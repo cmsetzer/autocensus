@@ -1,9 +1,9 @@
 """Utility functions for working with geospatial data."""
 
-from csv import reader
+import csv
 from dataclasses import dataclass
 from functools import lru_cache
-from io import StringIO
+import importlib
 import logging
 import math
 from pathlib import Path
@@ -11,7 +11,6 @@ from typing import Dict, Iterable, Optional, Union
 
 import geopandas as gpd
 from geopandas import GeoDataFrame
-from pkg_resources import resource_string
 from shapely import wkt
 from shapely.geometry import MultiPolygon, Point, Polygon
 import us
@@ -61,9 +60,10 @@ def calculate_congress_number(year: int) -> int:
 @lru_cache(maxsize=1024)
 def get_geo_mappings(source: str) -> Dict[str, str]:
     """Read filename codes from a local CSV."""
-    codes_csv = resource_string(__name__, f'resources/{source}.csv')
-    csv_reader = reader(StringIO(codes_csv.decode('utf-8')))
-    codes = {type_: code for type_, code in csv_reader}
+    codes_csv = importlib.resources.files(__name__).joinpath(f'resources/{source}.csv')
+    with codes_csv.open() as file:
+        csv_reader = csv.reader(file)
+        codes = {type_: code for type_, code in csv_reader}
     return codes
 
 
