@@ -7,7 +7,7 @@ import importlib
 import logging
 import math
 from pathlib import Path
-from typing import Dict, Iterable, Optional, Union
+from typing import Iterable, Optional, Union
 
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -58,7 +58,7 @@ def calculate_congress_number(year: int) -> int:
 
 
 @lru_cache(maxsize=1024)
-def get_geo_mappings(source: str) -> Dict[str, str]:
+def get_geo_mappings(source: str) -> dict[str, str]:
     """Read filename codes from a local CSV."""
     codes_csv = importlib.resources.files(__name__).joinpath(f'resources/{source}.csv')
     with codes_csv.open() as file:

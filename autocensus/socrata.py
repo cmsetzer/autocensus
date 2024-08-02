@@ -5,7 +5,7 @@ import importlib
 import json
 import logging
 import os
-from typing import Dict, Iterable, Optional, Tuple, Union
+from typing import Iterable, Optional, Union
 import warnings
 
 import pandas as pd
@@ -49,7 +49,7 @@ def look_up_socrata_credentials():
         raise MissingCredentialsError('No Socrata credentials found in local environment')
 
 
-def change_column(prev: OutputSchema, record: Dict[str, str]):
+def change_column(prev: OutputSchema, record: dict[str, str]):
     """Add a column change to a Socrata revision object.
 
     To be used in reducing a series of such changes.
@@ -179,7 +179,7 @@ def to_socrata(
     dataset_id: Optional[str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
-    auth: Optional[Tuple[str, str]] = None,
+    auth: Optional[tuple[str, str]] = None,
     open_in_browser: bool = True,
     wait_for_finish: bool = False,
 ):

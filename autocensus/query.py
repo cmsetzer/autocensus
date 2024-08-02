@@ -10,7 +10,7 @@ from itertools import product
 import logging
 from operator import is_not
 import os
-from typing import DefaultDict, Iterable, List, Optional, Tuple, Union, get_args
+from typing import DefaultDict, Iterable, Optional, Union, get_args
 from zipfile import BadZipFile
 
 import geopandas as gpd
@@ -128,7 +128,7 @@ class Query:
 
     def get_variables_by_year_and_table_name(self):
         """Group the supplied variables by year and table name."""
-        variables: DefaultDict[Tuple[int, str], List[str]] = defaultdict(list)
+        variables: DefaultDict[tuple[int, str], list[str]] = defaultdict(list)
         for year, variable in product(self.years, self.variables):
             if variable in self._invalid_variables[year]:
                 continue
@@ -193,7 +193,7 @@ class Query:
                 variables[year, variable_json['name']] = variable_json
         return variables
 
-    def get_tables(self) -> List[Table]:
+    def get_tables(self) -> list[Table]:
         """Get data tables for the supplied variables."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -210,7 +210,7 @@ class Query:
         tables = list(results)
         return tables
 
-    def get_gazetteer_files(self) -> List[GazetteerFile]:
+    def get_gazetteer_files(self) -> list[GazetteerFile]:
         """Get Gazetteer files for the supplied years and geographies."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -224,7 +224,7 @@ class Query:
         gazetteer_files = list(results)
         return gazetteer_files
 
-    def get_shapefiles(self) -> List[Shapefile]:
+    def get_shapefiles(self) -> list[Shapefile]:
         """Get shapefiles for the supplied years and geographies."""
         # Assemble API calls for concurrent execution
         calls = []
@@ -254,7 +254,7 @@ class Query:
 
         return dataframe
 
-    def convert_tables_to_dataframe(self, tables: List[Table]):
+    def convert_tables_to_dataframe(self, tables: list[Table]):
         """Reshape and convert ACS data tables to a dataframe."""
         geography_types = get_geo_mappings('geo_codes').keys()
 
@@ -276,7 +276,7 @@ class Query:
         )
         return dataframe
 
-    def convert_gazetteer_files_to_dataframe(self, gazetteer_files: List[GazetteerFile]):
+    def convert_gazetteer_files_to_dataframe(self, gazetteer_files: list[GazetteerFile]):
         """Convert one or more Gazetteer files to a dataframe.
 
         Skips over null values produced by invalid responses from the
@@ -306,7 +306,7 @@ class Query:
         dataframe = pd.concat(subsets)
         return dataframe
 
-    def convert_shapefiles_to_dataframe(self, shapefiles: List[Shapefile]):
+    def convert_shapefiles_to_dataframe(self, shapefiles: list[Shapefile]):
         """Convert one or more shapefiles to a dataframe.
 
         Skips over null filepaths produced by invalid responses from the
@@ -382,9 +382,9 @@ class Query:
     def assemble_dataframe(
         self,
         variables: Variables,
-        tables: List[Table],
-        gazetteer_files: List[GazetteerFile],
-        shapefiles: List[Shapefile],
+        tables: list[Table],
+        gazetteer_files: list[GazetteerFile],
+        shapefiles: list[Shapefile],
     ):
         """Merge and finalize the query dataframe.
 
@@ -441,8 +441,8 @@ class Query:
             tables = self.get_tables()
 
             # Add geometry
-            gazetteer_files: List[GazetteerFile] = []
-            shapefiles: List[Shapefile] = []
+            gazetteer_files: list[GazetteerFile] = []
+            shapefiles: list[Shapefile] = []
             if self.geometry == 'points':
                 logger.info('Retrieving Gazetteer files...')
                 gazetteer_files.extend(self.get_gazetteer_files())
@@ -460,7 +460,7 @@ class Query:
         dataset_id: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        auth: Optional[Tuple[str, str]] = None,
+        auth: Optional[tuple[str, str]] = None,
         open_in_browser: bool = True,
         wait_for_finish: bool = False,
     ):

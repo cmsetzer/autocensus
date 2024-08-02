@@ -7,7 +7,7 @@ from json.decoder import JSONDecodeError
 import logging
 import os
 from pathlib import Path
-from typing import AsyncGenerator, Dict, Iterable, Optional
+from typing import AsyncGenerator, Iterable, Optional
 
 from httpx import AsyncClient, Limits
 import pandas as pd
@@ -97,7 +97,7 @@ class CensusAPI:
         resolution: Optional[QueryResolution] = None,
     ) -> URL:
         """Build a Census shapefile URL based on the supplied parameters."""
-        in_geo_dict: Dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
+        in_geo_dict: dict[str, str] = {geo.type: geo.code for geo in in_geo}  # type: ignore
         state_fips = in_geo_dict.get('state', '')
         decade_geos = ['urban area', 'zip code tabulation area']
         base_decade = year - (year % 10)
