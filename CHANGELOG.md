@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.2.1]
+
+* Increased minimum Python version to 3.10 and refreshed dependencies.
+* Adopted uv as dependency manager for project.
+
 ## [v2.2.0]
 
 * Increased minimum Python version to 3.9 and refreshed dependencies.
@@ -124,6 +129,7 @@
 
 * First major release.
 
+[v2.2.1]: https://github.com/socrata/autocensus/releases/tag/v2.2.1
 [v2.2.0]: https://github.com/socrata/autocensus/releases/tag/v2.2.0
 [v2.1.3]: https://github.com/socrata/autocensus/releases/tag/v2.1.3
 [v2.1.2]: https://github.com/socrata/autocensus/releases/tag/v2.1.2

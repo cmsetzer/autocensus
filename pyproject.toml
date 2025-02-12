@@ -1,6 +1,6 @@
 [project]
 name = "autocensus"
-version = "2.2.0"
+version = "2.2.1"
 description = "A tool for collecting ACS and geospatial data from the Census API"
 authors = [{ name = "Christopher Setzer", email = "cmsetzer.github@gmail.com" }]
 requires-python = ">=3.10,<4.0"
@@ -36,8 +36,8 @@ dev = [
 ]
 
 [build-system]
-requires = ['setuptools']
-build-backend = 'setuptools.build_meta'
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
 [tool.coverage.run]
 omit = ["tests/*"]
@@ -62,3 +62,6 @@ force-sort-within-sections = true
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
+
+[tool.setuptools]
+license-files = []
