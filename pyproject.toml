@@ -3,7 +3,7 @@ name = "autocensus"
 version = "2.2.0"
 description = "A tool for collecting ACS and geospatial data from the Census API"
 authors = [{ name = "Christopher Setzer", email = "cmsetzer.github@gmail.com" }]
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 readme = "readme.md"
 keywords = ["census", "acs", "api", "data"]
 classifiers = [
